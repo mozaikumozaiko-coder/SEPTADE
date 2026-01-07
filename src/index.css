@@ -149,7 +149,7 @@
   .ornate-border,
   .landing-border,
   .scroll-panel {
-    margin-top: 66vh; /* ←ここを増減。例: 2vh / 4vh / 40px */
+    margin-top: 6vh; /* ←ここを増減。例: 2vh / 4vh / 40px */
   }
 }
 
