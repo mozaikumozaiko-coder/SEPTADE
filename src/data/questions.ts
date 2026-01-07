@@ -1,0 +1,123 @@
+import { Question } from '../types';
+
+export const questions: Question[] = [
+  { id: 1, text: '新しい人々と出会う場では、自ら積極的に話しかける方ですか？', category: 'E' },
+  { id: 2, text: '大勢の集まりよりも、少人数での会話を好みますか？', category: 'E', reverse: true },
+  { id: 3, text: '一人で過ごす時間が、心を充足させますか？', category: 'E', reverse: true },
+  { id: 4, text: '初対面の人とでも、気軽に会話を楽しめますか？', category: 'E' },
+  { id: 5, text: '社交的な場面で、エネルギーを得ることが多いですか？', category: 'E' },
+
+  { id: 6, text: '現実的で実践的な情報を重視しますか？', category: 'S' },
+  { id: 7, text: '抽象的な概念や理論を考えるのが好きですか？', category: 'S', reverse: true },
+  { id: 8, text: '詳細な事実やデータに基づいて判断しますか？', category: 'S' },
+  { id: 9, text: '未来の可能性よりも、現在の現実に注目しますか？', category: 'S' },
+  { id: 10, text: '確立された方法や手順に従うことを好みますか？', category: 'S' },
+
+  { id: 11, text: '感情よりも論理を優先して判断しますか？', category: 'T' },
+  { id: 12, text: '他者の気持ちを察することが得意ですか？', category: 'T', reverse: true },
+  { id: 13, text: '客観的な分析を重視しますか？', category: 'T' },
+  { id: 14, text: '人間関係における調和を大切にしますか？', category: 'T', reverse: true },
+  { id: 15, text: '批判的思考で物事を見る傾向がありますか？', category: 'T' },
+
+  { id: 16, text: '計画を立てて行動することを好みますか？', category: 'J' },
+  { id: 17, text: '柔軟に状況に対応する方が得意ですか？', category: 'J', reverse: true },
+  { id: 18, text: '締め切りや期限を守ることに重きを置きますか？', category: 'J' },
+  { id: 19, text: '即興的に行動することが多いですか？', category: 'J', reverse: true },
+  { id: 20, text: '整理整頓された環境を好みますか？', category: 'J' },
+
+  { id: 21, text: '多くの友人と交流することに喜びを感じますか？', category: 'E' },
+  { id: 22, text: '静かな環境で集中して作業するのが好きですか？', category: 'E', reverse: true },
+  { id: 23, text: '話すことで考えを整理する傾向がありますか？', category: 'E' },
+  { id: 24, text: '一人で深く考えることを好みますか？', category: 'E', reverse: true },
+  { id: 25, text: 'パーティーやイベントでは中心的存在になることが多いですか？', category: 'E' },
+
+  { id: 26, text: '具体的な例や事実を使って説明しますか？', category: 'S' },
+  { id: 27, text: '直感や予感を信じて行動しますか？', category: 'S', reverse: true },
+  { id: 28, text: '経験に基づいた知識を重視しますか？', category: 'S' },
+  { id: 29, text: '全体像やパターンを見出すのが得意ですか？', category: 'S', reverse: true },
+  { id: 30, text: '五感で感じ取れる情報を信頼しますか？', category: 'S' },
+
+  { id: 31, text: '論理的な一貫性を大切にしますか？', category: 'T' },
+  { id: 32, text: '決定を下す際、人々への影響を考慮しますか？', category: 'T', reverse: true },
+  { id: 33, text: '効率性と公平性を重視しますか？', category: 'T' },
+  { id: 34, text: '共感することが意思決定の基準ですか？', category: 'T', reverse: true },
+  { id: 35, text: '感情的な反応よりも理性的な判断を優先しますか？', category: 'T' },
+
+  { id: 36, text: 'やることリストを作成して管理しますか？', category: 'J' },
+  { id: 37, text: '自発的な行動を楽しみますか？', category: 'J', reverse: true },
+  { id: 38, text: '予定を立てて実行することが心地よいですか？', category: 'J' },
+  { id: 39, text: '臨機応変に対応することを好みますか？', category: 'J', reverse: true },
+  { id: 40, text: '決断を早く下すことができますか？', category: 'J' },
+
+  { id: 41, text: 'チームで働くことにエネルギーを感じますか？', category: 'E' },
+  { id: 42, text: '独立して作業する方が生産的ですか？', category: 'E', reverse: true },
+  { id: 43, text: '外向的だと周りから言われますか？', category: 'E' },
+  { id: 44, text: '内省的な時間を大切にしますか？', category: 'E', reverse: true },
+  { id: 45, text: '新しい活動や体験を求めますか？', category: 'E' },
+
+  { id: 46, text: '実用的な解決策を見つけるのが得意ですか？', category: 'S' },
+  { id: 47, text: '創造的で独創的なアイデアを重視しますか？', category: 'S', reverse: true },
+  { id: 48, text: '過去の経験から学ぶことを大切にしますか？', category: 'S' },
+  { id: 49, text: '未来志向で革新的な考え方をしますか？', category: 'S', reverse: true },
+  { id: 50, text: '段階的に物事を進めることを好みますか？', category: 'S' },
+
+  { id: 51, text: '客観的事実に基づいて議論しますか？', category: 'T' },
+  { id: 52, text: '他者の感情を優先して判断しますか？', category: 'T', reverse: true },
+  { id: 53, text: '分析的な思考を好みますか？', category: 'T' },
+  { id: 54, text: '調和と協力を重んじますか？', category: 'T', reverse: true },
+  { id: 55, text: '原因と結果の関係を追求しますか？', category: 'T' },
+
+  { id: 56, text: '構造化されたスケジュールを好みますか？', category: 'J' },
+  { id: 57, text: '自由で柔軟な環境を好みますか？', category: 'J', reverse: true },
+  { id: 58, text: '結論を出すことを急ぐ傾向がありますか？', category: 'J' },
+  { id: 59, text: 'オプションを開いたままにしておきますか？', category: 'J', reverse: true },
+  { id: 60, text: '計画通りに進めることに満足を感じますか？', category: 'J' },
+
+  { id: 61, text: '他者と協力して目標を達成することを楽しみますか？', category: 'E' },
+  { id: 62, text: '一人で問題を解決することを好みますか？', category: 'E', reverse: true },
+  { id: 63, text: '活発な議論に参加することが好きですか？', category: 'E' },
+  { id: 64, text: '静かに考えをまとめることを好みますか？', category: 'E', reverse: true },
+  { id: 65, text: '社交的な場面で活力を得ますか？', category: 'E' },
+
+  { id: 66, text: '実際の経験を通じて学ぶことを好みますか？', category: 'S' },
+  { id: 67, text: '理論や概念を探求することに興味がありますか？', category: 'S', reverse: true },
+  { id: 68, text: '詳細に注意を払うことができますか？', category: 'S' },
+  { id: 69, text: '大局的な視点で物事を見ますか？', category: 'S', reverse: true },
+  { id: 70, text: '現実的で実際的な情報を信頼しますか？', category: 'S' },
+
+  { id: 71, text: '論理的な整合性を重視しますか？', category: 'T' },
+  { id: 72, text: '人間関係の調和を優先しますか？', category: 'T', reverse: true },
+  { id: 73, text: '冷静に問題を分析しますか？', category: 'T' },
+  { id: 74, text: '温かみのある対応を心がけますか？', category: 'T', reverse: true },
+  { id: 75, text: '合理的な判断を下すことを重視しますか？', category: 'T' },
+
+  { id: 76, text: '事前に準備して臨むことを好みますか？', category: 'J' },
+  { id: 77, text: 'その場の流れに任せることを好みますか？', category: 'J', reverse: true },
+  { id: 78, text: '秩序立った環境を作ることが得意ですか？', category: 'J' },
+  { id: 79, text: '柔軟性を持って対応することを好みますか？', category: 'J', reverse: true },
+  { id: 80, text: '決断を下すことを先延ばしにしませんか？', category: 'J' },
+
+  { id: 81, text: '大勢の前で話すことに抵抗がありませんか？', category: 'E' },
+  { id: 82, text: '少人数での深い会話を好みますか？', category: 'E', reverse: true },
+  { id: 83, text: '外出して人と会うことを楽しみますか？', category: 'E' },
+  { id: 84, text: '家で静かに過ごすことを好みますか？', category: 'E', reverse: true },
+  { id: 85, text: 'アクティブな社交活動を求めますか？', category: 'E' },
+
+  { id: 86, text: '実践的なスキルを身につけることを重視しますか？', category: 'S' },
+  { id: 87, text: '理論的な理解を深めることを重視しますか？', category: 'S', reverse: true },
+  { id: 88, text: '具体的な情報を集めることを好みますか？', category: 'S' },
+  { id: 89, text: '抽象的な思考を楽しみますか？', category: 'S', reverse: true },
+  { id: 90, text: '伝統的な方法を尊重しますか？', category: 'S' },
+
+  { id: 91, text: '公平で客観的な判断を下しますか？', category: 'T' },
+  { id: 92, text: '個人的な価値観を基に判断しますか？', category: 'T', reverse: true },
+  { id: 93, text: '効率的な解決策を見出すことを優先しますか？', category: 'T' },
+  { id: 94, text: '人々の幸福を考慮して決定しますか？', category: 'T', reverse: true },
+  { id: 95, text: '論理的な議論を展開することが得意ですか？', category: 'T' },
+
+  { id: 96, text: '計画を立てて実行することを好みますか？', category: 'J' },
+  { id: 97, text: '自発的に行動することを好みますか？', category: 'J', reverse: true },
+  { id: 98, text: '締め切りを守ることを重視しますか？', category: 'J' },
+  { id: 99, text: 'ぎりぎりまで待つことが多いですか？', category: 'J', reverse: true },
+  { id: 100, text: '整理整頓された生活を送っていますか？', category: 'J' },
+];
