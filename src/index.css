@@ -127,6 +127,24 @@
     position: relative;
     z-index: 3;
   }
+  #root {
+  width: 100%;
+}
+
+/* Framer Motionの直下ラッパーが内容幅に縮むのを防ぐ */
+#root > * {
+  width: 100%;
+}
+
+/* “額縁”系コンテナはPCでは常に水平中央へ（中身は動かさない） */
+@media (min-width: 768px) {
+  .ornate-border,
+  .landing-border,
+  .scroll-panel {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
 
   h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
