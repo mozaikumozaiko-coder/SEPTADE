@@ -142,7 +142,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
                   }}></div>
 
                   <div className="rounded-lg p-2 sm:p-6 md:p-10 flex items-center question-bubble" style={{
-                    background: 'linear-gradient(135deg, rgba(13, 13, 15, 0.85), rgba(26, 26, 28, 0.75))',
+                    background: 'linear-gradient(135deg, rgba(13, 13, 15, 0.65), rgba(26, 26, 28, 0.55))',
                     border: '2px solid rgba(166, 124, 82, 0.6)',
                     boxShadow: '0 0 30px rgba(166, 124, 82, 0.3), inset 0 2px 10px rgba(0, 0, 0, 0.5)',
                   }}>
