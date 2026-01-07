@@ -145,6 +145,13 @@
     margin-right: auto;
   }
 }
+  @media (min-width: 768px) {
+  .ornate-border,
+  .landing-border,
+  .scroll-panel {
+    margin-top: 3vh; /* ←ここを増減。例: 2vh / 4vh / 40px */
+  }
+}
 
   h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
