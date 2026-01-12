@@ -1,8 +1,9 @@
 import { DiagnosisResult, Profile } from '../types';
 import { Share2, RotateCcw } from 'lucide-react';
-import { CircularChart } from './CircularChart';
+import { CircularChart } from './CircularChart';　
 import { RadarChart } from './RadarChart';
 import { compatibility } from '../data/compatibility';　
+import { typeDetails } from '../data/typeDetails';
 
 interface ResultScreenProps {
   result: DiagnosisResult;
