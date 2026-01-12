@@ -99,7 +99,7 @@ function App() {
           initial="initial"
           animate="animate"
           exit="exit"
-          className="min-h-screen flex items-center justify-center px-2 sm:px-4 py-8 sm:py-12"
+          className="min-h-screen flex items-center justify-center px-10 sm:px-4 py-8 sm:py-12"
         >
           <div className="landing-border max-w-3xl w-full rounded-lg p-3 sm:p-8 md:p-12 lg:p-16 relative">
             <div className="relative z-10">
