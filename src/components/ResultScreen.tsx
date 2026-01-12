@@ -53,10 +53,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           }}
         />
         <div className="relative z-10 space-y-5 sm:space-y-6 md:space-y-8 py-12 px-6 sm:px-8 md:px-12">
-        <div className="rounded-lg p-6 sm:p-8 md:p-12 lg:p-16 text-center relative" style={{
-          background: 'rgba(0, 0, 0, 0.4)',
-          backdropFilter: 'blur(10px)',
-        }}>
+        <div className="rounded-lg p-6 sm:p-8 md:p-12 lg:p-16 text-center relative">
           <div className="relative z-10">
             <div className="ancient-frame w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 mx-auto mb-6 sm:mb-8 md:mb-10 rounded"></div>
 
@@ -91,10 +88,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           </div>
         </div>
 
-        <div className="relative p-5 sm:p-6 md:p-8 lg:p-10 rounded-lg" style={{
-          background: 'rgba(0, 0, 0, 0.4)',
-          backdropFilter: 'blur(10px)',
-        }}>
+        <div className="relative p-5 sm:p-6 md:p-8 lg:p-10 rounded-lg">
           <div className="relative z-10">
             <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 sm:mb-8 text-center glow-text" style={{ color: 'var(--pale-gold)' }}>
               魂の特性
@@ -141,10 +135,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           </div>
         </div>
 
-        <div className="relative p-5 sm:p-6 md:p-8 rounded-lg" style={{
-          background: 'rgba(0, 0, 0, 0.4)',
-          backdropFilter: 'blur(10px)',
-        }}>
+        <div className="relative p-5 sm:p-6 md:p-8 rounded-lg">
           <div className="relative z-10">
             <h3 className="text-xl sm:text-2xl font-bold mb-3 text-center" style={{ color: 'var(--pale-gold)' }}>
               神託札（タロット）
@@ -465,10 +456,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           </div>
         </div>
 
-        <div className="relative p-5 sm:p-6 md:p-8 rounded-lg" style={{
-          background: 'rgba(0, 0, 0, 0.4)',
-          backdropFilter: 'blur(10px)',
-        }}>
+        <div className="relative p-5 sm:p-6 md:p-8 rounded-lg">
           <div className="relative z-10">
             <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4" style={{ color: 'var(--pale-gold)' }}>巡礼者の記録</h3>
             <div className="grid md:grid-cols-2 gap-3 sm:gap-4 text-sm sm:text-base">

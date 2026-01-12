@@ -235,33 +235,6 @@
     position: relative;
   }
 
-  .scroll-panel::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: url('/chatgpt_image_2026年1月5日_19_20_42 copy.png');
-    background-size: 125% 105%;
-    background-position: center;
-    background-repeat: no-repeat;
-    pointer-events: none;
-    opacity: 1;
-    border-radius: 8px;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-    z-index: 1;
-  }
-
-  .scroll-panel::after {
-    content: '';
-    position: absolute;
-    inset: 60px 45px 85px 45px;
-    background: rgba(20, 15, 10, 0.4);
-    backdrop-filter: blur(0.5px);
-    border-radius: 8px;
-    pointer-events: none;
-    z-index: -1;
-  }
-
   .ancient-frame {
     position: relative;
     border: 3px solid rgba(122, 29, 46, 0.6);
@@ -634,9 +607,6 @@
       inset: 8px 20px 15px 20px;
     }
 
-    .scroll-panel::after {
-      inset: 45px 20px 60px 20px;
-    }
 
     .landing-border::after {
       inset: 8px 20px 15px 20px;
@@ -668,9 +638,6 @@
       inset: 10px 35px 18px 35px;
     }
 
-    .scroll-panel::after {
-      inset: 50px 30px 70px 30px;
-    }
 
     .landing-border::after {
       inset: 10px 35px 18px 35px;
