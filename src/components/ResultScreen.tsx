@@ -58,8 +58,6 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           backdropFilter: 'blur(10px)',
         }}>
           <div className="relative z-10">
-            <div className="ancient-frame w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 mx-auto mb-6 sm:mb-8 md:mb-10 rounded"></div>
-
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 sm:mb-6 md:mb-8 glow-text" style={{ color: 'var(--pale-gold)' }}>
               魂の顕現
             </h2>
@@ -152,14 +150,6 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
             <p className="text-center text-sm opacity-70 mb-6" style={{ color: 'var(--pale-light)' }}>
               汝の魂に宿る札の啓示
             </p>
-            <div className="flex justify-center">
-              <div className="w-32 h-48 rounded-lg flex items-center justify-center text-6xl" style={{
-                background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(122, 29, 46, 0.3))',
-                border: '2px solid rgba(166, 124, 82, 0.6)',
-              }}>
-                🃏
-              </div>
-            </div>
             <p className="text-center mt-4 text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
               （札の説明はGPTにて生成されます）
             </p>
