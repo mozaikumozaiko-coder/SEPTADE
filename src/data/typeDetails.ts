@@ -1,8 +1,7 @@
 import { TypeDetail } from '../types';
 
 export const typeDetails: Record<string, TypeDetail> = {
-const TYPES = {
-  'ESTJ': {
+ 'ESTJ': {
     code: 'ESTJ',
     name: '総代',
     title: '秩序の守護者',
