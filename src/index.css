@@ -239,11 +239,21 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: transparent;
+    background: url('/chatgpt_image_2026年1月5日_19_20_42 copy.png');
+    background-size: 125% 105%;
+    background-position: center;
+    background-repeat: no-repeat;
     pointer-events: none;
-    opacity: 0;
+    opacity: 1;
     border-radius: 8px;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
     z-index: 1;
+  }
+
+  .scroll-panel.result-panel::before {
+    background: transparent;
+    opacity: 0;
   }
 
   .scroll-panel::after {

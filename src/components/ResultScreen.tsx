@@ -164,7 +164,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           </div>
         </div>
 
-        <div className="scroll-panel relative p-5 sm:p-6 md:p-8">
+        <div className="scroll-panel result-panel relative p-5 sm:p-6 md:p-8">
           <div className="relative z-10 space-y-6">
             <div className="text-center border-b border-white/10 pb-4">
               <h3 className="text-2xl sm:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
@@ -286,7 +286,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           </div>
         </div>
 
-        <div className="scroll-panel relative p-5 sm:p-6 md:p-8">
+        <div className="scroll-panel result-panel relative p-5 sm:p-6 md:p-8">
           <div className="relative z-10 space-y-6">
             <div className="text-center border-b border-white/10 pb-4">
               <h3 className="text-2xl sm:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
@@ -353,7 +353,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           </div>
         </div>
 
-        <div className="scroll-panel relative p-5 sm:p-6 md:p-8">
+        <div className="scroll-panel result-panel relative p-5 sm:p-6 md:p-8">
           <div className="relative z-10 space-y-6">
             <div className="text-center border-b border-white/10 pb-4">
               <h3 className="text-2xl sm:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
@@ -415,7 +415,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           </div>
         </div>
 
-        <div className="scroll-panel relative p-5 sm:p-6 md:p-8">
+        <div className="scroll-panel result-panel relative p-5 sm:p-6 md:p-8">
           <div className="relative z-10 space-y-6">
             <div className="text-center border-b border-white/10 pb-4">
               <h3 className="text-2xl sm:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
