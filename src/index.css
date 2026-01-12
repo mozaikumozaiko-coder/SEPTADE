@@ -680,7 +680,7 @@
   .page {
     min-height: 100vh;
     position: relative;
-    background: url("/mid.png") center top / auto repeat-y;
+    background: url("/mid.png") center / 100% auto repeat-y;
   }
 
   .page::before {
@@ -689,8 +689,9 @@
     left: 0;
     right: 0;
     top: 0;
-    height: 320px;
-    background: url("/top.png") center top / auto no-repeat;
+    height: 400px;
+    background: url("/top.png") center top / 100% auto no-repeat;
+    z-index: 0;
   }
 
   .page::after {
@@ -699,7 +700,13 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 320px;
-    background: url("/bottom.png") center bottom / auto no-repeat;
+    height: 400px;
+    background: url("/bottom.png") center bottom / 100% auto no-repeat;
+    z-index: 0;
+  }
+
+  .page > * {
+    position: relative;
+    z-index: 1;
   }
 }
