@@ -205,11 +205,11 @@
     position: absolute;
     inset: 0;
     background: url('/remove_background_to_create_transparent_png-1767799824427.png');
-    background-size: 100% 100%;
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 1;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
     z-index: 1;
@@ -240,7 +240,7 @@
     position: absolute;
     inset: 0;
     background: url('/remove_background_to_create_transparent_png-1767799824427.png');
-    background-size: 100% 100%;
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     pointer-events: none;
