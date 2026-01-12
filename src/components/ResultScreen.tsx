@@ -44,7 +44,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
         <div
           className="absolute inset-0 opacity-40"
           style={{
-            backgroundImage: 'url(/an_ultra-luxurious_ornate_chinese_decorative_frame-1767808872546.png)',
+            backgroundImage: 'url(/chatgpt_image_2026年1月5日_20_53_08.png)',
             backgroundSize: 'contain',
             backgroundPosition: 'center',
             backgroundRepeat: 'repeat-y',
