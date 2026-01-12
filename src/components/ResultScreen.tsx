@@ -52,6 +52,14 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
             pointerEvents: 'none',
           }}
         />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6))',
+            backdropFilter: 'blur(1px)',
+            pointerEvents: 'none',
+          }}
+        />
         <div className="relative z-10 space-y-5 sm:space-y-6 md:space-y-8 py-12 px-6 sm:px-8 md:px-12">
         <div className="rounded-lg p-6 sm:p-8 md:p-12 lg:p-16 text-center relative">
           <div className="relative z-10">
