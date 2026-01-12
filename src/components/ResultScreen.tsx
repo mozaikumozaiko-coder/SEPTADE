@@ -39,7 +39,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-3 sm:px-4 py-8 sm:py-12">
+    <div className="page flex items-center justify-center px-3 sm:px-4 py-8 sm:py-12">
       <div className="max-w-4xl w-full relative">
         <div
           className="absolute inset-0 opacity-40"
