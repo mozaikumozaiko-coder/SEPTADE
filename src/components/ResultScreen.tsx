@@ -58,8 +58,6 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           backdropFilter: 'blur(10px)',
         }}>
           <div className="relative z-10">
-            <div className="ancient-frame w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 mx-auto mb-6 sm:mb-8 md:mb-10 rounded"></div>
-
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 sm:mb-6 md:mb-8 glow-text" style={{ color: 'var(--pale-gold)' }}>
               魂の顕現
             </h2>
