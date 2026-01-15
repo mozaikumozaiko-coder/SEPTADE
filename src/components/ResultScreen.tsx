@@ -6,6 +6,8 @@ import { compatibility } from '../data/compatibility';
 import { typeDetails } from '../data/typeDetails';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { selectTarotCard } from '../lib/tarotSelector';
+import { calculateFourPillars } from '../lib/fourPillars';
 
 interface ResultScreenProps {
   result: DiagnosisResult;
@@ -38,8 +40,11 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
   const handleSendToMake = async () => {
     const webhookUrl = import.meta.env.VITE_MAKE_WEBHOOK_URL;
 
-    if (!webhookUrl) {
+    if (!webhookUrl || webhookUrl === 'YOUR_MAKE_WEBHOOK_URL_HERE') {
       console.error('Webhook URL is not configured');
+      setSendStatus('error');
+      setIsSending(false);
+      setAutoSent(true);
       return;
     }
 
@@ -50,41 +55,53 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
       return Math.round(Math.max(0, Math.min(100, ((score + 100) / 2))));
     };
 
+    const tarotCard = selectTarotCard(result.type, result.scores);
+    const fourPillarsChart = calculateFourPillars(profile.birthdate);
+
     const dataToSend = {
+      tarot: {
+        id: tarotCard.id,
+        name: tarotCard.name,
+        meaning: tarotCard.meaning,
+      },
       userId: userId,
-      timestamp: new Date().toISOString(),
       profile: {
         name: profile.name,
         gender: profile.gender,
-        birthdate: profile.birthdate,
-        concern: profile.concern,
+        birthday: profile.birthdate,
+      },
+      worryText: profile.concern,
+      type17: result.type,
+      scores: result.scores,
+      percents: {
+        E: normalizeScoreForWebhook(result.scores.E),
+        I: 100 - normalizeScoreForWebhook(result.scores.E),
+        S: normalizeScoreForWebhook(result.scores.S),
+        N: 100 - normalizeScoreForWebhook(result.scores.S),
+        T: normalizeScoreForWebhook(result.scores.T),
+        F: 100 - normalizeScoreForWebhook(result.scores.T),
+        J: normalizeScoreForWebhook(result.scores.J),
+        P: 100 - normalizeScoreForWebhook(result.scores.J),
+      },
+      fourPillars: {
+        chart: fourPillarsChart,
       },
       diagnosis: {
-        type: result.type,
         typeName: result.typeName,
-        scores: {
-          E: normalizeScoreForWebhook(result.scores.E),
-          I: 100 - normalizeScoreForWebhook(result.scores.E),
-          S: normalizeScoreForWebhook(result.scores.S),
-          N: 100 - normalizeScoreForWebhook(result.scores.S),
-          T: normalizeScoreForWebhook(result.scores.T),
-          F: 100 - normalizeScoreForWebhook(result.scores.T),
-          J: normalizeScoreForWebhook(result.scores.J),
-          P: 100 - normalizeScoreForWebhook(result.scores.J),
-        },
-        rawScores: result.scores,
-      },
-      sixItems: {
         description: result.description,
         strengths: result.strengths,
         weaknesses: result.weaknesses,
         characteristics: result.characteristics,
-        goodMatches: compatibility[result.type]?.goodMatches || [],
-        badMatches: compatibility[result.type]?.badMatches || [],
+        compatibility: {
+          goodMatches: compatibility[result.type]?.goodMatches || [],
+          badMatches: compatibility[result.type]?.badMatches || [],
+        },
       },
     };
 
     try {
+      console.log('Sending data to Make:', JSON.stringify(dataToSend, null, 2));
+
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: {
@@ -98,7 +115,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
         console.log('Successfully sent to Make');
       } else {
         setSendStatus('error');
-        console.error('Failed to send to Make');
+        console.error('Failed to send to Make:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Error sending to Make:', error);
