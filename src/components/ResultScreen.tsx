@@ -1,10 +1,10 @@
 import { DiagnosisResult, Profile } from '../types';
-import { Share2, RotateCcw, Send } from 'lucide-react';
+import { Share2, RotateCcw } from 'lucide-react';
 import { CircularChart } from './CircularChart';
 import { RadarChart } from './RadarChart';
 import { compatibility } from '../data/compatibility';
 import { typeDetails } from '../data/typeDetails';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface ResultScreenProps {
   result: DiagnosisResult;
@@ -15,6 +15,7 @@ interface ResultScreenProps {
 export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) {
   const [isSending, setIsSending] = useState(false);
   const [sendStatus, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [autoSent, setAutoSent] = useState(false);
 
   const handleShare = () => {
     const shareText = `セプテード診断\n\n私の魂の型: ${result.type} - ${result.typeName}\n${result.description}`;
@@ -34,15 +35,15 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
     const webhookUrl = import.meta.env.VITE_MAKE_WEBHOOK_URL;
 
     if (!webhookUrl) {
-      alert('Webhook URLが設定されていません');
+      console.error('Webhook URL is not configured');
       return;
     }
 
     setIsSending(true);
     setSendStatus('idle');
 
-    const normalizeScore = (score: number): number => {
-      return Math.round((score / 175) * 100);
+    const normalizeScoreForWebhook = (score: number): number => {
+      return Math.round(Math.max(0, Math.min(100, ((score + 100) / 2))));
     };
 
     const dataToSend = {
@@ -52,27 +53,27 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
         gender: profile.gender,
         birthdate: profile.birthdate,
       },
-      result: {
+      diagnosis: {
         type: result.type,
         typeName: result.typeName,
-        description: result.description,
         scores: {
-          E: normalizeScore(result.scores.E),
-          I: 100 - normalizeScore(result.scores.E),
-          S: normalizeScore(result.scores.S),
-          N: 100 - normalizeScore(result.scores.S),
-          T: normalizeScore(result.scores.T),
-          F: 100 - normalizeScore(result.scores.T),
-          J: normalizeScore(result.scores.J),
-          P: 100 - normalizeScore(result.scores.J),
+          E: normalizeScoreForWebhook(result.scores.E),
+          I: 100 - normalizeScoreForWebhook(result.scores.E),
+          S: normalizeScoreForWebhook(result.scores.S),
+          N: 100 - normalizeScoreForWebhook(result.scores.S),
+          T: normalizeScoreForWebhook(result.scores.T),
+          F: 100 - normalizeScoreForWebhook(result.scores.T),
+          J: normalizeScoreForWebhook(result.scores.J),
+          P: 100 - normalizeScoreForWebhook(result.scores.J),
         },
+      },
+      sixItems: {
+        description: result.description,
         strengths: result.strengths,
         weaknesses: result.weaknesses,
         characteristics: result.characteristics,
-        compatibility: {
-          goodMatches: compatibility[result.type]?.goodMatches || [],
-          badMatches: compatibility[result.type]?.badMatches || [],
-        },
+        goodMatches: compatibility[result.type]?.goodMatches || [],
+        badMatches: compatibility[result.type]?.badMatches || [],
       },
     };
 
@@ -87,22 +88,28 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
 
       if (response.ok) {
         setSendStatus('success');
-        alert('診断結果をMakeに送信しました');
+        console.log('Successfully sent to Make');
       } else {
         setSendStatus('error');
-        alert('送信に失敗しました');
+        console.error('Failed to send to Make');
       }
     } catch (error) {
       console.error('Error sending to Make:', error);
       setSendStatus('error');
-      alert('送信エラーが発生しました');
     } finally {
       setIsSending(false);
+      setAutoSent(true);
     }
   };
 
+  useEffect(() => {
+    if (!autoSent) {
+      handleSendToMake();
+    }
+  }, []);
+
   const normalizeScore = (score: number): number => {
-    return Math.round((score / 175) * 100);
+    return Math.round(Math.max(0, Math.min(100, ((score + 100) / 2))));
   };
 
   const radarData = [
@@ -551,15 +558,6 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-5">
-          <button
-            onClick={handleSendToMake}
-            disabled={isSending}
-            className="mystic-button flex-1 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-3 sm:py-4 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Send size={18} className="sm:w-5 sm:h-5" />
-            <span>{isSending ? '送信中...' : 'Makeに送信'}</span>
-          </button>
-
           <button
             onClick={handleShare}
             className="mystic-button flex-1 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-3 sm:py-4"
