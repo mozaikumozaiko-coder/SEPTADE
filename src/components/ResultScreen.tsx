@@ -5,7 +5,6 @@ import { RadarChart } from './RadarChart';
 import { compatibility } from '../data/compatibility';
 import { typeDetails } from '../data/typeDetails';
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
 
 interface ResultScreenProps {
   result: DiagnosisResult;
@@ -109,55 +108,10 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
     }
   };
 
-  const fetchReportFromSupabase = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('reports')
-        .select('report_data')
-        .eq('user_id', userId)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Error fetching report:', error);
-        return null;
-      }
-
-      if (data && data.report_data) {
-        setGptReport(data.report_data as GPTReport);
-        setIsLoadingReport(false);
-        return data.report_data;
-      }
-
-      return null;
-    } catch (error) {
-      console.error('Error fetching report:', error);
-      return null;
-    }
-  };
-
-  const startReportPolling = () => {
-    setIsLoadingReport(true);
-
-    const pollInterval = setInterval(async () => {
-      const report = await fetchReportFromSupabase();
-      if (report) {
-        clearInterval(pollInterval);
-      }
-    }, 3000);
-
-    setTimeout(() => {
-      clearInterval(pollInterval);
-      if (!gptReport) {
-        setIsLoadingReport(false);
-      }
-    }, 120000);
-  };
-
   useEffect(() => {
     if (!autoSent) {
       handleSendToMake();
     }
-    startReportPolling();
   }, []);
 
   const normalizeScore = (score: number): number => {
