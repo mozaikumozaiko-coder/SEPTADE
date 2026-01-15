@@ -152,7 +152,6 @@
   年柱: {{1.fourPillars.chart.year.天干}}{{1.fourPillars.chart.year.地支}}
   月柱: {{1.fourPillars.chart.month.天干}}{{1.fourPillars.chart.month.地支}}
   日柱: {{1.fourPillars.chart.day.天干}}{{1.fourPillars.chart.day.地支}}
-  時柱: {{1.fourPillars.chart.hour.天干}}{{1.fourPillars.chart.hour.地支}}
 
 それでは、上記スキーマに厳密に従ってJSONのみを出力してください。
 ```
@@ -266,11 +265,6 @@ curl -X POST "YOUR_WEBHOOK_URL" \
         "天干": "癸",
         "地支": "酉",
         "蔵干": "辛"
-      },
-      "hour": {
-        "天干": "不明",
-        "地支": "不明",
-        "蔵干": "不明"
       }
     }
   },
@@ -386,7 +380,6 @@ Makeが受信するデータの完全な構造：
       year: { 天干: string; 地支: string; 蔵干: string };
       month: { 天干: string; 地支: string; 蔵干: string };
       day: { 天干: string; 地支: string; 蔵干: string };
-      hour: { 天干: string; 地支: string; 蔵干: string };
     };
   };
   diagnosis: {           // 診断結果詳細

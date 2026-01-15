@@ -445,7 +445,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
                     background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
                     border: '1px solid rgba(166, 124, 82, 0.3)',
                   }}>
-                    <div className="grid grid-cols-4 gap-2 text-center text-xs sm:text-sm">
+                    <div className="grid grid-cols-3 gap-2 text-center text-xs sm:text-sm">
                       <div>
                         <div className="font-bold mb-1" style={{ color: 'var(--pale-gold)' }}>年柱</div>
                         <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.year.天干}</div>
@@ -460,11 +460,6 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
                         <div className="font-bold mb-1" style={{ color: 'var(--pale-gold)' }}>日柱</div>
                         <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.day.天干}</div>
                         <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.day.地支}</div>
-                      </div>
-                      <div>
-                        <div className="font-bold mb-1" style={{ color: 'var(--pale-gold)' }}>時柱</div>
-                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.hour.天干}</div>
-                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.hour.地支}</div>
                       </div>
                     </div>
                   </div>

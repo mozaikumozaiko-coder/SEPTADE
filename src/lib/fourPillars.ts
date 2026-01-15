@@ -26,7 +26,6 @@ export interface FourPillarsChart {
   year: PillarElement;
   month: PillarElement;
   day: PillarElement;
-  hour: PillarElement;
 }
 
 function getYearPillar(year: number): PillarElement {
@@ -71,20 +70,7 @@ function getDayPillar(date: Date): PillarElement {
   return { 天干: tenkan, 地支: chishi, 蔵干: zokan };
 }
 
-function getHourPillar(day: PillarElement, hour: number): PillarElement {
-  const dayTenkanIndex = TENKAN.indexOf(day.天干);
-  const hourChishiIndex = Math.floor((hour + 1) / 2) % 12;
-  const hourBase = (dayTenkanIndex % 5) * 2;
-  const tenkanIndex = (hourBase + hourChishiIndex) % 10;
-
-  const tenkan = TENKAN[tenkanIndex];
-  const chishi = CHISHI[hourChishiIndex];
-  const zokan = ZOKAN_MAP[chishi] || "";
-
-  return { 天干: tenkan, 地支: chishi, 蔵干: zokan };
-}
-
-export function calculateFourPillars(birthdate: string, birthTime?: string): FourPillarsChart {
+export function calculateFourPillars(birthdate: string): FourPillarsChart {
   const [year, month, day] = birthdate.split('-').map(Number);
   const date = new Date(year, month - 1, day);
 
@@ -92,18 +78,9 @@ export function calculateFourPillars(birthdate: string, birthTime?: string): Fou
   const monthPillar = getMonthPillar(year, month);
   const dayPillar = getDayPillar(date);
 
-  let hourPillar: PillarElement;
-  if (birthTime) {
-    const [hours] = birthTime.split(':').map(Number);
-    hourPillar = getHourPillar(dayPillar, hours);
-  } else {
-    hourPillar = { 天干: "不明", 地支: "不明", 蔵干: "不明" };
-  }
-
   return {
     year: yearPillar,
     month: monthPillar,
-    day: dayPillar,
-    hour: hourPillar
+    day: dayPillar
   };
 }
