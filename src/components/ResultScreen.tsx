@@ -231,64 +231,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           </div>
         </div>
 
-        {careerPaths[result.type] && (
-          <div className="relative p-5 sm:p-6 md:p-8 lg:p-10 rounded-lg" style={{
-            background: 'rgba(0, 0, 0, 0.4)',
-            backdropFilter: 'blur(10px)',
-          }}>
-            <div className="relative z-10">
-              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 text-center glow-text" style={{ color: 'var(--pale-gold)' }}>
-                職能ルート解析（勝ち筋の設計）
-              </h3>
-              <p className="text-center text-sm opacity-70 mb-6 sm:mb-8" style={{ color: 'var(--pale-light)' }}>
-                {result.type}（{careerPaths[result.type].title}）TOP10
-              </p>
-
-              <div className="space-y-3 max-w-2xl mx-auto">
-                {careerPaths[result.type].careers.map((career, index) => (
-                  <div
-                    key={index}
-                    className="relative p-4 rounded-lg transition-all duration-300 hover:scale-102"
-                    style={{
-                      background: index < 3
-                        ? 'linear-gradient(135deg, rgba(191, 167, 110, 0.25), rgba(166, 124, 82, 0.25))'
-                        : 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
-                      border: index < 3
-                        ? '2px solid rgba(191, 167, 110, 0.6)'
-                        : '1px solid rgba(166, 124, 82, 0.3)',
-                      boxShadow: index < 3
-                        ? '0 0 20px rgba(191, 167, 110, 0.3)'
-                        : '0 0 10px rgba(166, 124, 82, 0.2)',
-                    }}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold"
-                        style={{
-                          background: index < 3
-                            ? 'linear-gradient(135deg, rgba(191, 167, 110, 0.8), rgba(166, 124, 82, 0.8))'
-                            : 'linear-gradient(135deg, rgba(107, 68, 35, 0.6), rgba(122, 29, 46, 0.6))',
-                          color: index < 3 ? 'var(--deep-brown)' : 'var(--pale-light)',
-                          boxShadow: index < 3 ? '0 0 10px rgba(191, 167, 110, 0.5)' : 'none',
-                        }}
-                      >
-                        {index + 1}
-                      </div>
-                      <div
-                        className="flex-1 text-sm sm:text-base font-medium"
-                        style={{
-                          color: index < 3 ? 'var(--pale-gold)' : 'var(--pale-light)',
-                        }}
-                      >
-                        {career}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
+        {/* ✅ ここにあった「職能ルート解析（勝ち筋の設計）」の上側ブロックは削除しました */}
 
         <div className="relative p-5 sm:p-6 md:p-8 lg:p-10 rounded-lg" style={{
           background: 'rgba(0, 0, 0, 0.4)',
