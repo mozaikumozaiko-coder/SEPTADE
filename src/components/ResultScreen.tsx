@@ -4,7 +4,6 @@ import { CircularChart } from './CircularChart';
 import { RadarChart } from './RadarChart';
 import { compatibility } from '../data/compatibility';
 import { typeDetails } from '../data/typeDetails';
-import { careerPaths } from '../data/careerPaths';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { selectTarotCard } from '../lib/tarotSelector';
@@ -194,7 +193,6 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
     <div className="min-h-screen flex items-center justify-center px-3 sm:px-4 py-8 sm:py-12">
       <div className="max-w-4xl w-full relative">
         <div className="relative z-10 space-y-5 sm:space-y-6 md:space-y-8 py-12 px-6 sm:px-8 md:px-12">
-
         <div className="rounded-lg p-6 sm:p-8 md:p-12 lg:p-16 text-center relative" style={{
           background: 'rgba(0, 0, 0, 0.4)',
           backdropFilter: 'blur(10px)',
@@ -230,8 +228,6 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
             </p>
           </div>
         </div>
-
-        {/* ✅ ここにあった「職能ルート解析（勝ち筋の設計）」の上側ブロックは削除しました */}
 
         <div className="relative p-5 sm:p-6 md:p-8 lg:p-10 rounded-lg" style={{
           background: 'rgba(0, 0, 0, 0.4)',
@@ -534,66 +530,64 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           </div>
         </div>
 
-        {careerPaths[result.type] && (
-          <div className="scroll-panel result-panel relative p-5 sm:p-6 md:p-8">
-            <div className="relative z-10 space-y-6">
-              <div className="text-center border-b border-white/10 pb-4">
-                <h3 className="text-2xl sm:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
-                  あなたに向いている職業TOP10
-                </h3>
-              </div>
-
-              <div className="space-y-3 max-w-2xl mx-auto">
-                {careerPaths[result.type].careers.map((career, index) => (
-                  <div
-                    key={index}
-                    className="relative p-4 rounded-lg transition-all duration-300 hover:scale-102"
-                    style={{
-                      background: index < 3
-                        ? 'linear-gradient(135deg, rgba(191, 167, 110, 0.25), rgba(166, 124, 82, 0.25))'
-                        : 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
-                      border: index < 3
-                        ? '2px solid rgba(191, 167, 110, 0.6)'
-                        : '1px solid rgba(166, 124, 82, 0.3)',
-                      boxShadow: index < 3
-                        ? '0 0 20px rgba(191, 167, 110, 0.3)'
-                        : '0 0 10px rgba(166, 124, 82, 0.2)',
-                    }}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-bold text-base"
-                        style={{
-                          background: index < 3
-                            ? 'linear-gradient(135deg, rgba(191, 167, 110, 0.8), rgba(166, 124, 82, 0.8))'
-                            : 'linear-gradient(135deg, rgba(107, 68, 35, 0.6), rgba(122, 29, 46, 0.6))',
-                          color: index < 3 ? 'var(--deep-brown)' : 'var(--pale-light)',
-                          boxShadow: index < 3 ? '0 0 10px rgba(191, 167, 110, 0.5)' : 'none',
-                        }}
-                      >
-                        {index + 1}
-                      </div>
-                      <div
-                        className="flex-1 text-sm sm:text-base font-medium"
-                        style={{
-                          color: index < 3 ? 'var(--pale-gold)' : 'var(--pale-light)',
-                        }}
-                      >
-                        {career}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+        <div className="scroll-panel result-panel relative p-5 sm:p-6 md:p-8">
+          <div className="relative z-10 space-y-6">
+            <div className="text-center border-b border-white/10 pb-4">
+              <h3 className="text-2xl sm:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
+                2. 職能ルート解析（勝ち筋の設計）
+              </h3>
             </div>
+
+            <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
+              {isLoadingReport ? (
+                <p>分析中...</p>
+              ) : gptReport?.section2?.content ? (
+                <p>{gptReport.section2.content}</p>
+              ) : (
+                <p>あなたのキャリアパスと成功への道筋について分析した内容がここに表示されます。</p>
+              )}
+            </div>
+
+            {gptReport?.section2?.charts && gptReport.section2.charts.length > 0 && (
+              <div>
+                <h4 className="text-lg sm:text-xl font-bold mb-6 text-center" style={{ color: 'var(--pale-gold)' }}>成果を動かす因子（キャリア加速パラメータ）</h4>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                  {gptReport.section2.charts.map((chart, index) => (
+                    <div key={index}>
+                      <CircularChart percentage={chart.value} label={chart.title} />
+                      <p className="text-xs leading-relaxed opacity-80 mt-2 text-center" style={{ color: 'var(--pale-light)' }}>
+                        {chart.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {gptReport?.section2?.items && gptReport.section2.items.length > 0 && (
+              <div>
+                <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>詳細分析</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {gptReport.section2.items.map((item, index) => (
+                    <div key={index} className="p-3 rounded-lg" style={{
+                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
+                      border: '1px solid rgba(166, 124, 82, 0.3)',
+                    }}>
+                      <h5 className="font-bold mb-2 text-sm" style={{ color: 'var(--pale-gold)' }}>{item.title}</h5>
+                      <p className="text-xs opacity-90" style={{ color: 'var(--pale-light)' }}>{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
 
         <div className="scroll-panel result-panel relative p-5 sm:p-6 md:p-8">
           <div className="relative z-10 space-y-6">
             <div className="text-center border-b border-white/10 pb-4">
               <h3 className="text-2xl sm:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
-                2. 自己進化プラン（伸び代の解放）
+                3. 自己進化プラン（伸び代の解放）
               </h3>
             </div>
 
@@ -655,7 +649,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           <div className="relative z-10 space-y-6">
             <div className="text-center border-b border-white/10 pb-4">
               <h3 className="text-2xl sm:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
-                3. 対人ダイナミクス解析（相互作用の最適化）
+                4. 対人ダイナミクス解析（相互作用の最適化）
               </h3>
             </div>
 
