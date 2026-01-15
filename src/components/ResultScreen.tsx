@@ -587,6 +587,46 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           <div className="relative z-10 space-y-6">
             <div className="text-center border-b border-white/10 pb-4">
               <h3 className="text-2xl sm:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
+                あなたに向いている職業TOP10
+              </h3>
+            </div>
+
+            <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
+              <p className="mb-6 text-center">あなたの魂の型に最も調和する職業の指針</p>
+              <div className="space-y-3">
+                {typeDetails[result.type]?.topCareers.map((career, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-4 p-4 rounded-lg transition-all hover:scale-[1.02]"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
+                      border: '1px solid rgba(166, 124, 82, 0.3)',
+                    }}
+                  >
+                    <div
+                      className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.3), rgba(166, 124, 82, 0.4))',
+                        border: '2px solid rgba(166, 124, 82, 0.5)',
+                        color: 'var(--pale-gold)',
+                      }}
+                    >
+                      {index + 1}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium" style={{ color: 'var(--pale-light)' }}>{career}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="scroll-panel result-panel relative p-5 sm:p-6 md:p-8">
+          <div className="relative z-10 space-y-6">
+            <div className="text-center border-b border-white/10 pb-4">
+              <h3 className="text-2xl sm:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
                 3. 自己進化プラン（伸び代の解放）
               </h3>
             </div>
