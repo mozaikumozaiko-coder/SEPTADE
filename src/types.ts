@@ -44,3 +44,50 @@ export interface TypeDetail {
   weaknesses: string[];
   advice: string;
 }
+
+export interface ChartItem {
+  title: string;
+  value: number;
+  desc: string;
+}
+
+export interface Item {
+  title: string;
+  desc: string;
+}
+
+export interface GPTReport {
+  tarotExplanation: string;
+  astrology: string;
+  section1: {
+    content: string;
+  };
+  section2: {
+    content: string;
+    charts: ChartItem[];
+    items: Item[];
+  };
+  section3: {
+    content: string;
+    charts: ChartItem[];
+    items: Item[];
+  };
+  fourPillars: {
+    chart: {
+      year: { 天干: string; 地支: string; 蔵干: string };
+      month: { 天干: string; 地支: string; 蔵干: string };
+      day: { 天干: string; 地支: string; 蔵干: string };
+      hour: { 天干: string; 地支: string; 蔵干: string };
+    };
+    basic: string;
+    charts: ChartItem[];
+    itemsA: Item[];
+    itemsB: Item[];
+    itemsC: Item[];
+  };
+  section4: {
+    content: string;
+    charts: ChartItem[];
+    items: Item[];
+  };
+}
