@@ -242,38 +242,85 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
               <RadarChart data={radarData} />
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+            <div className="space-y-6">
               <div>
-                <div className="text-sm opacity-70 mb-1" style={{ color: 'var(--pale-light)' }}>外向性</div>
-                <div className="text-2xl font-bold" style={{ color: 'var(--pale-gold)' }}>{normalizeScore(result.scores.E)}%</div>
+                <div className="flex items-center justify-between text-sm mb-2" style={{ color: 'var(--pale-light)' }}>
+                  <span className="font-medium">外向性 {normalizeScore(result.scores.E)}%</span>
+                  <span className="font-medium">{100 - normalizeScore(result.scores.E)}% 内向性</span>
+                </div>
+                <div className="relative h-8 rounded-full overflow-hidden" style={{
+                  background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(122, 29, 46, 0.3))',
+                  border: '1px solid rgba(166, 124, 82, 0.4)',
+                }}>
+                  <div
+                    className="absolute left-0 top-0 h-full transition-all duration-500"
+                    style={{
+                      width: `${normalizeScore(result.scores.E)}%`,
+                      background: 'linear-gradient(90deg, rgba(191, 167, 110, 0.6), rgba(166, 124, 82, 0.8))',
+                      boxShadow: '0 0 10px rgba(191, 167, 110, 0.5)',
+                    }}
+                  />
+                </div>
               </div>
+
               <div>
-                <div className="text-sm opacity-70 mb-1" style={{ color: 'var(--pale-light)' }}>内向性</div>
-                <div className="text-2xl font-bold" style={{ color: 'var(--pale-gold)' }}>{100 - normalizeScore(result.scores.E)}%</div>
+                <div className="flex items-center justify-between text-sm mb-2" style={{ color: 'var(--pale-light)' }}>
+                  <span className="font-medium">感覚型 {normalizeScore(result.scores.S)}%</span>
+                  <span className="font-medium">{100 - normalizeScore(result.scores.S)}% 直観型</span>
+                </div>
+                <div className="relative h-8 rounded-full overflow-hidden" style={{
+                  background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(122, 29, 46, 0.3))',
+                  border: '1px solid rgba(166, 124, 82, 0.4)',
+                }}>
+                  <div
+                    className="absolute left-0 top-0 h-full transition-all duration-500"
+                    style={{
+                      width: `${normalizeScore(result.scores.S)}%`,
+                      background: 'linear-gradient(90deg, rgba(191, 167, 110, 0.6), rgba(166, 124, 82, 0.8))',
+                      boxShadow: '0 0 10px rgba(191, 167, 110, 0.5)',
+                    }}
+                  />
+                </div>
               </div>
+
               <div>
-                <div className="text-sm opacity-70 mb-1" style={{ color: 'var(--pale-light)' }}>感覚型</div>
-                <div className="text-2xl font-bold" style={{ color: 'var(--pale-gold)' }}>{normalizeScore(result.scores.S)}%</div>
+                <div className="flex items-center justify-between text-sm mb-2" style={{ color: 'var(--pale-light)' }}>
+                  <span className="font-medium">思考型 {normalizeScore(result.scores.T)}%</span>
+                  <span className="font-medium">{100 - normalizeScore(result.scores.T)}% 感情型</span>
+                </div>
+                <div className="relative h-8 rounded-full overflow-hidden" style={{
+                  background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(122, 29, 46, 0.3))',
+                  border: '1px solid rgba(166, 124, 82, 0.4)',
+                }}>
+                  <div
+                    className="absolute left-0 top-0 h-full transition-all duration-500"
+                    style={{
+                      width: `${normalizeScore(result.scores.T)}%`,
+                      background: 'linear-gradient(90deg, rgba(191, 167, 110, 0.6), rgba(166, 124, 82, 0.8))',
+                      boxShadow: '0 0 10px rgba(191, 167, 110, 0.5)',
+                    }}
+                  />
+                </div>
               </div>
+
               <div>
-                <div className="text-sm opacity-70 mb-1" style={{ color: 'var(--pale-light)' }}>直観型</div>
-                <div className="text-2xl font-bold" style={{ color: 'var(--pale-gold)' }}>{100 - normalizeScore(result.scores.S)}%</div>
-              </div>
-              <div>
-                <div className="text-sm opacity-70 mb-1" style={{ color: 'var(--pale-light)' }}>思考型</div>
-                <div className="text-2xl font-bold" style={{ color: 'var(--pale-gold)' }}>{normalizeScore(result.scores.T)}%</div>
-              </div>
-              <div>
-                <div className="text-sm opacity-70 mb-1" style={{ color: 'var(--pale-light)' }}>感情型</div>
-                <div className="text-2xl font-bold" style={{ color: 'var(--pale-gold)' }}>{100 - normalizeScore(result.scores.T)}%</div>
-              </div>
-              <div>
-                <div className="text-sm opacity-70 mb-1" style={{ color: 'var(--pale-light)' }}>判断型</div>
-                <div className="text-2xl font-bold" style={{ color: 'var(--pale-gold)' }}>{normalizeScore(result.scores.J)}%</div>
-              </div>
-              <div>
-                <div className="text-sm opacity-70 mb-1" style={{ color: 'var(--pale-light)' }}>知覚型</div>
-                <div className="text-2xl font-bold" style={{ color: 'var(--pale-gold)' }}>{100 - normalizeScore(result.scores.J)}%</div>
+                <div className="flex items-center justify-between text-sm mb-2" style={{ color: 'var(--pale-light)' }}>
+                  <span className="font-medium">判断型 {normalizeScore(result.scores.J)}%</span>
+                  <span className="font-medium">{100 - normalizeScore(result.scores.J)}% 知覚型</span>
+                </div>
+                <div className="relative h-8 rounded-full overflow-hidden" style={{
+                  background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(122, 29, 46, 0.3))',
+                  border: '1px solid rgba(166, 124, 82, 0.4)',
+                }}>
+                  <div
+                    className="absolute left-0 top-0 h-full transition-all duration-500"
+                    style={{
+                      width: `${normalizeScore(result.scores.J)}%`,
+                      background: 'linear-gradient(90deg, rgba(191, 167, 110, 0.6), rgba(166, 124, 82, 0.8))',
+                      boxShadow: '0 0 10px rgba(191, 167, 110, 0.5)',
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
