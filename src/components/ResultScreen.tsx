@@ -5,9 +5,7 @@ import { RadarChart } from './RadarChart';
 import { compatibility } from '../data/compatibility';
 import { typeDetails } from '../data/typeDetails';
 import { useState, useEffect } from 'react';
-import { selectTarotCard } from '../lib/tarotSelector';
-import { calculateFourPillars } from '../lib/fourPillars';
-import { scoreFortune } from '../lib/scoreFortune';
+import { supabase } from '../lib/supabase';
 
 interface ResultScreenProps {
   result: DiagnosisResult;
@@ -21,6 +19,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
   const [autoSent, setAutoSent] = useState(false);
   const [gptReport, setGptReport] = useState<GPTReport | null>(null);
   const [isLoadingReport, setIsLoadingReport] = useState(false);
+  const [userId] = useState(() => `user_${Date.now()}_${Math.random().toString(36).substring(7)}`);
 
   const handleShare = () => {
     const shareText = `セプテード診断\n\n私の魂の型: ${result.type} - ${result.typeName}\n${result.description}`;
@@ -52,11 +51,13 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
     };
 
     const dataToSend = {
+      userId: userId,
       timestamp: new Date().toISOString(),
       profile: {
         name: profile.name,
         gender: profile.gender,
         birthdate: profile.birthdate,
+        concern: profile.concern,
       },
       diagnosis: {
         type: result.type,
@@ -71,6 +72,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           J: normalizeScoreForWebhook(result.scores.J),
           P: 100 - normalizeScoreForWebhook(result.scores.J),
         },
+        rawScores: result.scores,
       },
       sixItems: {
         description: result.description,
@@ -107,60 +109,55 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
     }
   };
 
-  const fetchGPTReport = async () => {
-    setIsLoadingReport(true);
+  const fetchReportFromSupabase = async () => {
     try {
-      const tarotCard = selectTarotCard(result.type, result.scores);
-      const fourPillars = calculateFourPillars(profile.birthdate);
+      const { data, error } = await supabase
+        .from('reports')
+        .select('report_data')
+        .eq('user_id', userId)
+        .maybeSingle();
 
-      const fortuneResult = scoreFortune({
-        answers: Array(100).fill(4),
-        tags: Array(100).fill("E+")
-      });
-
-      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-report`;
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          tarot: tarotCard.name,
-          userId: '',
-          profile: {
-            name: profile.name,
-            gender: profile.gender,
-            birthday: profile.birthdate,
-          },
-          worryText: profile.concern || '',
-          type17: result.type,
-          scores: result.scores,
-          percents: fortuneResult.percents,
-          fourPillars: {
-            chart: fourPillars
-          }
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch GPT report');
+      if (error) {
+        console.error('Error fetching report:', error);
+        return null;
       }
 
-      const report = await response.json();
-      setGptReport(report);
+      if (data && data.report_data) {
+        setGptReport(data.report_data as GPTReport);
+        setIsLoadingReport(false);
+        return data.report_data;
+      }
+
+      return null;
     } catch (error) {
-      console.error('Error fetching GPT report:', error);
-    } finally {
-      setIsLoadingReport(false);
+      console.error('Error fetching report:', error);
+      return null;
     }
+  };
+
+  const startReportPolling = () => {
+    setIsLoadingReport(true);
+
+    const pollInterval = setInterval(async () => {
+      const report = await fetchReportFromSupabase();
+      if (report) {
+        clearInterval(pollInterval);
+      }
+    }, 3000);
+
+    setTimeout(() => {
+      clearInterval(pollInterval);
+      if (!gptReport) {
+        setIsLoadingReport(false);
+      }
+    }, 120000);
   };
 
   useEffect(() => {
     if (!autoSent) {
       handleSendToMake();
     }
-    fetchGPTReport();
+    startReportPolling();
   }, []);
 
   const normalizeScore = (score: number): number => {
