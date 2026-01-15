@@ -382,7 +382,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
             <div>
               <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>注意すべき点</h4>
               <ul className="space-y-2">
-                {result.weaknesses.map((item, index) => (
+                {typeDetails[result.type]?.detailedWeaknesses.map((item, index) => (
                   <li key={index} className="flex items-start gap-3 text-sm sm:text-base leading-relaxed opacity-90">
                     <span className="mt-1 opacity-70" style={{ color: 'var(--rust-red)' }}>◆</span>
                     <span>{item}</span>

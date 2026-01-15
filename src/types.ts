@@ -44,6 +44,7 @@ export interface TypeDetail {
   weaknesses: string[];
   advice: string;
   topCareers: string[];
+  detailedWeaknesses: string[];
 }
 
 export interface ChartItem {
