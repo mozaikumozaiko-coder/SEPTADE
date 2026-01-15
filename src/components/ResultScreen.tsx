@@ -1,9 +1,10 @@
 import { DiagnosisResult, Profile } from '../types';
-import { Share2, RotateCcw } from 'lucide-react';
-import { CircularChart } from './CircularChart';　
+import { Share2, RotateCcw, Send } from 'lucide-react';
+import { CircularChart } from './CircularChart';
 import { RadarChart } from './RadarChart';
-import { compatibility } from '../data/compatibility';　
+import { compatibility } from '../data/compatibility';
 import { typeDetails } from '../data/typeDetails';
+import { useState } from 'react';
 
 interface ResultScreenProps {
   result: DiagnosisResult;
@@ -12,6 +13,9 @@ interface ResultScreenProps {
 }
 
 export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) {
+  const [isSending, setIsSending] = useState(false);
+  const [sendStatus, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
   const handleShare = () => {
     const shareText = `セプテード診断\n\n私の魂の型: ${result.type} - ${result.typeName}\n${result.description}`;
 
@@ -23,6 +27,77 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
     } else {
       navigator.clipboard.writeText(shareText);
       alert('結果を記憶の欠片に写し取った');
+    }
+  };
+
+  const handleSendToMake = async () => {
+    const webhookUrl = import.meta.env.VITE_MAKE_WEBHOOK_URL;
+
+    if (!webhookUrl) {
+      alert('Webhook URLが設定されていません');
+      return;
+    }
+
+    setIsSending(true);
+    setSendStatus('idle');
+
+    const normalizeScore = (score: number): number => {
+      return Math.round((score / 175) * 100);
+    };
+
+    const dataToSend = {
+      timestamp: new Date().toISOString(),
+      profile: {
+        name: profile.name,
+        gender: profile.gender,
+        birthdate: profile.birthdate,
+      },
+      result: {
+        type: result.type,
+        typeName: result.typeName,
+        description: result.description,
+        scores: {
+          E: normalizeScore(result.scores.E),
+          I: 100 - normalizeScore(result.scores.E),
+          S: normalizeScore(result.scores.S),
+          N: 100 - normalizeScore(result.scores.S),
+          T: normalizeScore(result.scores.T),
+          F: 100 - normalizeScore(result.scores.T),
+          J: normalizeScore(result.scores.J),
+          P: 100 - normalizeScore(result.scores.J),
+        },
+        strengths: result.strengths,
+        weaknesses: result.weaknesses,
+        characteristics: result.characteristics,
+        compatibility: {
+          goodMatches: compatibility[result.type]?.goodMatches || [],
+          badMatches: compatibility[result.type]?.badMatches || [],
+        },
+      },
+    };
+
+    try {
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (response.ok) {
+        setSendStatus('success');
+        alert('診断結果をMakeに送信しました');
+      } else {
+        setSendStatus('error');
+        alert('送信に失敗しました');
+      }
+    } catch (error) {
+      console.error('Error sending to Make:', error);
+      setSendStatus('error');
+      alert('送信エラーが発生しました');
+    } finally {
+      setIsSending(false);
     }
   };
 
@@ -476,6 +551,15 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-5">
+          <button
+            onClick={handleSendToMake}
+            disabled={isSending}
+            className="mystic-button flex-1 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-3 sm:py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Send size={18} className="sm:w-5 sm:h-5" />
+            <span>{isSending ? '送信中...' : 'Makeに送信'}</span>
+          </button>
+
           <button
             onClick={handleShare}
             className="mystic-button flex-1 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-3 sm:py-4"
