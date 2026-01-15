@@ -9,7 +9,9 @@ interface RadarChartProps {
 }
 
 export function RadarChart({ data, size = 300 }: RadarChartProps) {
-  const center = size / 2;
+  const padding = 80;
+  const viewBoxSize = size + padding * 2;
+  const center = viewBoxSize / 2;
   const maxRadius = size * 0.35;
   const levels = 5;
 
@@ -27,7 +29,7 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
 
   const getLabelPoint = (index: number) => {
     const angle = startAngle + angleStep * index;
-    const radius = maxRadius + 40;
+    const radius = maxRadius + 50;
     return {
       x: center + radius * Math.cos(angle),
       y: center + radius * Math.sin(angle)
@@ -38,7 +40,12 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
   const pathData = dataPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ') + ' Z';
 
   return (
-    <svg width={size} height={size} className="mx-auto">
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`}
+      className="mx-auto"
+    >
       {[...Array(levels)].map((_, i) => {
         const levelRadius = maxRadius * ((i + 1) / levels);
         const levelPoints = data.map((_, index) => {
@@ -116,18 +123,20 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
           <g key={`label-${index}`}>
             <text
               x={labelPoint.x}
-              y={labelPoint.y - 8}
+              y={labelPoint.y - 10}
               textAnchor={textAnchor}
-              className="text-sm font-medium"
+              fontSize="14"
+              fontWeight="500"
               style={{ fill: 'var(--pale-light)' }}
             >
               {item.label}
             </text>
             <text
               x={labelPoint.x}
-              y={labelPoint.y + 8}
+              y={labelPoint.y + 10}
               textAnchor={textAnchor}
-              className="text-xs font-bold"
+              fontSize="16"
+              fontWeight="700"
               style={{ fill: 'var(--pale-gold)' }}
             >
               {item.value}%
