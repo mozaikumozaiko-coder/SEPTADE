@@ -1,57 +1,41 @@
 import { Answer, Scores, DiagnosisResult } from '../types';
 import { questions } from '../data/questions';
 import { typeDetails } from '../data/typeDetails';
-import { scoreFortune } from '../lib/scoreFortune';
-
-function generateTags(): string[] {
-  return questions.map((q) => {
-    const sign = q.reverse ? '-' : '+';
-    return `${q.category}${sign}`;
-  });
-}
 
 export function calculateScores(answers: Answer[]): Scores {
-  try {
-    const answerValues = answers
-      .sort((a, b) => a.questionId - b.questionId)
-      .map((a) => a.value);
+  const scores: Scores = { E: 0, S: 0, T: 0, J: 0 };
 
-    const tags = generateTags();
+  answers.forEach((answer) => {
+    const question = questions.find((q) => q.id === answer.questionId);
+    if (!question) return;
 
-    const result = scoreFortune({
-      answers: answerValues,
-      tags: tags,
-    });
+    const normalizedValue = question.reverse ? 8 - answer.value : answer.value;
 
-    return {
-      E: result.scores.E,
-      S: result.scores.S,
-      T: result.scores.T,
-      J: result.scores.J,
-    };
-  } catch (error) {
-    console.error('Error calculating scores:', error);
+    scores[question.category] += normalizedValue;
+  });
 
-    const scores: Scores = { E: 0, S: 0, T: 0, J: 0 };
-    answers.forEach((answer) => {
-      const question = questions.find((q) => q.id === answer.questionId);
-      if (!question) return;
-      const normalizedValue = question.reverse ? 8 - answer.value : answer.value;
-      scores[question.category] += normalizedValue;
-    });
-    return scores;
-  }
+  return scores;
 }
 
 export function determineType(scores: Scores): string {
-  const type1 = scores.E >= 0 ? 'E' : 'I';
-  const type2 = scores.S >= 0 ? 'S' : 'N';
-  const type3 = scores.T >= 0 ? 'T' : 'F';
-  const type4 = scores.J >= 0 ? 'J' : 'P';
+  const eCount = questions.filter((q) => q.category === 'E').length;
+  const sCount = questions.filter((q) => q.category === 'S').length;
+  const tCount = questions.filter((q) => q.category === 'T').length;
+  const jCount = questions.filter((q) => q.category === 'J').length;
 
-  const baseType = `${type1}${type2}${type3}${type4}`;
+  const eAvg = scores.E / eCount;
+  const sAvg = scores.S / sCount;
+  const tAvg = scores.T / tCount;
+  const jAvg = scores.J / jCount;
 
-  if (baseType === 'ENTJ' && scores.E >= 30 && scores.T >= 30 && scores.J >= 30) {
+  const type1 = eAvg >= 4 ? 'E' : 'I';
+  const type2 = sAvg >= 4 ? 'S' : 'N';
+  const type3 = tAvg >= 4 ? 'T' : 'F';
+  const type4 = jAvg >= 4 ? 'J' : 'P';
+
+  let baseType = `${type1}${type2}${type3}${type4}`;
+
+  if (baseType === 'ENTJ' && eAvg >= 5.5 && tAvg >= 5.5 && jAvg >= 5.5) {
     return 'ENTJ-A';
   }
 
