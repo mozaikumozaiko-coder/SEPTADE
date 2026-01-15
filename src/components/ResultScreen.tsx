@@ -591,59 +591,6 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           </div>
         </div>
 
-        <div className="scroll-panel result-panel relative p-5 sm:p-6 md:p-8">
-          <div className="relative z-10 space-y-6">
-            <div className="text-center border-b border-white/10 pb-4">
-              <h3 className="text-2xl sm:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
-                2. 職能ルート解析（勝ち筋の設計）
-              </h3>
-            </div>
-
-            <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
-              {isLoadingReport ? (
-                <p>分析中...</p>
-              ) : gptReport?.section2?.content ? (
-                <p>{gptReport.section2.content}</p>
-              ) : (
-                <p>あなたのキャリアパスと成功への道筋について分析した内容がここに表示されます。</p>
-              )}
-            </div>
-
-            {gptReport?.section2?.charts && gptReport.section2.charts.length > 0 && (
-              <div>
-                <h4 className="text-lg sm:text-xl font-bold mb-6 text-center" style={{ color: 'var(--pale-gold)' }}>成果を動かす因子（キャリア加速パラメータ）</h4>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                  {gptReport.section2.charts.map((chart, index) => (
-                    <div key={index}>
-                      <CircularChart percentage={chart.value} label={chart.title} />
-                      <p className="text-xs leading-relaxed opacity-80 mt-2 text-center" style={{ color: 'var(--pale-light)' }}>
-                        {chart.desc}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {gptReport?.section2?.items && gptReport.section2.items.length > 0 && (
-              <div>
-                <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>詳細分析</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {gptReport.section2.items.map((item, index) => (
-                    <div key={index} className="p-3 rounded-lg" style={{
-                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
-                      border: '1px solid rgba(166, 124, 82, 0.3)',
-                    }}>
-                      <h5 className="font-bold mb-2 text-sm" style={{ color: 'var(--pale-gold)' }}>{item.title}</h5>
-                      <p className="text-xs opacity-90" style={{ color: 'var(--pale-light)' }}>{item.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
         {careerPaths[result.type] && (
           <div className="scroll-panel result-panel relative p-5 sm:p-6 md:p-8">
             <div className="relative z-10 space-y-6">
@@ -703,7 +650,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           <div className="relative z-10 space-y-6">
             <div className="text-center border-b border-white/10 pb-4">
               <h3 className="text-2xl sm:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
-                3. 自己進化プラン（伸び代の解放）
+                2. 自己進化プラン（伸び代の解放）
               </h3>
             </div>
 
@@ -765,7 +712,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           <div className="relative z-10 space-y-6">
             <div className="text-center border-b border-white/10 pb-4">
               <h3 className="text-2xl sm:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
-                4. 対人ダイナミクス解析（相互作用の最適化）
+                3. 対人ダイナミクス解析（相互作用の最適化）
               </h3>
             </div>
 
