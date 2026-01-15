@@ -1,10 +1,13 @@
-import { DiagnosisResult, Profile } from '../types';
+import { DiagnosisResult, Profile, GPTReport } from '../types';
 import { Share2, RotateCcw } from 'lucide-react';
 import { CircularChart } from './CircularChart';
 import { RadarChart } from './RadarChart';
 import { compatibility } from '../data/compatibility';
 import { typeDetails } from '../data/typeDetails';
 import { useState, useEffect } from 'react';
+import { selectTarotCard } from '../lib/tarotSelector';
+import { calculateFourPillars } from '../lib/fourPillars';
+import { scoreFortune } from '../lib/scoreFortune';
 
 interface ResultScreenProps {
   result: DiagnosisResult;
@@ -16,6 +19,8 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
   const [isSending, setIsSending] = useState(false);
   const [sendStatus, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [autoSent, setAutoSent] = useState(false);
+  const [gptReport, setGptReport] = useState<GPTReport | null>(null);
+  const [isLoadingReport, setIsLoadingReport] = useState(false);
 
   const handleShare = () => {
     const shareText = `セプテード診断\n\n私の魂の型: ${result.type} - ${result.typeName}\n${result.description}`;
@@ -102,10 +107,60 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
     }
   };
 
+  const fetchGPTReport = async () => {
+    setIsLoadingReport(true);
+    try {
+      const tarotCard = selectTarotCard(result.type, result.scores);
+      const fourPillars = calculateFourPillars(profile.birthdate);
+
+      const fortuneResult = scoreFortune({
+        answers: Array(100).fill(4),
+        tags: Array(100).fill("E+")
+      });
+
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-report`;
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tarot: tarotCard.name,
+          userId: '',
+          profile: {
+            name: profile.name,
+            gender: profile.gender,
+            birthday: profile.birthdate,
+          },
+          worryText: profile.concern || '',
+          type17: result.type,
+          scores: result.scores,
+          percents: fortuneResult.percents,
+          fourPillars: {
+            chart: fourPillars
+          }
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch GPT report');
+      }
+
+      const report = await response.json();
+      setGptReport(report);
+    } catch (error) {
+      console.error('Error fetching GPT report:', error);
+    } finally {
+      setIsLoadingReport(false);
+    }
+  };
+
   useEffect(() => {
     if (!autoSent) {
       handleSendToMake();
     }
+    fetchGPTReport();
   }, []);
 
   const normalizeScore = (score: number): number => {
@@ -229,9 +284,19 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
                 🃏
               </div>
             </div>
-            <p className="text-center mt-4 text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-              （札の説明はGPTにて生成されます）
-            </p>
+            {isLoadingReport ? (
+              <p className="text-center mt-4 text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                神託を読み解いています...
+              </p>
+            ) : gptReport?.tarotExplanation ? (
+              <p className="text-center mt-4 text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                {gptReport.tarotExplanation}
+              </p>
+            ) : (
+              <p className="text-center mt-4 text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                札の啓示を待っています...
+              </p>
+            )}
           </div>
         </div>
 
@@ -244,7 +309,13 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
             </div>
 
             <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
-              <p>（400文字の解説がGPTにて生成されます。あなたの本質的な性格特性、価値観、世界観について深く掘り下げた分析がここに表示されます。）</p>
+              {isLoadingReport ? (
+                <p>神託を読み解いています...</p>
+              ) : gptReport?.section1?.content ? (
+                <p>{gptReport.section1.content}</p>
+              ) : (
+                <p>あなたの本質的な性格特性、価値観、世界観について深く掘り下げた分析がここに表示されます。</p>
+              )}
             </div>
 
             <div>
@@ -350,9 +421,55 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
 
             <div>
               <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>四柱推命占い</h4>
-              <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                （四柱推命による運命分析がGPTにて生成されます）
-              </p>
+              {isLoadingReport ? (
+                <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                  命式を読み解いています...
+                </p>
+              ) : gptReport?.fourPillars ? (
+                <>
+                  <div className="mb-4 p-4 rounded-lg" style={{
+                    background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
+                    border: '1px solid rgba(166, 124, 82, 0.3)',
+                  }}>
+                    <div className="grid grid-cols-4 gap-2 text-center text-xs sm:text-sm">
+                      <div>
+                        <div className="font-bold mb-1" style={{ color: 'var(--pale-gold)' }}>年柱</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.year.天干}</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.year.地支}</div>
+                      </div>
+                      <div>
+                        <div className="font-bold mb-1" style={{ color: 'var(--pale-gold)' }}>月柱</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.month.天干}</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.month.地支}</div>
+                      </div>
+                      <div>
+                        <div className="font-bold mb-1" style={{ color: 'var(--pale-gold)' }}>日柱</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.day.天干}</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.day.地支}</div>
+                      </div>
+                      <div>
+                        <div className="font-bold mb-1" style={{ color: 'var(--pale-gold)' }}>時柱</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.hour.天干}</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.hour.地支}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-sm leading-relaxed opacity-90 mb-4" style={{ color: 'var(--pale-light)' }}>
+                    {gptReport.fourPillars.basic}
+                  </p>
+                  {gptReport.fourPillars.charts && gptReport.fourPillars.charts.length > 0 && (
+                    <div className="grid grid-cols-5 gap-2 mb-4">
+                      {gptReport.fourPillars.charts.map((chart, index) => (
+                        <CircularChart key={index} percentage={chart.value} label={chart.title} />
+                      ))}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                  四柱推命による運命分析がGPTにて生成されます
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -366,61 +483,47 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
             </div>
 
             <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
-              <p>（400文字の解説がGPTにて生成されます。あなたのキャリアパスと成功への道筋について分析した内容がここに表示されます。）</p>
+              {isLoadingReport ? (
+                <p>分析中...</p>
+              ) : gptReport?.section2?.content ? (
+                <p>{gptReport.section2.content}</p>
+              ) : (
+                <p>あなたのキャリアパスと成功への道筋について分析した内容がここに表示されます。</p>
+              )}
             </div>
 
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-6 text-center" style={{ color: 'var(--pale-gold)' }}>成果を動かす因子（キャリア加速パラメータ）</h4>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                <CircularChart percentage={75} label="精度至上主義" />
-                <CircularChart percentage={82} label="到達目標の高設定" />
-                <CircularChart percentage={68} label="行動エネルギー" />
-                <CircularChart percentage={71} label="主導権志向" />
+            {gptReport?.section2?.charts && gptReport.section2.charts.length > 0 && (
+              <div>
+                <h4 className="text-lg sm:text-xl font-bold mb-6 text-center" style={{ color: 'var(--pale-gold)' }}>成果を動かす因子（キャリア加速パラメータ）</h4>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                  {gptReport.section2.charts.map((chart, index) => (
+                    <div key={index}>
+                      <CircularChart percentage={chart.value} label={chart.title} />
+                      <p className="text-xs leading-relaxed opacity-80 mt-2 text-center" style={{ color: 'var(--pale-light)' }}>
+                        {chart.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <p className="text-sm leading-relaxed opacity-90 mt-4 text-center" style={{ color: 'var(--pale-light)' }}>
-                （各グラフの詳細解説がGPTにて生成されます）
-              </p>
-            </div>
+            )}
 
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>戦力コア（再現性のある武器）</h4>
-              <ul className="space-y-2">
-                {result.strengths.map((item, index) => (
-                  <li key={index} className="flex items-start gap-3 text-sm sm:text-base leading-relaxed opacity-90">
-                    <span className="mt-1 opacity-70" style={{ color: 'var(--ochre)' }}>◆</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>ボトルネック特性（失速リスク）</h4>
-              <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                （6項目の解説がGPTにて生成されます）
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>適職アーキタイプ候補（高幸福度ルート）</h4>
-              <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                （6項目の解説がGPTにて生成されます）
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>最適稼働モード（パフォーマンス最大化運用）</h4>
-              <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                （6項目の解説がGPTにて生成されます）
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>風水</h4>
-              <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                （風水による運気分析がGPTにて生成されます）
-              </p>
-            </div>
+            {gptReport?.section2?.items && gptReport.section2.items.length > 0 && (
+              <div>
+                <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>詳細分析</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {gptReport.section2.items.map((item, index) => (
+                    <div key={index} className="p-3 rounded-lg" style={{
+                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
+                      border: '1px solid rgba(166, 124, 82, 0.3)',
+                    }}>
+                      <h5 className="font-bold mb-2 text-sm" style={{ color: 'var(--pale-gold)' }}>{item.title}</h5>
+                      <p className="text-xs opacity-90" style={{ color: 'var(--pale-light)' }}>{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -433,56 +536,56 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
             </div>
 
             <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
-              <p>（400文字の解説がGPTにて生成されます。あなたの成長可能性と自己改善の方向性について分析した内容がここに表示されます。）</p>
+              {isLoadingReport ? (
+                <p>分析中...</p>
+              ) : gptReport?.section3?.content ? (
+                <p>{gptReport.section3.content}</p>
+              ) : (
+                <p>あなたの成長可能性と自己改善の方向性について分析した内容がここに表示されます。</p>
+              )}
             </div>
 
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-6 text-center" style={{ color: 'var(--pale-gold)' }}>成長パラメータ</h4>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                <CircularChart percentage={73} label="再起動力" />
-                <CircularChart percentage={79} label="自己確信" />
-                <CircularChart percentage={66} label="粘り強さ" />
-                <CircularChart percentage={81} label="主導感" />
+            {gptReport?.section3?.charts && gptReport.section3.charts.length > 0 && (
+              <div>
+                <h4 className="text-lg sm:text-xl font-bold mb-6 text-center" style={{ color: 'var(--pale-gold)' }}>成長パラメータ</h4>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                  {gptReport.section3.charts.map((chart, index) => (
+                    <div key={index}>
+                      <CircularChart percentage={chart.value} label={chart.title} />
+                      <p className="text-xs leading-relaxed opacity-80 mt-2 text-center" style={{ color: 'var(--pale-light)' }}>
+                        {chart.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <p className="text-sm leading-relaxed opacity-90 mt-4 text-center" style={{ color: 'var(--pale-light)' }}>
-                （各グラフの詳細解説がGPTにて生成されます）
-              </p>
-            </div>
+            )}
 
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>伸長資産（伸ばすほど伸びる領域）</h4>
-              <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                （6項目の解説がGPTにて生成されます）
-              </p>
-            </div>
+            {gptReport?.section3?.items && gptReport.section3.items.length > 0 && (
+              <div>
+                <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>自己進化の指針</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {gptReport.section3.items.map((item, index) => (
+                    <div key={index} className="p-3 rounded-lg" style={{
+                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
+                      border: '1px solid rgba(166, 124, 82, 0.3)',
+                    }}>
+                      <h5 className="font-bold mb-2 text-sm" style={{ color: 'var(--pale-gold)' }}>{item.title}</h5>
+                      <p className="text-xs opacity-90" style={{ color: 'var(--pale-light)' }}>{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>改善レバー（最短で効く調整点）</h4>
-              <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                （6項目の解説がGPTにて生成されます）
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>エネルギー充電源（回復トリガー）</h4>
-              <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                （6項目の解説がGPTにて生成されます）
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>消耗要因（エネルギー漏れポイント）</h4>
-              <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                （6項目の解説がGPTにて生成されます）
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>星辰占（西洋占星術）</h4>
-              <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                （西洋占星術による運命分析がGPTにて生成されます）
-              </p>
-            </div>
+            {gptReport?.astrology && (
+              <div>
+                <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>星辰占（西洋占星術）</h4>
+                <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                  {gptReport.astrology}
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -495,42 +598,47 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
             </div>
 
             <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
-              <p>（400文字の解説がGPTにて生成されます。あなたの対人関係スタイルとコミュニケーション特性について分析した内容がここに表示されます。）</p>
+              {isLoadingReport ? (
+                <p>分析中...</p>
+              ) : gptReport?.section4?.content ? (
+                <p>{gptReport.section4.content}</p>
+              ) : (
+                <p>あなたの対人関係スタイルとコミュニケーション特性について分析した内容がここに表示されます。</p>
+              )}
             </div>
 
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-6 text-center" style={{ color: 'var(--pale-gold)' }}>関係構築の武器（信頼生成スキル）</h4>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                <CircularChart percentage={77} label="自己同一性" />
-                <CircularChart percentage={84} label="献身性" />
-                <CircularChart percentage={69} label="他者優先性" />
-                <CircularChart percentage={72} label="情動理解力" />
+            {gptReport?.section4?.charts && gptReport.section4.charts.length > 0 && (
+              <div>
+                <h4 className="text-lg sm:text-xl font-bold mb-6 text-center" style={{ color: 'var(--pale-gold)' }}>関係構築の武器（信頼生成スキル）</h4>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                  {gptReport.section4.charts.map((chart, index) => (
+                    <div key={index}>
+                      <CircularChart percentage={chart.value} label={chart.title} />
+                      <p className="text-xs leading-relaxed opacity-80 mt-2 text-center" style={{ color: 'var(--pale-light)' }}>
+                        {chart.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <p className="text-sm leading-relaxed opacity-90 mt-4 text-center" style={{ color: 'var(--pale-light)' }}>
-                （各グラフの詳細解説がGPTにて生成されます）
-              </p>
-            </div>
+            )}
 
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>摩擦発生ポイント（誤解・衝突リスク）</h4>
-              <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                （6項目の解説がGPTにて生成されます）
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>対人適性コア（刺さるコミュニケーション特性）</h4>
-              <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                （6項目の解説がGPTにて生成されます）
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>対人リスク管理（地雷回避プロトコル）</h4>
-              <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                （6項目の解説がGPTにて生成されます）
-              </p>
-            </div>
+            {gptReport?.section4?.items && gptReport.section4.items.length > 0 && (
+              <div>
+                <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>対人ダイナミクスの詳細</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {gptReport.section4.items.map((item, index) => (
+                    <div key={index} className="p-3 rounded-lg" style={{
+                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
+                      border: '1px solid rgba(166, 124, 82, 0.3)',
+                    }}>
+                      <h5 className="font-bold mb-2 text-sm" style={{ color: 'var(--pale-gold)' }}>{item.title}</h5>
+                      <p className="text-xs opacity-90" style={{ color: 'var(--pale-light)' }}>{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
