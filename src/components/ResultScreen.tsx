@@ -195,6 +195,42 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
       <div className="max-w-4xl w-full relative">
         <div className="relative z-10 space-y-5 sm:space-y-6 md:space-y-8 py-12 px-6 sm:px-8 md:px-12">
 
+        <div className="rounded-lg p-6 sm:p-8 md:p-12 lg:p-16 text-center relative" style={{
+          background: 'rgba(0, 0, 0, 0.4)',
+          backdropFilter: 'blur(10px)',
+        }}>
+          <div className="relative z-10">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 sm:mb-6 md:mb-8 glow-text" style={{ color: 'var(--pale-gold)' }}>
+              魂の顕現
+            </h2>
+
+            <p className="text-sm sm:text-base opacity-80 mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto leading-loose px-2" style={{ color: 'var(--dim-light)' }}>
+              百の問いを経て、汝の魂の真なる姿が明らかとなった。<br />
+              終わりゆく世界にて、汝はこの型を宿す者なり。
+            </p>
+
+            <div className="inline-block px-6 sm:px-8 md:px-10 py-4 sm:py-5 md:py-6 mb-4 sm:mb-5 md:mb-6 rounded relative" style={{
+              background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(122, 29, 46, 0.3))',
+              border: '2px sm:border-3 solid rgba(166, 124, 82, 0.6)',
+              boxShadow: '0 0 40px rgba(166, 124, 82, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.5)'
+            }}>
+              <div className="text-sm opacity-70 mb-2" style={{ color: 'var(--pale-light)' }}>
+                あなたのタイプ
+              </div>
+              <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-2 sm:mb-3 glow-text" style={{ color: 'var(--pale-gold)' }}>
+                {result.type}
+              </div>
+              <div className="text-xl sm:text-2xl md:text-3xl font-semibold" style={{ color: 'var(--pale-light)' }}>
+                {result.typeName}
+              </div>
+            </div>
+
+            <p className="text-base sm:text-lg md:text-xl leading-loose opacity-90 max-w-3xl mx-auto px-2" style={{ color: 'var(--pale-light)' }}>
+              {result.description}
+            </p>
+          </div>
+        </div>
+
         {careerPaths[result.type] && (
           <div className="relative p-5 sm:p-6 md:p-8 lg:p-10 rounded-lg" style={{
             background: 'rgba(0, 0, 0, 0.4)',
@@ -253,42 +289,6 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
             </div>
           </div>
         )}
-
-        <div className="rounded-lg p-6 sm:p-8 md:p-12 lg:p-16 text-center relative" style={{
-          background: 'rgba(0, 0, 0, 0.4)',
-          backdropFilter: 'blur(10px)',
-        }}>
-          <div className="relative z-10">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 sm:mb-6 md:mb-8 glow-text" style={{ color: 'var(--pale-gold)' }}>
-              魂の顕現
-            </h2>
-
-            <p className="text-sm sm:text-base opacity-80 mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto leading-loose px-2" style={{ color: 'var(--dim-light)' }}>
-              百の問いを経て、汝の魂の真なる姿が明らかとなった。<br />
-              終わりゆく世界にて、汝はこの型を宿す者なり。
-            </p>
-
-            <div className="inline-block px-6 sm:px-8 md:px-10 py-4 sm:py-5 md:py-6 mb-4 sm:mb-5 md:mb-6 rounded relative" style={{
-              background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(122, 29, 46, 0.3))',
-              border: '2px sm:border-3 solid rgba(166, 124, 82, 0.6)',
-              boxShadow: '0 0 40px rgba(166, 124, 82, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.5)'
-            }}>
-              <div className="text-sm opacity-70 mb-2" style={{ color: 'var(--pale-light)' }}>
-                あなたのタイプ
-              </div>
-              <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-2 sm:mb-3 glow-text" style={{ color: 'var(--pale-gold)' }}>
-                {result.type}
-              </div>
-              <div className="text-xl sm:text-2xl md:text-3xl font-semibold" style={{ color: 'var(--pale-light)' }}>
-                {result.typeName}
-              </div>
-            </div>
-
-            <p className="text-base sm:text-lg md:text-xl leading-loose opacity-90 max-w-3xl mx-auto px-2" style={{ color: 'var(--pale-light)' }}>
-              {result.description}
-            </p>
-          </div>
-        </div>
 
         <div className="relative p-5 sm:p-6 md:p-8 lg:p-10 rounded-lg" style={{
           background: 'rgba(0, 0, 0, 0.4)',
