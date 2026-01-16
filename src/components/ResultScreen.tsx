@@ -16,8 +16,8 @@ interface ResultScreenProps {
 }
 
 export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) {
-  const [isSending, setIsSending] = useState(false);
-  const [sendStatus, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [, setIsSending] = useState(false);
+  const [, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [autoSent, setAutoSent] = useState(false);
   const [gptReport, setGptReport] = useState<GPTReport | null>(null);
   const [isLoadingReport, setIsLoadingReport] = useState(false);
@@ -62,7 +62,11 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
       tarot: {
         id: tarotCard.id,
         name: tarotCard.name,
-        meaning: tarotCard.meaning,
+        reading: tarotCard.reading,
+        originalName: tarotCard.originalName,
+        keywords: tarotCard.keywords,
+        upright: tarotCard.upright,
+        reversed: tarotCard.reversed,
       },
       userId: userId,
       profile: {
@@ -337,27 +341,90 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
             <p className="text-center text-sm opacity-70 mb-6" style={{ color: 'var(--pale-light)' }}>
               汝の魂に宿る札の啓示
             </p>
-            <div className="flex justify-center">
-              <div className="w-32 h-48 rounded-lg flex items-center justify-center text-6xl" style={{
-                background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(122, 29, 46, 0.3))',
-                border: '2px solid rgba(166, 124, 82, 0.6)',
-              }}>
-                🃏
-              </div>
-            </div>
-            {isLoadingReport ? (
-              <p className="text-center mt-4 text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                神託を読み解いています...
-              </p>
-            ) : gptReport?.tarotExplanation ? (
-              <p className="text-center mt-4 text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                {gptReport.tarotExplanation}
-              </p>
-            ) : (
-              <p className="text-center mt-4 text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                札の啓示を待っています...
-              </p>
-            )}
+
+            {(() => {
+              const tarotCard = selectTarotCard(result.type, result.scores);
+              return (
+                <div className="space-y-6">
+                  <div className="flex flex-col items-center">
+                    <div className="w-40 h-56 rounded-lg flex flex-col items-center justify-center text-center p-4 mb-4" style={{
+                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.4), rgba(122, 29, 46, 0.4))',
+                      border: '3px solid rgba(166, 124, 82, 0.7)',
+                      boxShadow: '0 0 30px rgba(166, 124, 82, 0.4)',
+                    }}>
+                      <div className="text-5xl mb-3">🃏</div>
+                      <div className="text-lg font-bold mb-1" style={{ color: 'var(--pale-gold)' }}>
+                        {tarotCard.name}
+                      </div>
+                      <div className="text-xs opacity-70" style={{ color: 'var(--pale-light)' }}>
+                        {tarotCard.reading}
+                      </div>
+                      <div className="text-xs opacity-60 mt-2" style={{ color: 'var(--pale-light)' }}>
+                        〔{tarotCard.originalName}〕
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-center space-y-4">
+                    <div className="p-4 rounded-lg" style={{
+                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
+                      border: '1px solid rgba(166, 124, 82, 0.4)',
+                    }}>
+                      <div className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                        キーワード
+                      </div>
+                      <div className="text-sm opacity-90" style={{ color: 'var(--pale-light)' }}>
+                        {tarotCard.keywords}
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-lg" style={{
+                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
+                      border: '1px solid rgba(166, 124, 82, 0.4)',
+                    }}>
+                      <div className="text-sm font-bold mb-2" style={{ color: 'var(--ochre)' }}>
+                        正位置
+                      </div>
+                      <div className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                        {tarotCard.upright}
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-lg" style={{
+                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
+                      border: '1px solid rgba(166, 124, 82, 0.4)',
+                    }}>
+                      <div className="text-sm font-bold mb-2" style={{ color: 'var(--rust-red)' }}>
+                        逆位置
+                      </div>
+                      <div className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                        {tarotCard.reversed}
+                      </div>
+                    </div>
+                  </div>
+
+                  {gptReport?.tarotExplanation && (
+                    <div className="p-4 rounded-lg" style={{
+                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(122, 29, 46, 0.3))',
+                      border: '2px solid rgba(166, 124, 82, 0.5)',
+                    }}>
+                      <div className="text-sm font-bold mb-2 text-center" style={{ color: 'var(--pale-gold)' }}>
+                        神託の解釈
+                      </div>
+                      <p className="text-sm leading-relaxed opacity-90 text-center" style={{ color: 'var(--pale-light)' }}>
+                        {gptReport.tarotExplanation}
+                      </p>
+                    </div>
+                  )}
+
+                  {isLoadingReport && !gptReport?.tarotExplanation && (
+                    <p className="text-center text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                      神託を読み解いています...
+                    </p>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         </div>
 
