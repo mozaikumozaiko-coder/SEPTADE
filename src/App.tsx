@@ -1,6 +1,12 @@
 import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, BookOpen, Target } from 'lucide-react';
+import { AuthProvider } from './contexts/AuthContext';
+import { PrivateRoute } from './components/auth/PrivateRoute';
+import { LoginScreen } from './components/auth/LoginScreen';
+import { SignUpScreen } from './components/auth/SignUpScreen';
+import { ResetPasswordScreen } from './components/auth/ResetPasswordScreen';
 import { ProfileScreen } from './components/ProfileScreen';
 import { QuestionScreen } from './components/QuestionScreen';
 import { ResultScreen } from './components/ResultScreen';
@@ -33,7 +39,7 @@ const pageVariants = {
   },
 };
 
-function App() {
+function DiagnosisApp() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
   const [profile, setProfile] = useState<Profile | null>(null);
   const [result, setResult] = useState<DiagnosisResult | null>(null);
@@ -246,6 +252,29 @@ function App() {
         </motion.div>
       )}
     </AnimatePresence>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginScreen />} />
+          <Route path="/signup" element={<SignUpScreen />} />
+          <Route path="/reset" element={<ResetPasswordScreen />} />
+          <Route
+            path="/app"
+            element={
+              <PrivateRoute>
+                <DiagnosisApp />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/app" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

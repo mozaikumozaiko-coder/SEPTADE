@@ -1,5 +1,5 @@
 import { DiagnosisResult, Profile, GPTReport } from '../types';
-import { Share2, RotateCcw } from 'lucide-react';
+import { Share2, RotateCcw, LogOut } from 'lucide-react';
 import { CircularChart } from './CircularChart';
 import { RadarChart } from './RadarChart';
 import { compatibility } from '../data/compatibility';
@@ -9,6 +9,8 @@ import { supabase } from '../lib/supabase';
 import { selectTarotCard } from '../lib/tarotSelector';
 import { calculateFourPillars } from '../lib/fourPillars';
 import { saveDiagnosisHistory } from '../lib/diagnosisHistory';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface ResultScreenProps {
   result: DiagnosisResult;
@@ -26,6 +28,8 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
   const [showOrderInput, setShowOrderInput] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   const [orderError, setOrderError] = useState('');
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
 
   const handleShare = () => {
     const shareText = `セプテード診断\n\n私の魂の型: ${result.type} - ${result.typeName}\n${result.description}`;
@@ -1016,6 +1020,18 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
             >
               <RotateCcw size={18} className="sm:w-5 sm:h-5" />
               <span>再び巡礼する</span>
+            </button>
+
+            <button
+              onClick={async () => {
+                await signOut();
+                navigate('/login');
+              }}
+              className="flex-1 px-6 sm:px-8 py-3 sm:py-4 rounded border-2 border-white/20 hover:bg-white/5 transition-all duration-300 font-semibold text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 sm:gap-3"
+              style={{ color: 'var(--pale-light)' }}
+            >
+              <LogOut size={18} className="sm:w-5 sm:h-5" />
+              <span>ログアウト</span>
             </button>
           </div>
         </div>
