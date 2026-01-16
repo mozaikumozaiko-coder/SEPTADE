@@ -172,7 +172,7 @@
     position: absolute;
     inset: 0;
     background: url('/chatgpt_image_2026年1月5日_19_20_42 copy.png');
-    background-size: auto;
+    background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
     pointer-events: none;
@@ -240,7 +240,7 @@
     position: absolute;
     inset: 0;
     background: url('/chatgpt_image_2026年1月5日_19_20_42 copy.png');
-    background-size: auto;
+    background-size: 125% 105%;
     background-position: center;
     background-repeat: no-repeat;
     pointer-events: none;
