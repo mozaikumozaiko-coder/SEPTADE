@@ -128,10 +128,12 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
         } else {
           setSendStatus('success');
           console.log('Successfully sent to Make');
-          alert('結果を開放しました');
+          alert('番号を確認できました　そのままお待ちください');
           setShowOrderInput(false);
           setOrderNumber('');
           setOrderError('');
+          setIsLoadingReport(true);
+          startReportPolling();
         }
       } else {
         const errorData = await response.text().catch(() => '');
@@ -214,9 +216,6 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
     }, 120000);
   };
 
-  useEffect(() => {
-    startReportPolling();
-  }, []);
 
   const normalizeScore = (score: number): number => {
     return Math.round(Math.max(0, Math.min(100, ((score + 100) / 2))));
