@@ -194,8 +194,8 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
       <div className="max-w-4xl w-full relative">
         <div className="relative z-10 space-y-5 sm:space-y-6 md:space-y-8 py-12 px-6 sm:px-8 md:px-12">
         <div className="rounded-lg p-6 sm:p-8 md:p-12 lg:p-16 text-center relative" style={{
-          background: 'rgba(0, 0, 0, 0.4)',
-          backdropFilter: 'blur(10px)',
+          background: 'rgba(0, 0, 0, 0.7)',
+          backdropFilter: 'blur(15px)',
         }}>
           <div className="relative z-10">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 sm:mb-6 md:mb-8 glow-text" style={{ color: 'var(--pale-gold)' }}>
@@ -514,7 +514,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
                     {gptReport.fourPillars.basic}
                   </p>
                   {gptReport.fourPillars.charts && gptReport.fourPillars.charts.length > 0 && (
-                    <div className="grid grid-cols-5 gap-2 mb-4">
+                    <div className="grid grid-cols-3 sm:grid-cols-5 gap-4 sm:gap-2 mb-4 justify-items-center">
                       {gptReport.fourPillars.charts.map((chart, index) => (
                         <CircularChart key={index} percentage={chart.value} label={chart.title} />
                       ))}

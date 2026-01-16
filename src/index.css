@@ -260,8 +260,8 @@
     content: '';
     position: absolute;
     inset: 60px 45px 85px 45px;
-    background: rgba(20, 15, 10, 0.4);
-    backdrop-filter: blur(0.5px);
+    background: rgba(10, 8, 5, 0.75);
+    backdrop-filter: blur(12px);
     border-radius: 8px;
     pointer-events: none;
     z-index: -1;
