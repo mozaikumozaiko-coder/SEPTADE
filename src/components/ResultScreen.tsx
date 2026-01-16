@@ -27,6 +27,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [isLoadingReport, setIsLoadingReport] = useState(false);
   const { user, signOut } = useAuth();
   const [userId] = useState(() => user?.email || `user_${Date.now()}_${Math.random().toString(36).substring(7)}`);
+  const [showOrderInput, setShowOrderInput] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   const [orderError, setOrderError] = useState('');
   const [pastReports, setPastReports] = useState<GPTReport[]>([]);
@@ -160,6 +161,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
           setSendStatus('success');
           console.log('Successfully sent to Make');
           alert('番号を確認できました　そのままお待ちください');
+          setShowOrderInput(false);
           setOrderNumber('');
           setOrderError('');
           setIsLoadingReport(true);
@@ -185,6 +187,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       setIsSending(false);
       setAutoSent(true);
     }
+  };
+
+  const handleUnlockResults = () => {
+    setShowOrderInput(true);
+    setOrderError('');
+    setOrderNumber('');
   };
 
   const handleOrderSubmit = () => {
@@ -261,86 +269,116 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-4 pt-4 pb-2" style={{
-        background: 'linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.85) 100%)',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '2px solid rgba(166, 124, 82, 0.3)',
-      }}>
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-center gap-3">
-            <div className="flex-1 w-full">
-              <input
-                type="text"
-                value={orderNumber}
-                onChange={(e) => {
-                  setOrderNumber(e.target.value);
+      {showOrderInput && (
+        <div
+          className="fixed inset-0 flex items-center justify-center px-4 z-[9999]"
+          style={{
+            background: 'rgba(0, 0, 0, 0.9)',
+            backdropFilter: 'blur(15px)',
+          }}
+        >
+          <div className="max-w-md w-full p-6 sm:p-8 rounded-lg" style={{
+            background: 'rgba(0, 0, 0, 0.95)',
+            border: '3px solid rgba(191, 167, 110, 0.8)',
+            boxShadow: '0 0 60px rgba(191, 167, 110, 0.5), inset 0 0 30px rgba(166, 124, 82, 0.2)',
+          }}>
+            <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-center glow-text" style={{
+              color: 'var(--pale-gold)',
+              textShadow: '0 0 20px rgba(191, 167, 110, 0.8)',
+            }}>
+              オーダー番号を入力してください
+            </h3>
+            <p className="text-sm sm:text-base mb-6 text-center leading-relaxed" style={{ color: 'var(--pale-light)' }}>
+              例：1019088409
+            </p>
+
+            {orderError && (
+              <div className="mb-4 p-4 rounded text-center space-y-3" style={{
+                background: 'rgba(122, 29, 46, 0.3)',
+                border: '2px solid rgba(122, 29, 46, 0.6)',
+                color: 'var(--rust-red)',
+              }}>
+                <div>{orderError}</div>
+                {orderError.includes('無効') && (
+                  <div className="pt-2 border-t border-white/10">
+                    <p className="text-sm mb-3" style={{ color: 'var(--pale-light)' }}>
+                      購入されていない方はこちらから
+                    </p>
+                    <a
+                      href="https://y8q9lwkafozp6bxasu8o.stores.jp"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block px-6 py-3 rounded-lg font-bold transition-all duration-300 hover:scale-105"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.4), rgba(166, 124, 82, 0.3))',
+                        border: '2px solid rgba(191, 167, 110, 0.8)',
+                        color: 'var(--pale-gold)',
+                        textShadow: '0 0 10px rgba(191, 167, 110, 0.6)',
+                      }}
+                    >
+                      購入サイトへ
+                    </a>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <input
+              type="text"
+              value={orderNumber}
+              onChange={(e) => {
+                setOrderNumber(e.target.value);
+                setOrderError('');
+              }}
+              placeholder="オーダー番号"
+              disabled={isSending}
+              className="w-full px-4 py-4 mb-6 rounded text-center text-lg font-medium"
+              style={{
+                background: 'rgba(0, 0, 0, 0.5)',
+                border: '2px solid rgba(166, 124, 82, 0.5)',
+                color: 'var(--pale-light)',
+                outline: 'none',
+              }}
+              onFocus={(e) => {
+                e.target.style.border = '2px solid rgba(191, 167, 110, 0.8)';
+                e.target.style.boxShadow = '0 0 20px rgba(191, 167, 110, 0.3)';
+              }}
+              onBlur={(e) => {
+                e.target.style.border = '2px solid rgba(166, 124, 82, 0.5)';
+                e.target.style.boxShadow = 'none';
+              }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleOrderSubmit();
+                }
+              }}
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowOrderInput(false);
+                  setOrderNumber('');
                   setOrderError('');
                 }}
-                placeholder="オーダー番号を入力"
                 disabled={isSending}
-                className="w-full px-4 py-2 rounded text-sm font-medium"
-                style={{
-                  background: 'rgba(0, 0, 0, 0.5)',
-                  border: '2px solid rgba(166, 124, 82, 0.5)',
-                  color: 'var(--pale-light)',
-                  outline: 'none',
-                }}
-                onFocus={(e) => {
-                  e.target.style.border = '2px solid rgba(191, 167, 110, 0.8)';
-                  e.target.style.boxShadow = '0 0 20px rgba(191, 167, 110, 0.3)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.border = '2px solid rgba(166, 124, 82, 0.5)';
-                  e.target.style.boxShadow = 'none';
-                }}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    handleOrderSubmit();
-                  }
-                }}
-              />
+                className="flex-1 px-4 py-3 rounded border-2 border-white/20 hover:bg-white/5 transition-all duration-300 font-semibold text-sm sm:text-base disabled:opacity-50"
+                style={{ color: 'var(--pale-light)' }}
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handleOrderSubmit}
+                disabled={isSending}
+                className="flex-1 mystic-button px-4 py-3 text-sm sm:text-base font-bold disabled:opacity-50"
+              >
+                {isSending ? '送信中...' : '送信'}
+              </button>
             </div>
-            <button
-              onClick={handleOrderSubmit}
-              disabled={isSending}
-              className="mystic-button px-6 py-2 text-sm font-bold disabled:opacity-50 whitespace-nowrap"
-            >
-              {isSending ? '送信中...' : '全結果を開放'}
-            </button>
           </div>
-          {orderError && (
-            <div className="mt-2 p-3 rounded text-center text-sm" style={{
-              background: 'rgba(122, 29, 46, 0.3)',
-              border: '2px solid rgba(122, 29, 46, 0.6)',
-              color: 'var(--rust-red)',
-            }}>
-              <div>{orderError}</div>
-              {orderError.includes('無効') && (
-                <a
-                  href="https://y8q9lwkafozp6bxasu8o.stores.jp"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block mt-2 px-4 py-2 rounded-lg font-bold transition-all duration-300 hover:scale-105 text-xs"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.4), rgba(166, 124, 82, 0.3))',
-                    border: '2px solid rgba(191, 167, 110, 0.8)',
-                    color: 'var(--pale-gold)',
-                  }}
-                >
-                  購入サイトへ
-                </a>
-              )}
-            </div>
-          )}
-          {pastReports.length > 0 && (
-            <div className="mt-3 text-center text-xs" style={{ color: 'var(--pale-light)' }}>
-              過去の診断レポート: {pastReports.length}件
-            </div>
-          )}
         </div>
-      </div>
+      )}
 
-      <div className="min-h-screen flex items-center justify-center px-3 sm:px-4 py-8 sm:py-12" style={{ paddingTop: '120px' }}>
+      <div className="min-h-screen flex items-center justify-center px-3 sm:px-4 py-8 sm:py-12">
         <div className="max-w-4xl w-full relative">
         <div className="relative z-10 space-y-5 sm:space-y-6 md:space-y-8 py-12 px-6 sm:px-8 md:px-12">
         <div className="rounded-lg p-6 sm:p-8 md:p-12 lg:p-16 text-center relative" style={{
@@ -993,6 +1031,13 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-5">
             <button
+              onClick={handleUnlockResults}
+              className="mystic-button flex-1 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-3 sm:py-4"
+            >
+              <span>全ての結果を開放する</span>
+            </button>
+
+            <button
               onClick={onRestart}
               className="flex-1 px-6 sm:px-8 py-3 sm:py-4 rounded border-2 border-white/20 hover:bg-white/5 transition-all duration-300 font-semibold text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 sm:gap-3"
               style={{ color: 'var(--pale-light)' }}
@@ -1014,6 +1059,115 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
             </button>
           </div>
         </div>
+
+        {pastReports.length > 0 && (
+          <div className="relative p-5 sm:p-6 md:p-8 rounded-lg" style={{
+            background: 'rgba(0, 0, 0, 0.4)',
+            backdropFilter: 'blur(10px)',
+          }}>
+            <div className="relative z-10">
+              <h3 className="text-xl sm:text-2xl font-bold mb-6 text-center glow-text" style={{ color: 'var(--pale-gold)' }}>
+                過去の診断レポート
+              </h3>
+              <p className="text-center text-sm opacity-70 mb-6" style={{ color: 'var(--pale-light)' }}>
+                Makeから返ってきた完全な診断結果（{pastReports.length}件）
+              </p>
+              <div className="space-y-4">
+                {pastReports.map((report, index) => (
+                  <details
+                    key={index}
+                    className="rounded-lg overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(122, 29, 46, 0.3))',
+                      border: '2px solid rgba(166, 124, 82, 0.5)',
+                    }}
+                  >
+                    <summary className="cursor-pointer p-4 hover:bg-white/5 transition-colors">
+                      <span className="font-bold text-base sm:text-lg" style={{ color: 'var(--pale-gold)' }}>
+                        診断レポート #{pastReports.length - index}
+                      </span>
+                      <span className="text-sm opacity-70 ml-3" style={{ color: 'var(--pale-light)' }}>
+                        クリックして詳細を表示
+                      </span>
+                    </summary>
+                    <div className="p-4 space-y-6 border-t border-white/10">
+                      {report.tarotExplanation && (
+                        <div>
+                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                            タロット解釈
+                          </h4>
+                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                            {report.tarotExplanation}
+                          </p>
+                        </div>
+                      )}
+                      {report.section1?.content && (
+                        <div>
+                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                            1. 人格プロファイル
+                          </h4>
+                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                            {report.section1.content}
+                          </p>
+                        </div>
+                      )}
+                      {report.section2?.content && (
+                        <div>
+                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                            2. 職能ルート解析
+                          </h4>
+                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                            {report.section2.content}
+                          </p>
+                        </div>
+                      )}
+                      {report.section3?.content && (
+                        <div>
+                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                            3. 自己進化プラン
+                          </h4>
+                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                            {report.section3.content}
+                          </p>
+                        </div>
+                      )}
+                      {report.section4?.content && (
+                        <div>
+                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                            4. 対人ダイナミクス解析
+                          </h4>
+                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                            {report.section4.content}
+                          </p>
+                        </div>
+                      )}
+                      {report.fourPillars?.basic && (
+                        <div>
+                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                            四柱推命
+                          </h4>
+                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                            {report.fourPillars.basic}
+                          </p>
+                        </div>
+                      )}
+                      {report.astrology && (
+                        <div>
+                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                            西洋占星術
+                          </h4>
+                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                            {report.astrology}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="text-center">
           <button
