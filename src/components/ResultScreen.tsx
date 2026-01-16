@@ -262,12 +262,33 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
             </p>
 
             {orderError && (
-              <div className="mb-4 p-3 rounded text-center" style={{
+              <div className="mb-4 p-4 rounded text-center space-y-3" style={{
                 background: 'rgba(122, 29, 46, 0.3)',
                 border: '2px solid rgba(122, 29, 46, 0.6)',
                 color: 'var(--rust-red)',
               }}>
-                {orderError}
+                <div>{orderError}</div>
+                {orderError.includes('無効') && (
+                  <div className="pt-2 border-t border-white/10">
+                    <p className="text-sm mb-3" style={{ color: 'var(--pale-light)' }}>
+                      購入されていない方はこちらから
+                    </p>
+                    <a
+                      href="https://y8q9lwkafozp6bxasu8o.stores.jp"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block px-6 py-3 rounded-lg font-bold transition-all duration-300 hover:scale-105"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.4), rgba(166, 124, 82, 0.3))',
+                        border: '2px solid rgba(191, 167, 110, 0.8)',
+                        color: 'var(--pale-gold)',
+                        textShadow: '0 0 10px rgba(191, 167, 110, 0.6)',
+                      }}
+                    >
+                      購入サイトへ
+                    </a>
+                  </div>
+                )}
               </div>
             )}
 
