@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { selectTarotCard } from '../lib/tarotSelector';
 import { calculateFourPillars } from '../lib/fourPillars';
+import { saveDiagnosisHistory } from '../lib/diagnosisHistory';
 
 interface ResultScreenProps {
   result: DiagnosisResult;
@@ -216,6 +217,9 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
     }, 120000);
   };
 
+  useEffect(() => {
+    saveDiagnosisHistory(profile, result);
+  }, []);
 
   const normalizeScore = (score: number): number => {
     return Math.round(Math.max(0, Math.min(100, ((score + 100) / 2))));
