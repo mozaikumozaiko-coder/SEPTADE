@@ -89,14 +89,14 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
   return (
     <>
       <div className="question-screen-container">
-        <div className="ornate-border max-w-4xl w-full rounded-lg p-2 sm:p-8 md:p-16 relative">
+        <div className="ornate-border max-w-4xl w-full rounded-lg p-4 sm:p-8 md:p-16 relative">
           <div className="relative z-10">
-          <div className="mb-0.5 sm:mb-8" style={{ position: 'relative', zIndex: 10000 }}>
-            <div className="flex items-center justify-between mb-0.5 sm:mb-4">
-              <span className="text-xs sm:text-lg md:text-xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
+          <div className="mb-6 sm:mb-8" style={{ position: 'relative', zIndex: 10000 }}>
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <span className="text-base sm:text-lg md:text-xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
                 第 {chapter} 章 ─ 問 {currentIndex + 1} / {questions.length}
               </span>
-              <span className="text-xs sm:text-lg md:text-xl font-bold glow-text" style={{ color: 'var(--ochre)' }}>
+              <span className="text-base sm:text-lg md:text-xl font-bold glow-text" style={{ color: 'var(--ochre)' }}>
                 {progress}%
               </span>
             </div>
@@ -107,7 +107,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
             <img
               src="/マイビデオ.gif"
               alt="mascot"
-              className="absolute transition-all duration-300 ease-out pointer-events-none w-12 h-12 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-36 lg:h-36"
+              className="absolute transition-all duration-300 ease-out pointer-events-none w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-36 lg:h-36"
               style={{
                 left: `${progress}%`,
                 top: '50%',
@@ -119,10 +119,10 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
             />
           </div>
 
-          <div className="mb-0.5 sm:mb-10">
-            <div className="flex flex-col md:flex-row items-start gap-0.5 sm:gap-6 mb-0.5 sm:mb-8">
+          <div className="mb-6 sm:mb-10">
+            <div className="flex flex-col md:flex-row items-start gap-4 sm:gap-6 mb-6 sm:mb-8">
               <div className="w-full md:w-2/5 flex justify-center md:justify-start">
-                <div className="relative w-24 h-24 sm:w-40 sm:h-40 md:w-56 md:h-56 lg:w-64 lg:h-64 miko-container" style={{
+                <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-56 md:h-56 lg:w-64 lg:h-64 miko-container" style={{
                   filter: 'drop-shadow(0 0 20px rgba(166, 124, 82, 0.3))'
                 }}>
                   <img
@@ -141,12 +141,12 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
                     borderRight: '15px solid rgba(166, 124, 82, 0.3)'
                   }}></div>
 
-                  <div className="rounded-lg p-2 sm:p-6 md:p-10 flex items-center question-bubble" style={{
+                  <div className="rounded-lg p-4 sm:p-6 md:p-10 flex items-center question-bubble" style={{
                     background: 'linear-gradient(135deg, rgba(13, 13, 15, 0.65), rgba(26, 26, 28, 0.55))',
                     border: '2px solid rgba(166, 124, 82, 0.6)',
                     boxShadow: '0 0 30px rgba(166, 124, 82, 0.3), inset 0 2px 10px rgba(0, 0, 0, 0.5)',
                   }}>
-                    <h3 className="text-base sm:text-2xl md:text-3xl lg:text-4xl font-bold glow-text" style={{
+                    <h3 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold glow-text" style={{
                       color: 'var(--pale-gold)',
                       lineHeight: '1.6',
                       letterSpacing: '0.05em'
@@ -158,8 +158,8 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
               </div>
             </div>
 
-            <div className="space-y-0.5 sm:space-y-8">
-              <div className="relative px-1 sm:px-2">
+            <div className="space-y-6 sm:space-y-8">
+              <div className="relative px-2 sm:px-2">
                 <input
                   type="range"
                   min="1"
@@ -169,44 +169,44 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
                   className="ancient-slider"
                 />
 
-                <div className="flex justify-between mt-0.5 sm:mt-4 text-xs sm:text-sm md:text-base lg:text-lg font-bold" style={{ color: 'var(--pale-gold)' }}>
+                <div className="flex justify-between mt-3 sm:mt-4 text-sm sm:text-sm md:text-base lg:text-lg font-bold" style={{ color: 'var(--pale-gold)' }}>
                   <span className="glow-text">全く否なり</span>
                   <span className="glow-text">強く然り</span>
                 </div>
               </div>
 
-              <div className="text-center py-0.5 sm:py-6">
-                <p className="text-xs sm:text-2xl md:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
+              <div className="text-center py-4 sm:py-6">
+                <p className="text-xl sm:text-2xl md:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
                   {getSliderLabel(sliderValue)}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-1 sm:gap-4 pt-0.5 sm:pt-4 border-t border-white/10 mt-0 sm:mt-2">
+          <div className="flex items-center justify-between gap-3 sm:gap-4 pt-4 sm:pt-4 border-t border-white/10 mt-4 sm:mt-2">
             <button
               onClick={handlePrevious}
               disabled={currentIndex === 0}
-              className="mystic-button flex items-center gap-0.5 sm:gap-2 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:transform-none disabled:hover:shadow-none px-2 sm:px-4 md:px-6 py-1.5 sm:py-3 text-xs sm:text-base"
+              className="mystic-button flex items-center gap-2 sm:gap-2 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:transform-none disabled:hover:shadow-none px-4 sm:px-4 md:px-6 py-2.5 sm:py-3 text-sm sm:text-base"
             >
-              <ChevronLeft size={14} className="sm:w-5 sm:h-5" />
+              <ChevronLeft size={16} className="sm:w-5 sm:h-5" />
               <span>前の問い</span>
             </button>
 
             <div className="text-center flex-shrink min-w-0">
-              <p className="text-xs sm:text-base md:text-lg lg:text-xl font-bold glow-text whitespace-nowrap" style={{ color: 'var(--pale-gold)' }}>
-                <span className="hidden xs:inline">回答済: </span>{answers.size}/{questions.length}
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl font-bold glow-text whitespace-nowrap" style={{ color: 'var(--pale-gold)' }}>
+                <span className="hidden sm:inline">回答済: </span>{answers.size}/{questions.length}
               </p>
             </div>
 
             <button
               onClick={handleNext}
-              className="mystic-button flex items-center gap-0.5 sm:gap-2 px-2 sm:px-4 md:px-6 py-1.5 sm:py-3 text-xs sm:text-base"
+              className="mystic-button flex items-center gap-2 sm:gap-2 px-4 sm:px-4 md:px-6 py-2.5 sm:py-3 text-sm sm:text-base"
             >
               <span>
                 {currentIndex === questions.length - 1 ? '魂の顕現' : '次の問い'}
               </span>
-              <ChevronRight size={14} className="sm:w-5 sm:h-5" />
+              <ChevronRight size={16} className="sm:w-5 sm:h-5" />
             </button>
           </div>
           </div>

@@ -553,86 +553,46 @@
 
   @media (max-width: 640px) {
     .question-screen-container {
-      height: 100dvh;
-      height: 100vh;
-      min-height: -webkit-fill-available;
-      max-height: 100dvh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: env(safe-area-inset-top, 0.25rem) env(safe-area-inset-right, 0.5rem) env(safe-area-inset-bottom, 0.25rem) env(safe-area-inset-left, 0.5rem);
+      min-height: 100vh;
+      padding: 1rem;
     }
 
-    @supports (height: 100dvh) {
+    @supports (min-height: 100dvh) {
       .question-screen-container {
-        height: 100dvh;
-        max-height: 100dvh;
+        min-height: 100dvh;
       }
     }
 
     .ornate-border {
-      max-height: 98%;
-      height: auto;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      padding: 0.5rem !important;
-    }
-
-    .question-screen-container .ornate-border > div {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      padding: 1.5rem !important;
     }
 
     .miko-container {
-      width: 8rem !important;
-      height: 12rem !important;
-      overflow: visible !important;
+      width: 10rem !important;
+      height: 10rem !important;
     }
 
     .miko-image {
-      transform: scale(5.5) translateY(15px) translateX(3px);
+      transform: scale(4) translateY(20px) translateX(8px);
     }
 
     .question-bubble {
-      height: 5rem !important;
-      min-height: 5rem !important;
-      max-height: 5rem !important;
-      padding: 0.75rem !important;
-      overflow-y: auto;
-      display: flex;
-      align-items: center;
+      min-height: 120px !important;
+      padding: 1.5rem !important;
     }
 
     .question-bubble h3 {
-      font-size: 0.95rem !important;
-      line-height: 1.4 !important;
-    }
-
-    .question-screen-container .flex.flex-col.md\\:flex-row {
-      gap: 0.75rem !important;
+      font-size: 1.25rem !important;
+      line-height: 1.6 !important;
     }
 
     .mystic-button {
-      font-size: 0.7rem;
-      padding: 0.4rem 0.75rem;
-      letter-spacing: 0.05em;
+      font-size: 0.875rem;
+      padding: 0.75rem 1.5rem;
     }
 
     .progress-bar {
-      height: 6px;
-    }
-
-    .question-screen-container .text-xs {
-      font-size: 0.8rem !important;
-    }
-
-    .question-screen-container .py-0\.5 {
-      padding-top: 0.5rem !important;
-      padding-bottom: 0.5rem !important;
+      height: 10px;
     }
 
     .ornate-border::after {
@@ -645,18 +605,6 @@
 
     .landing-border::after {
       inset: 8px 20px 15px 20px;
-    }
-
-    .min-h-screen {
-      min-height: 100dvh !important;
-      min-height: 100vh !important;
-      min-height: -webkit-fill-available !important;
-    }
-
-    @supports (min-height: 100dvh) {
-      .min-h-screen {
-        min-height: 100dvh !important;
-      }
     }
   }
 

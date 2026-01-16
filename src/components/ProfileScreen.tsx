@@ -52,11 +52,11 @@ export function ProfileScreen({ onComplete }: ProfileScreenProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-3 sm:px-4 py-8 sm:py-12">
-      <div className="scroll-panel max-w-2xl w-full relative p-5 sm:p-6 md:p-8 lg:p-12">
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-4 py-8 sm:py-12">
+      <div className="scroll-panel max-w-2xl w-full relative p-6 sm:p-6 md:p-8 lg:p-12">
         <div className="relative z-10">
         <div className="text-center mb-6 sm:mb-8">
-          <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto mb-5 sm:mb-6 relative" style={{
+          <div className="w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto mb-5 sm:mb-6 relative" style={{
             filter: 'drop-shadow(0 0 30px rgba(166, 124, 82, 0.5))',
             border: '3px solid rgba(166, 124, 82, 0.6)',
             borderRadius: '50%',
@@ -72,23 +72,23 @@ export function ProfileScreen({ onComplete }: ProfileScreenProps) {
             />
           </div>
 
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 glow-text" style={{ color: 'var(--pale-gold)' }}>
+          <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-4 glow-text" style={{ color: 'var(--pale-gold)' }}>
             魂の記録
           </h2>
 
-          <p className="text-xs sm:text-sm opacity-75 leading-loose max-w-lg mx-auto px-2" style={{ color: 'var(--dim-light)' }}>
+          <p className="text-sm sm:text-sm opacity-75 leading-loose max-w-lg mx-auto px-2" style={{ color: 'var(--dim-light)' }}>
             巡礼を始めるにあたり、<br />
             汝の存在を古の書に刻まねばならぬ。<br />
             記されし情報は、魂の形を明かす手がかりとなる。
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-7">
+        <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-7">
           <div>
-            <label className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 text-sm sm:text-base font-medium flex-wrap" style={{ color: 'var(--pale-light)' }}>
-              <User size={18} className="sm:w-5 sm:h-5" style={{ color: 'var(--ochre)' }} />
+            <label className="flex items-center gap-3 sm:gap-3 mb-3 sm:mb-3 text-base sm:text-base font-medium flex-wrap" style={{ color: 'var(--pale-light)' }}>
+              <User size={20} className="sm:w-5 sm:h-5" style={{ color: 'var(--ochre)' }} />
               <span>御名</span>
-              <span className="text-xs opacity-60 font-normal">─ 汝が呼ばれし名 ─</span>
+              <span className="text-sm opacity-60 font-normal">─ 汝が呼ばれし名 ─</span>
             </label>
             <input
               type="text"
@@ -105,10 +105,10 @@ export function ProfileScreen({ onComplete }: ProfileScreenProps) {
           </div>
 
           <div>
-            <label className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 text-sm sm:text-base font-medium flex-wrap" style={{ color: 'var(--pale-light)' }}>
-              <Calendar size={18} className="sm:w-5 sm:h-5" style={{ color: 'var(--ochre)' }} />
+            <label className="flex items-center gap-3 sm:gap-3 mb-3 sm:mb-3 text-base sm:text-base font-medium flex-wrap" style={{ color: 'var(--pale-light)' }}>
+              <Calendar size={20} className="sm:w-5 sm:h-5" style={{ color: 'var(--ochre)' }} />
               <span>生誕の日</span>
-              <span className="text-xs opacity-60 font-normal">─ 汝が世に顕れし刻 ─</span>
+              <span className="text-sm opacity-60 font-normal">─ 汝が世に顕れし刻 ─</span>
             </label>
             <input
               type="date"
@@ -124,10 +124,10 @@ export function ProfileScreen({ onComplete }: ProfileScreenProps) {
           </div>
 
           <div>
-            <label className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 text-sm sm:text-base font-medium flex-wrap" style={{ color: 'var(--pale-light)' }}>
-              <Users size={18} className="sm:w-5 sm:h-5" style={{ color: 'var(--ochre)' }} />
+            <label className="flex items-center gap-3 sm:gap-3 mb-3 sm:mb-3 text-base sm:text-base font-medium flex-wrap" style={{ color: 'var(--pale-light)' }}>
+              <Users size={20} className="sm:w-5 sm:h-5" style={{ color: 'var(--ochre)' }} />
               <span>性</span>
-              <span className="text-xs opacity-60 font-normal">─ 汝が宿せし性 ─</span>
+              <span className="text-sm opacity-60 font-normal">─ 汝が宿せし性 ─</span>
             </label>
             <div className="flex flex-wrap gap-4 sm:gap-5">
               {(['男性', '女性', 'その他'] as const).map((gender) => (
@@ -151,10 +151,10 @@ export function ProfileScreen({ onComplete }: ProfileScreenProps) {
           </div>
 
           <div>
-            <label className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 text-sm sm:text-base font-medium flex-wrap" style={{ color: 'var(--pale-light)' }}>
-              <ScrollText size={18} className="sm:w-5 sm:h-5" style={{ color: 'var(--rust-red)' }} />
+            <label className="flex items-center gap-3 sm:gap-3 mb-3 sm:mb-3 text-base sm:text-base font-medium flex-wrap" style={{ color: 'var(--pale-light)' }}>
+              <ScrollText size={20} className="sm:w-5 sm:h-5" style={{ color: 'var(--rust-red)' }} />
               <span>抱える憂い</span>
-              <span className="text-xs opacity-60 font-normal">─ 任意 ─</span>
+              <span className="text-sm opacity-60 font-normal">─ 任意 ─</span>
             </label>
             <textarea
               value={profile.concern}
@@ -168,15 +168,15 @@ export function ProfileScreen({ onComplete }: ProfileScreenProps) {
             </p>
           </div>
 
-          <div className="text-center pt-1">
+          <div className="text-center pt-2">
             <button
               type="submit"
-              className="mystic-button text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4"
+              className="mystic-button text-base sm:text-base px-8 sm:px-8 py-4 sm:py-4"
             >
               巡礼の道へ
             </button>
 
-            <p className="text-xs opacity-80 mt-4 sm:mt-5 px-2" style={{ color: 'var(--text-dim)', textShadow: '0 1px 2px rgba(0, 0, 0, 1), 1px 1px 1px rgba(0, 0, 0, 0.8)' }}>
+            <p className="text-sm opacity-80 mt-5 sm:mt-5 px-2" style={{ color: 'var(--text-dim)', textShadow: '0 1px 2px rgba(0, 0, 0, 1), 1px 1px 1px rgba(0, 0, 0, 0.8)' }}>
               ─ 次なる画面にて、百の問いが待ち受ける ─
             </p>
           </div>
@@ -184,8 +184,8 @@ export function ProfileScreen({ onComplete }: ProfileScreenProps) {
 
         {history.length > 0 && (
           <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10">
-            <h3 className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 text-lg sm:text-xl font-bold" style={{ color: 'var(--pale-gold)' }}>
-              <History size={20} className="sm:w-6 sm:h-6" style={{ color: 'var(--ochre)' }} />
+            <h3 className="flex items-center gap-3 sm:gap-3 mb-5 sm:mb-5 text-xl sm:text-xl font-bold" style={{ color: 'var(--pale-gold)' }}>
+              <History size={22} className="sm:w-6 sm:h-6" style={{ color: 'var(--ochre)' }} />
               <span>過去の記録</span>
             </h3>
             <div className="space-y-3">
