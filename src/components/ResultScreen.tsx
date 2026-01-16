@@ -25,11 +25,11 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [autoSent, setAutoSent] = useState(false);
   const [gptReport, setGptReport] = useState<GPTReport | null>(null);
   const [isLoadingReport, setIsLoadingReport] = useState(false);
-  const [userId] = useState(() => `user_${Date.now()}_${Math.random().toString(36).substring(7)}`);
+  const { user, signOut } = useAuth();
+  const [userId] = useState(() => user?.email || `user_${Date.now()}_${Math.random().toString(36).substring(7)}`);
   const [showOrderInput, setShowOrderInput] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   const [orderError, setOrderError] = useState('');
-  const { signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleShare = () => {
