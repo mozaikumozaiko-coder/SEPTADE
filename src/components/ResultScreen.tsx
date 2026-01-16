@@ -31,7 +31,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [orderNumber, setOrderNumber] = useState('');
   const [orderError, setOrderError] = useState('');
   const [pastReports, setPastReports] = useState<GPTReport[]>([]);
+  const [selectedReportIndex, setSelectedReportIndex] = useState(0);
   const navigate = useNavigate();
+
+  const allReports = gptReport ? [gptReport, ...pastReports] : pastReports;
+  const displayReport = allReports[selectedReportIndex] || null;
+  const hasMultipleReports = allReports.length > 1;
 
   const fetchPastReports = useCallback(async () => {
     try {
@@ -219,6 +224,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
       if (data && data.report_data) {
         setGptReport(data.report_data as GPTReport);
+        setSelectedReportIndex(0);
         setIsLoadingReport(false);
         fetchPastReports();
         return data.report_data;
@@ -417,6 +423,49 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
           </div>
         </div>
 
+        {hasMultipleReports && (
+          <div className="relative p-4 rounded-lg text-center" style={{
+            background: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(10px)',
+            border: '2px solid rgba(166, 124, 82, 0.3)',
+          }}>
+            <div className="flex items-center justify-between gap-4">
+              <button
+                onClick={() => setSelectedReportIndex(Math.max(0, selectedReportIndex - 1))}
+                disabled={selectedReportIndex === 0}
+                className="px-4 py-2 rounded font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(166, 124, 82, 0.4), rgba(107, 68, 35, 0.3))',
+                  border: '2px solid rgba(166, 124, 82, 0.6)',
+                  color: 'var(--pale-gold)',
+                }}
+              >
+                前のレポート
+              </button>
+              <div className="flex-1">
+                <div className="text-sm font-bold" style={{ color: 'var(--pale-gold)' }}>
+                  {gptReport && selectedReportIndex === 0 ? '最新の診断結果' : `過去のレポート ${selectedReportIndex + 1}/${allReports.length}`}
+                </div>
+                <div className="text-xs opacity-70 mt-1" style={{ color: 'var(--pale-light)' }}>
+                  全{allReports.length}件のレポート
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedReportIndex(Math.min(allReports.length - 1, selectedReportIndex + 1))}
+                disabled={selectedReportIndex >= allReports.length - 1}
+                className="px-4 py-2 rounded font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(166, 124, 82, 0.4), rgba(107, 68, 35, 0.3))',
+                  border: '2px solid rgba(166, 124, 82, 0.6)',
+                  color: 'var(--pale-gold)',
+                }}
+              >
+                次のレポート
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="relative p-5 sm:p-6 md:p-8 lg:p-10 rounded-lg" style={{
           background: 'rgba(0, 0, 0, 0.4)',
           backdropFilter: 'blur(10px)',
@@ -587,7 +636,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                     </div>
                   </div>
 
-                  {gptReport?.tarotExplanation && (
+                  {displayReport?.tarotExplanation && (
                     <div className="p-4 rounded-lg" style={{
                       background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(122, 29, 46, 0.3))',
                       border: '2px solid rgba(166, 124, 82, 0.5)',
@@ -596,12 +645,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                         神託の解釈
                       </div>
                       <p className="text-sm leading-relaxed opacity-90 text-center" style={{ color: 'var(--pale-light)' }}>
-                        {gptReport.tarotExplanation}
+                        {displayReport.tarotExplanation}
                       </p>
                     </div>
                   )}
 
-                  {isLoadingReport && !gptReport?.tarotExplanation && (
+                  {isLoadingReport && !displayReport?.tarotExplanation && (
                     <p className="text-center text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
                       神託を読み解いています...
                     </p>
@@ -623,8 +672,8 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
             <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
               {isLoadingReport ? (
                 <p>神託を読み解いています...</p>
-              ) : gptReport?.section1?.content ? (
-                <p>{gptReport.section1.content}</p>
+              ) : displayReport?.section1?.content ? (
+                <p>{displayReport.section1.content}</p>
               ) : (
                 <p>あなたの本質的な性格特性、価値観、世界観について深く掘り下げた分析がここに表示されます。</p>
               )}
@@ -737,7 +786,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                 <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
                   命式を読み解いています...
                 </p>
-              ) : gptReport?.fourPillars ? (
+              ) : displayReport?.fourPillars ? (
                 <>
                   <div className="mb-4 p-4 rounded-lg" style={{
                     background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
@@ -746,27 +795,27 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                     <div className="grid grid-cols-3 gap-2 text-center text-xs sm:text-sm">
                       <div>
                         <div className="font-bold mb-1" style={{ color: 'var(--pale-gold)' }}>年柱</div>
-                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.year.天干}</div>
-                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.year.地支}</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{displayReport.fourPillars.chart.year.天干}</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{displayReport.fourPillars.chart.year.地支}</div>
                       </div>
                       <div>
                         <div className="font-bold mb-1" style={{ color: 'var(--pale-gold)' }}>月柱</div>
-                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.month.天干}</div>
-                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.month.地支}</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{displayReport.fourPillars.chart.month.天干}</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{displayReport.fourPillars.chart.month.地支}</div>
                       </div>
                       <div>
                         <div className="font-bold mb-1" style={{ color: 'var(--pale-gold)' }}>日柱</div>
-                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.day.天干}</div>
-                        <div style={{ color: 'var(--pale-light)' }}>{gptReport.fourPillars.chart.day.地支}</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{displayReport.fourPillars.chart.day.天干}</div>
+                        <div style={{ color: 'var(--pale-light)' }}>{displayReport.fourPillars.chart.day.地支}</div>
                       </div>
                     </div>
                   </div>
                   <p className="text-sm leading-relaxed opacity-90 mb-4" style={{ color: 'var(--pale-light)' }}>
-                    {gptReport.fourPillars.basic}
+                    {displayReport.fourPillars.basic}
                   </p>
-                  {gptReport.fourPillars.charts && gptReport.fourPillars.charts.length > 0 && (
+                  {displayReport.fourPillars.charts && displayReport.fourPillars.charts.length > 0 && (
                     <div className="grid grid-cols-3 sm:grid-cols-5 gap-4 sm:gap-2 mb-4 justify-items-center">
-                      {gptReport.fourPillars.charts.map((chart, index) => (
+                      {displayReport.fourPillars.charts.map((chart, index) => (
                         <CircularChart key={index} percentage={chart.value} label={chart.title} />
                       ))}
                     </div>
@@ -792,18 +841,18 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
             <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
               {isLoadingReport ? (
                 <p>分析中...</p>
-              ) : gptReport?.section2?.content ? (
-                <p>{gptReport.section2.content}</p>
+              ) : displayReport?.section2?.content ? (
+                <p>{displayReport.section2.content}</p>
               ) : (
                 <p>あなたのキャリアパスと成功への道筋について分析した内容がここに表示されます。</p>
               )}
             </div>
 
-            {gptReport?.section2?.charts && gptReport.section2.charts.length > 0 && (
+            {displayReport?.section2?.charts && displayReport.section2.charts.length > 0 && (
               <div>
                 <h4 className="text-lg sm:text-xl font-bold mb-6 text-center" style={{ color: 'var(--pale-gold)' }}>成果を動かす因子（キャリア加速パラメータ）</h4>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                  {gptReport.section2.charts.map((chart, index) => (
+                  {displayReport.section2.charts.map((chart, index) => (
                     <div key={index}>
                       <CircularChart percentage={chart.value} label={chart.title} />
                       <p className="text-xs leading-relaxed opacity-80 mt-2 text-center" style={{ color: 'var(--pale-light)' }}>
@@ -815,11 +864,11 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
               </div>
             )}
 
-            {gptReport?.section2?.items && gptReport.section2.items.length > 0 && (
+            {displayReport?.section2?.items && displayReport.section2.items.length > 0 && (
               <div>
                 <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>詳細分析</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {gptReport.section2.items.map((item, index) => (
+                  {displayReport.section2.items.map((item, index) => (
                     <div key={index} className="p-3 rounded-lg" style={{
                       background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
                       border: '1px solid rgba(166, 124, 82, 0.3)',
@@ -885,18 +934,18 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
             <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
               {isLoadingReport ? (
                 <p>分析中...</p>
-              ) : gptReport?.section3?.content ? (
-                <p>{gptReport.section3.content}</p>
+              ) : displayReport?.section3?.content ? (
+                <p>{displayReport.section3.content}</p>
               ) : (
                 <p>あなたの成長可能性と自己改善の方向性について分析した内容がここに表示されます。</p>
               )}
             </div>
 
-            {gptReport?.section3?.charts && gptReport.section3.charts.length > 0 && (
+            {displayReport?.section3?.charts && displayReport.section3.charts.length > 0 && (
               <div>
                 <h4 className="text-lg sm:text-xl font-bold mb-6 text-center" style={{ color: 'var(--pale-gold)' }}>成長パラメータ</h4>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                  {gptReport.section3.charts.map((chart, index) => (
+                  {displayReport.section3.charts.map((chart, index) => (
                     <div key={index}>
                       <CircularChart percentage={chart.value} label={chart.title} />
                       <p className="text-xs leading-relaxed opacity-80 mt-2 text-center" style={{ color: 'var(--pale-light)' }}>
@@ -908,11 +957,11 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
               </div>
             )}
 
-            {gptReport?.section3?.items && gptReport.section3.items.length > 0 && (
+            {displayReport?.section3?.items && displayReport.section3.items.length > 0 && (
               <div>
                 <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>自己進化の指針</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {gptReport.section3.items.map((item, index) => (
+                  {displayReport.section3.items.map((item, index) => (
                     <div key={index} className="p-3 rounded-lg" style={{
                       background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
                       border: '1px solid rgba(166, 124, 82, 0.3)',
@@ -925,11 +974,11 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
               </div>
             )}
 
-            {gptReport?.astrology && (
+            {displayReport?.astrology && (
               <div>
                 <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>星辰占（西洋占星術）</h4>
                 <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                  {gptReport.astrology}
+                  {displayReport.astrology}
                 </p>
               </div>
             )}
@@ -947,18 +996,18 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
             <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
               {isLoadingReport ? (
                 <p>分析中...</p>
-              ) : gptReport?.section4?.content ? (
-                <p>{gptReport.section4.content}</p>
+              ) : displayReport?.section4?.content ? (
+                <p>{displayReport.section4.content}</p>
               ) : (
                 <p>あなたの対人関係スタイルとコミュニケーション特性について分析した内容がここに表示されます。</p>
               )}
             </div>
 
-            {gptReport?.section4?.charts && gptReport.section4.charts.length > 0 && (
+            {displayReport?.section4?.charts && displayReport.section4.charts.length > 0 && (
               <div>
                 <h4 className="text-lg sm:text-xl font-bold mb-6 text-center" style={{ color: 'var(--pale-gold)' }}>関係構築の武器（信頼生成スキル）</h4>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                  {gptReport.section4.charts.map((chart, index) => (
+                  {displayReport.section4.charts.map((chart, index) => (
                     <div key={index}>
                       <CircularChart percentage={chart.value} label={chart.title} />
                       <p className="text-xs leading-relaxed opacity-80 mt-2 text-center" style={{ color: 'var(--pale-light)' }}>
@@ -970,11 +1019,11 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
               </div>
             )}
 
-            {gptReport?.section4?.items && gptReport.section4.items.length > 0 && (
+            {displayReport?.section4?.items && displayReport.section4.items.length > 0 && (
               <div>
                 <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>対人ダイナミクスの詳細</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {gptReport.section4.items.map((item, index) => (
+                  {displayReport.section4.items.map((item, index) => (
                     <div key={index} className="p-3 rounded-lg" style={{
                       background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.2), rgba(122, 29, 46, 0.2))',
                       border: '1px solid rgba(166, 124, 82, 0.3)',
@@ -1060,114 +1109,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
           </div>
         </div>
 
-        {pastReports.length > 0 && (
-          <div className="relative p-5 sm:p-6 md:p-8 rounded-lg" style={{
-            background: 'rgba(0, 0, 0, 0.4)',
-            backdropFilter: 'blur(10px)',
-          }}>
-            <div className="relative z-10">
-              <h3 className="text-xl sm:text-2xl font-bold mb-6 text-center glow-text" style={{ color: 'var(--pale-gold)' }}>
-                過去の診断レポート
-              </h3>
-              <p className="text-center text-sm opacity-70 mb-6" style={{ color: 'var(--pale-light)' }}>
-                Makeから返ってきた完全な診断結果（{pastReports.length}件）
-              </p>
-              <div className="space-y-4">
-                {pastReports.map((report, index) => (
-                  <details
-                    key={index}
-                    className="rounded-lg overflow-hidden"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(122, 29, 46, 0.3))',
-                      border: '2px solid rgba(166, 124, 82, 0.5)',
-                    }}
-                  >
-                    <summary className="cursor-pointer p-4 hover:bg-white/5 transition-colors">
-                      <span className="font-bold text-base sm:text-lg" style={{ color: 'var(--pale-gold)' }}>
-                        診断レポート #{pastReports.length - index}
-                      </span>
-                      <span className="text-sm opacity-70 ml-3" style={{ color: 'var(--pale-light)' }}>
-                        クリックして詳細を表示
-                      </span>
-                    </summary>
-                    <div className="p-4 space-y-6 border-t border-white/10">
-                      {report.tarotExplanation && (
-                        <div>
-                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
-                            タロット解釈
-                          </h4>
-                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                            {report.tarotExplanation}
-                          </p>
-                        </div>
-                      )}
-                      {report.section1?.content && (
-                        <div>
-                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
-                            1. 人格プロファイル
-                          </h4>
-                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                            {report.section1.content}
-                          </p>
-                        </div>
-                      )}
-                      {report.section2?.content && (
-                        <div>
-                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
-                            2. 職能ルート解析
-                          </h4>
-                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                            {report.section2.content}
-                          </p>
-                        </div>
-                      )}
-                      {report.section3?.content && (
-                        <div>
-                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
-                            3. 自己進化プラン
-                          </h4>
-                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                            {report.section3.content}
-                          </p>
-                        </div>
-                      )}
-                      {report.section4?.content && (
-                        <div>
-                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
-                            4. 対人ダイナミクス解析
-                          </h4>
-                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                            {report.section4.content}
-                          </p>
-                        </div>
-                      )}
-                      {report.fourPillars?.basic && (
-                        <div>
-                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
-                            四柱推命
-                          </h4>
-                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                            {report.fourPillars.basic}
-                          </p>
-                        </div>
-                      )}
-                      {report.astrology && (
-                        <div>
-                          <h4 className="text-base font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
-                            西洋占星術
-                          </h4>
-                          <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                            {report.astrology}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </details>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
 
         <div className="text-center">
           <button
