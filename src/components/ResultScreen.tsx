@@ -16,7 +16,7 @@ interface ResultScreenProps {
 }
 
 export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) {
-  const [, setIsSending] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const [, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [autoSent, setAutoSent] = useState(false);
   const [gptReport, setGptReport] = useState<GPTReport | null>(null);
@@ -24,6 +24,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
   const [userId] = useState(() => `user_${Date.now()}_${Math.random().toString(36).substring(7)}`);
   const [showOrderInput, setShowOrderInput] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
+  const [orderError, setOrderError] = useState('');
 
   const handleShare = () => {
     const shareText = `セプテード診断\n\n私の魂の型: ${result.type} - ${result.typeName}\n${result.description}`;
@@ -118,20 +119,36 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
       });
 
       if (response.ok) {
-        setSendStatus('success');
-        console.log('Successfully sent to Make');
-        alert('結果を開放しました');
-        setShowOrderInput(false);
-        setOrderNumber('');
+        const responseData = await response.json().catch(() => ({}));
+
+        if (responseData.valid === false || responseData.status === 'invalid' || responseData.error === 'invalid') {
+          setSendStatus('error');
+          setOrderError('オーダー番号が無効です。再度入力してください。');
+          setOrderNumber('');
+        } else {
+          setSendStatus('success');
+          console.log('Successfully sent to Make');
+          alert('結果を開放しました');
+          setShowOrderInput(false);
+          setOrderNumber('');
+          setOrderError('');
+        }
       } else {
-        setSendStatus('error');
-        console.error('Failed to send to Make:', response.status, response.statusText);
-        alert('送信に失敗しました');
+        const errorData = await response.text().catch(() => '');
+        if (errorData.includes('無効') || errorData.includes('invalid') || response.status === 400) {
+          setSendStatus('error');
+          setOrderError('オーダー番号が無効です。再度入力してください。');
+          setOrderNumber('');
+        } else {
+          setSendStatus('error');
+          console.error('Failed to send to Make:', response.status, response.statusText);
+          setOrderError('送信に失敗しました。もう一度お試しください。');
+        }
       }
     } catch (error) {
       console.error('Error sending to Make:', error);
       setSendStatus('error');
-      alert('送信に失敗しました');
+      setOrderError('送信に失敗しました。もう一度お試しください。');
     } finally {
       setIsSending(false);
       setAutoSent(true);
@@ -140,13 +157,16 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
 
   const handleUnlockResults = () => {
     setShowOrderInput(true);
+    setOrderError('');
+    setOrderNumber('');
   };
 
   const handleOrderSubmit = () => {
     if (!orderNumber.trim()) {
-      alert('オーダー番号を入力してください');
+      setOrderError('オーダー番号を入力してください');
       return;
     }
+    setOrderError('');
     handleSendToMake(orderNumber);
   };
 
@@ -213,27 +233,54 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
   return (
     <>
       {showOrderInput && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{
-          background: 'rgba(0, 0, 0, 0.85)',
-          backdropFilter: 'blur(10px)',
-        }}>
-          <div className="max-w-md w-full p-6 sm:p-8 rounded-lg" style={{
+        <div
+          className="fixed inset-0 flex items-center justify-center px-4"
+          style={{
             background: 'rgba(0, 0, 0, 0.9)',
-            border: '2px solid rgba(166, 124, 82, 0.6)',
-            boxShadow: '0 0 40px rgba(166, 124, 82, 0.3)',
+            backdropFilter: 'blur(15px)',
+            zIndex: 9999,
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        >
+          <div className="max-w-md w-full p-6 sm:p-8 rounded-lg" style={{
+            background: 'rgba(0, 0, 0, 0.95)',
+            border: '3px solid rgba(191, 167, 110, 0.8)',
+            boxShadow: '0 0 60px rgba(191, 167, 110, 0.5), inset 0 0 30px rgba(166, 124, 82, 0.2)',
           }}>
-            <h3 className="text-xl sm:text-2xl font-bold mb-6 text-center glow-text" style={{ color: 'var(--pale-gold)' }}>
+            <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-center glow-text" style={{
+              color: 'var(--pale-gold)',
+              textShadow: '0 0 20px rgba(191, 167, 110, 0.8)',
+            }}>
               オーダー番号を入力してください
             </h3>
             <p className="text-sm sm:text-base mb-6 text-center leading-relaxed" style={{ color: 'var(--pale-light)' }}>
               例：1019088409
             </p>
+
+            {orderError && (
+              <div className="mb-4 p-3 rounded text-center" style={{
+                background: 'rgba(122, 29, 46, 0.3)',
+                border: '2px solid rgba(122, 29, 46, 0.6)',
+                color: 'var(--rust-red)',
+              }}>
+                {orderError}
+              </div>
+            )}
+
             <input
               type="text"
               value={orderNumber}
-              onChange={(e) => setOrderNumber(e.target.value)}
+              onChange={(e) => {
+                setOrderNumber(e.target.value);
+                setOrderError('');
+              }}
               placeholder="オーダー番号"
-              className="w-full px-4 py-3 mb-6 rounded text-center text-lg"
+              disabled={isSending}
+              className="w-full px-4 py-4 mb-6 rounded text-center text-lg font-medium"
               style={{
                 background: 'rgba(0, 0, 0, 0.5)',
                 border: '2px solid rgba(166, 124, 82, 0.5)',
@@ -248,23 +295,31 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
                 e.target.style.border = '2px solid rgba(166, 124, 82, 0.5)';
                 e.target.style.boxShadow = 'none';
               }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleOrderSubmit();
+                }
+              }}
             />
             <div className="flex gap-3">
               <button
                 onClick={() => {
                   setShowOrderInput(false);
                   setOrderNumber('');
+                  setOrderError('');
                 }}
-                className="flex-1 px-4 py-3 rounded border-2 border-white/20 hover:bg-white/5 transition-all duration-300 font-semibold text-sm sm:text-base"
+                disabled={isSending}
+                className="flex-1 px-4 py-3 rounded border-2 border-white/20 hover:bg-white/5 transition-all duration-300 font-semibold text-sm sm:text-base disabled:opacity-50"
                 style={{ color: 'var(--pale-light)' }}
               >
                 キャンセル
               </button>
               <button
                 onClick={handleOrderSubmit}
-                className="flex-1 mystic-button px-4 py-3 text-sm sm:text-base font-bold"
+                disabled={isSending}
+                className="flex-1 mystic-button px-4 py-3 text-sm sm:text-base font-bold disabled:opacity-50"
               >
-                送信
+                {isSending ? '送信中...' : '送信'}
               </button>
             </div>
           </div>
@@ -908,14 +963,17 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
         <div className="space-y-3 sm:space-y-4">
           <button
             onClick={handleUnlockResults}
-            className="w-full mystic-button flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-4"
+            className="w-full flex items-center justify-center gap-2 sm:gap-3 px-8 py-6 rounded-lg transition-all duration-300 hover:scale-105"
             style={{
-              background: 'linear-gradient(135deg, rgba(166, 124, 82, 0.3), rgba(191, 167, 110, 0.2))',
-              border: '2px solid rgba(191, 167, 110, 0.6)',
-              boxShadow: '0 0 30px rgba(191, 167, 110, 0.4)',
+              background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.4), rgba(166, 124, 82, 0.3))',
+              border: '3px solid rgba(191, 167, 110, 0.9)',
+              boxShadow: '0 0 50px rgba(191, 167, 110, 0.6), inset 0 0 30px rgba(166, 124, 82, 0.3)',
+              textShadow: '0 0 15px rgba(191, 167, 110, 0.8)',
             }}
           >
-            <span className="text-lg sm:text-xl font-bold">全ての結果を開放する</span>
+            <span className="text-xl sm:text-2xl md:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
+              全ての結果を開放する
+            </span>
           </button>
 
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-5">
