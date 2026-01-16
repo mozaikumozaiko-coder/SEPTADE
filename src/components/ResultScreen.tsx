@@ -22,6 +22,8 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
   const [gptReport, setGptReport] = useState<GPTReport | null>(null);
   const [isLoadingReport, setIsLoadingReport] = useState(false);
   const [userId] = useState(() => `user_${Date.now()}_${Math.random().toString(36).substring(7)}`);
+  const [showOrderInput, setShowOrderInput] = useState(false);
+  const [orderNumber, setOrderNumber] = useState('');
 
   const handleShare = () => {
     const shareText = `セプテード診断\n\n私の魂の型: ${result.type} - ${result.typeName}\n${result.description}`;
@@ -37,7 +39,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
     }
   };
 
-  const handleSendToMake = async () => {
+  const handleSendToMake = async (orderId: string) => {
     const webhookUrl = import.meta.env.VITE_MAKE_WEBHOOK_URL;
 
     if (!webhookUrl || webhookUrl === 'YOUR_MAKE_WEBHOOK_URL_HERE') {
@@ -59,6 +61,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
     const fourPillarsChart = calculateFourPillars(profile.birthdate);
 
     const dataToSend = {
+      orderId: orderId,
       tarot: {
         id: tarotCard.id,
         name: tarotCard.name,
@@ -117,17 +120,34 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
       if (response.ok) {
         setSendStatus('success');
         console.log('Successfully sent to Make');
+        alert('結果を開放しました');
+        setShowOrderInput(false);
+        setOrderNumber('');
       } else {
         setSendStatus('error');
         console.error('Failed to send to Make:', response.status, response.statusText);
+        alert('送信に失敗しました');
       }
     } catch (error) {
       console.error('Error sending to Make:', error);
       setSendStatus('error');
+      alert('送信に失敗しました');
     } finally {
       setIsSending(false);
       setAutoSent(true);
     }
+  };
+
+  const handleUnlockResults = () => {
+    setShowOrderInput(true);
+  };
+
+  const handleOrderSubmit = () => {
+    if (!orderNumber.trim()) {
+      alert('オーダー番号を入力してください');
+      return;
+    }
+    handleSendToMake(orderNumber);
   };
 
   const fetchReportFromSupabase = async () => {
@@ -175,9 +195,6 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
   };
 
   useEffect(() => {
-    if (!autoSent) {
-      handleSendToMake();
-    }
     startReportPolling();
   }, []);
 
@@ -194,8 +211,68 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-3 sm:px-4 py-8 sm:py-12">
-      <div className="max-w-4xl w-full relative">
+    <>
+      {showOrderInput && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{
+          background: 'rgba(0, 0, 0, 0.85)',
+          backdropFilter: 'blur(10px)',
+        }}>
+          <div className="max-w-md w-full p-6 sm:p-8 rounded-lg" style={{
+            background: 'rgba(0, 0, 0, 0.9)',
+            border: '2px solid rgba(166, 124, 82, 0.6)',
+            boxShadow: '0 0 40px rgba(166, 124, 82, 0.3)',
+          }}>
+            <h3 className="text-xl sm:text-2xl font-bold mb-6 text-center glow-text" style={{ color: 'var(--pale-gold)' }}>
+              オーダー番号を入力してください
+            </h3>
+            <p className="text-sm sm:text-base mb-6 text-center leading-relaxed" style={{ color: 'var(--pale-light)' }}>
+              例：1019088409
+            </p>
+            <input
+              type="text"
+              value={orderNumber}
+              onChange={(e) => setOrderNumber(e.target.value)}
+              placeholder="オーダー番号"
+              className="w-full px-4 py-3 mb-6 rounded text-center text-lg"
+              style={{
+                background: 'rgba(0, 0, 0, 0.5)',
+                border: '2px solid rgba(166, 124, 82, 0.5)',
+                color: 'var(--pale-light)',
+                outline: 'none',
+              }}
+              onFocus={(e) => {
+                e.target.style.border = '2px solid rgba(191, 167, 110, 0.8)';
+                e.target.style.boxShadow = '0 0 20px rgba(191, 167, 110, 0.3)';
+              }}
+              onBlur={(e) => {
+                e.target.style.border = '2px solid rgba(166, 124, 82, 0.5)';
+                e.target.style.boxShadow = 'none';
+              }}
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowOrderInput(false);
+                  setOrderNumber('');
+                }}
+                className="flex-1 px-4 py-3 rounded border-2 border-white/20 hover:bg-white/5 transition-all duration-300 font-semibold text-sm sm:text-base"
+                style={{ color: 'var(--pale-light)' }}
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handleOrderSubmit}
+                className="flex-1 mystic-button px-4 py-3 text-sm sm:text-base font-bold"
+              >
+                送信
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="min-h-screen flex items-center justify-center px-3 sm:px-4 py-8 sm:py-12">
+        <div className="max-w-4xl w-full relative">
         <div className="relative z-10 space-y-5 sm:space-y-6 md:space-y-8 py-12 px-6 sm:px-8 md:px-12">
         <div className="rounded-lg p-6 sm:p-8 md:p-12 lg:p-16 text-center relative" style={{
           background: 'rgba(0, 0, 0, 0.7)',
@@ -828,23 +905,37 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-5">
+        <div className="space-y-3 sm:space-y-4">
           <button
-            onClick={handleShare}
-            className="mystic-button flex-1 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-3 sm:py-4"
+            onClick={handleUnlockResults}
+            className="w-full mystic-button flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-4"
+            style={{
+              background: 'linear-gradient(135deg, rgba(166, 124, 82, 0.3), rgba(191, 167, 110, 0.2))',
+              border: '2px solid rgba(191, 167, 110, 0.6)',
+              boxShadow: '0 0 30px rgba(191, 167, 110, 0.4)',
+            }}
           >
-            <Share2 size={18} className="sm:w-5 sm:h-5" />
-            <span>魂の形を伝える</span>
+            <span className="text-lg sm:text-xl font-bold">全ての結果を開放する</span>
           </button>
 
-          <button
-            onClick={onRestart}
-            className="flex-1 px-6 sm:px-8 py-3 sm:py-4 rounded border-2 border-white/20 hover:bg-white/5 transition-all duration-300 font-semibold text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 sm:gap-3"
-            style={{ color: 'var(--pale-light)' }}
-          >
-            <RotateCcw size={18} className="sm:w-5 sm:h-5" />
-            <span>再び巡礼する</span>
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-5">
+            <button
+              onClick={handleShare}
+              className="mystic-button flex-1 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-3 sm:py-4"
+            >
+              <Share2 size={18} className="sm:w-5 sm:h-5" />
+              <span>魂の形を伝える</span>
+            </button>
+
+            <button
+              onClick={onRestart}
+              className="flex-1 px-6 sm:px-8 py-3 sm:py-4 rounded border-2 border-white/20 hover:bg-white/5 transition-all duration-300 font-semibold text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 sm:gap-3"
+              style={{ color: 'var(--pale-light)' }}
+            >
+              <RotateCcw size={18} className="sm:w-5 sm:h-5" />
+              <span>再び巡礼する</span>
+            </button>
+          </div>
         </div>
 
         <div className="text-center">
@@ -863,6 +954,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
         </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
