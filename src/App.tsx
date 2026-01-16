@@ -14,6 +14,7 @@ import { DiagnosisHistoryList } from './components/DiagnosisHistoryList';
 import { Profile, Answer, DiagnosisResult } from './types';
 import { getDiagnosisResult } from './utils/diagnosis';
 import { supabase } from './lib/supabase';
+import { saveDiagnosisHistory } from './lib/diagnosisHistory';
 
 type Screen = 'landing' | 'profile' | 'questions' | 'result';
 
@@ -45,6 +46,7 @@ function DiagnosisApp() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [result, setResult] = useState<DiagnosisResult | null>(null);
   const [isFromHistory, setIsFromHistory] = useState(false);
+  const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
 
   const handleProfileComplete = (profileData: Profile) => {
     setProfile(profileData);
@@ -90,6 +92,7 @@ function DiagnosisApp() {
 
     if (profile) {
       await saveReportToDatabase(profile, diagnosisResult, answers);
+      await saveDiagnosisHistory(profile, diagnosisResult);
     }
 
     setCurrentScreen('result');
@@ -99,6 +102,7 @@ function DiagnosisApp() {
     setProfile(null);
     setResult(null);
     setIsFromHistory(false);
+    setHistoryRefreshKey(prev => prev + 1);
     setCurrentScreen('landing');
   };
 
@@ -269,7 +273,7 @@ function DiagnosisApp() {
             </div>
 
             <div className="mt-8 sm:mt-12">
-              <DiagnosisHistoryList onSelectHistory={handleSelectHistory} />
+              <DiagnosisHistoryList key={historyRefreshKey} onSelectHistory={handleSelectHistory} />
             </div>
             </div>
           </div>
