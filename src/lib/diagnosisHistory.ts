@@ -18,10 +18,13 @@ export async function saveDiagnosisHistory(
 ): Promise<void> {
   const userIdentifier = createUserIdentifier(profile.name, profile.birthdate);
 
+  const { data: { user } } = await supabase.auth.getUser();
+
   const { error } = await supabase
     .from('diagnosis_history')
     .insert({
       user_identifier: userIdentifier,
+      user_id: user?.id || null,
       profile_data: profile,
       result_data: result,
     });
@@ -51,6 +54,35 @@ export async function getDiagnosisHistory(
   }
 
   return (data || []).map(item => ({
+    profile: item.profile_data as Profile,
+    result: item.result_data as DiagnosisResult,
+    createdAt: item.created_at,
+  }));
+}
+
+export async function getUserDiagnosisHistory(
+  limit: number = 5
+): Promise<Array<{ id: string; profile: Profile; result: DiagnosisResult; createdAt: string }>> {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from('diagnosis_history')
+    .select('id, profile_data, result_data, created_at')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Error fetching user diagnosis history:', error);
+    return [];
+  }
+
+  return (data || []).map(item => ({
+    id: item.id,
     profile: item.profile_data as Profile,
     result: item.result_data as DiagnosisResult,
     createdAt: item.created_at,

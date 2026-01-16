@@ -10,6 +10,7 @@ import { ResetPasswordScreen } from './components/auth/ResetPasswordScreen';
 import { ProfileScreen } from './components/ProfileScreen';
 import { QuestionScreen } from './components/QuestionScreen';
 import { ResultScreen } from './components/ResultScreen';
+import { DiagnosisHistoryList } from './components/DiagnosisHistoryList';
 import { Profile, Answer, DiagnosisResult } from './types';
 import { getDiagnosisResult } from './utils/diagnosis';
 import { supabase } from './lib/supabase';
@@ -96,6 +97,12 @@ function DiagnosisApp() {
     setProfile(null);
     setResult(null);
     setCurrentScreen('landing');
+  };
+
+  const handleSelectHistory = (historyProfile: Profile, historyResult: DiagnosisResult) => {
+    setProfile(historyProfile);
+    setResult(historyResult);
+    setCurrentScreen('result');
   };
 
   return (
@@ -246,6 +253,10 @@ function DiagnosisApp() {
               <p className="text-xs sm:text-sm mt-4 sm:mt-6 glow-text" style={{ color: 'var(--pale-light)', opacity: 0.85 }}>
                 ─ 所要刻：約十五分 ─
               </p>
+            </div>
+
+            <div className="mt-8 sm:mt-12">
+              <DiagnosisHistoryList onSelectHistory={handleSelectHistory} />
             </div>
             </div>
           </div>
