@@ -24,7 +24,7 @@ export function DiagnosisHistoryList({ onSelectHistory }: DiagnosisHistoryListPr
 
   const loadHistory = async () => {
     setLoading(true);
-    const data = await getUserDiagnosisHistory(5);
+    const data = await getUserDiagnosisHistory(3);
     setHistory(data);
     setLoading(false);
   };
@@ -62,28 +62,37 @@ export function DiagnosisHistoryList({ onSelectHistory }: DiagnosisHistoryListPr
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <div className="text-center mb-6">
-        <h3 className="text-xl sm:text-2xl font-bold mb-2 glow-text" style={{ color: 'var(--pale-gold)' }}>
-          過去の巡礼記録
-        </h3>
-        <p className="text-xs sm:text-sm opacity-70" style={{ color: 'var(--dim-light)' }}>
-          汝が辿りし魂の軌跡
-        </p>
-      </div>
+    <div className="w-full max-w-2xl mx-auto px-4">
+      <div
+        className="rounded-xl p-6"
+        style={{
+          background: 'linear-gradient(135deg, rgba(20, 15, 10, 0.95), rgba(30, 20, 15, 0.92))',
+          border: '2px solid rgba(166, 124, 82, 0.5)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(166, 124, 82, 0.1)',
+          backdropFilter: 'blur(10px)',
+        }}
+      >
+        <div className="text-center mb-6">
+          <h3 className="text-xl sm:text-2xl font-bold mb-2 glow-text" style={{ color: 'var(--pale-gold)' }}>
+            過去の巡礼記録
+          </h3>
+          <p className="text-xs sm:text-sm opacity-70" style={{ color: 'var(--dim-light)' }}>
+            汝が辿りし魂の軌跡
+          </p>
+        </div>
 
-      <div className="space-y-3">
-        {history.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => onSelectHistory(item.profile, item.result)}
-            className="w-full p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] text-left"
-            style={{
-              background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(122, 29, 46, 0.2))',
-              border: '2px solid rgba(166, 124, 82, 0.4)',
-              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-            }}
-          >
+        <div className="space-y-3">
+          {history.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => onSelectHistory(item.profile, item.result)}
+              className="w-full p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] text-left"
+              style={{
+                background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.7), rgba(122, 29, 46, 0.6))',
+                border: '2px solid rgba(166, 124, 82, 0.6)',
+                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.4)',
+              }}
+            >
             <div className="flex items-center justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 mb-2">
@@ -112,6 +121,7 @@ export function DiagnosisHistoryList({ onSelectHistory }: DiagnosisHistoryListPr
             </div>
           </button>
         ))}
+        </div>
       </div>
     </div>
   );

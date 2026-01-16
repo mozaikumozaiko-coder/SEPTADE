@@ -44,6 +44,7 @@ function DiagnosisApp() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
   const [profile, setProfile] = useState<Profile | null>(null);
   const [result, setResult] = useState<DiagnosisResult | null>(null);
+  const [isFromHistory, setIsFromHistory] = useState(false);
 
   const handleProfileComplete = (profileData: Profile) => {
     setProfile(profileData);
@@ -85,6 +86,7 @@ function DiagnosisApp() {
   const handleQuestionsComplete = async (answers: Answer[]) => {
     const diagnosisResult = getDiagnosisResult(answers);
     setResult(diagnosisResult);
+    setIsFromHistory(false);
 
     if (profile) {
       await saveReportToDatabase(profile, diagnosisResult, answers);
@@ -96,12 +98,14 @@ function DiagnosisApp() {
   const handleRestart = () => {
     setProfile(null);
     setResult(null);
+    setIsFromHistory(false);
     setCurrentScreen('landing');
   };
 
   const handleSelectHistory = (historyProfile: Profile, historyResult: DiagnosisResult) => {
     setProfile(historyProfile);
     setResult(historyResult);
+    setIsFromHistory(true);
     setCurrentScreen('result');
   };
 
@@ -139,7 +143,7 @@ function DiagnosisApp() {
           animate="animate"
           exit="exit"
         >
-          <ResultScreen result={result} profile={profile} onRestart={handleRestart} />
+          <ResultScreen result={result} profile={profile} onRestart={handleRestart} isFromHistory={isFromHistory} />
         </motion.div>
       )}
 

@@ -61,7 +61,7 @@ export async function getDiagnosisHistory(
 }
 
 export async function getUserDiagnosisHistory(
-  limit: number = 5
+  limit: number = 3
 ): Promise<Array<{ id: string; profile: Profile; result: DiagnosisResult; createdAt: string }>> {
   const { data: { user } } = await supabase.auth.getUser();
 

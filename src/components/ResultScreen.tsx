@@ -16,9 +16,10 @@ interface ResultScreenProps {
   result: DiagnosisResult;
   profile: Profile;
   onRestart: () => void;
+  isFromHistory?: boolean;
 }
 
-export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) {
+export function ResultScreen({ result, profile, onRestart, isFromHistory = false }: ResultScreenProps) {
   const [isSending, setIsSending] = useState(false);
   const [, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [autoSent, setAutoSent] = useState(false);
@@ -222,8 +223,10 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
   };
 
   useEffect(() => {
-    saveDiagnosisHistory(profile, result);
-  }, []);
+    if (!isFromHistory) {
+      saveDiagnosisHistory(profile, result);
+    }
+  }, [isFromHistory]);
 
   const normalizeScore = (score: number): number => {
     return Math.round(Math.max(0, Math.min(100, ((score + 100) / 2))));
