@@ -13,7 +13,6 @@ import { ResultScreen } from './components/ResultScreen';
 import { DiagnosisHistoryList } from './components/DiagnosisHistoryList';
 import { Profile, Answer, DiagnosisResult } from './types';
 import { getDiagnosisResult } from './utils/diagnosis';
-import { supabase } from './lib/supabase';
 import { saveDiagnosisHistory } from './lib/diagnosisHistory';
 
 type Screen = 'landing' | 'profile' | 'questions' | 'result';
@@ -53,45 +52,12 @@ function DiagnosisApp() {
     setCurrentScreen('questions');
   };
 
-  const saveReportToDatabase = async (
-    profileData: Profile,
-    diagnosisResult: DiagnosisResult,
-    answers: Answer[]
-  ) => {
-    try {
-      const reportData = {
-        profile: profileData,
-        result: diagnosisResult,
-        answers: answers,
-        timestamp: new Date().toISOString(),
-      };
-
-      const { data, error } = await supabase
-        .from('reports')
-        .insert({
-          user_id: `${profileData.name}_${Date.now()}`,
-          report_data: reportData,
-        })
-        .select()
-        .maybeSingle();
-
-      if (error) {
-        console.error('診断結果の保存エラー:', error);
-      } else {
-        console.log('診断結果を保存しました:', data);
-      }
-    } catch (err) {
-      console.error('診断結果の保存に失敗:', err);
-    }
-  };
-
   const handleQuestionsComplete = async (answers: Answer[]) => {
     const diagnosisResult = getDiagnosisResult(answers);
     setResult(diagnosisResult);
     setIsFromHistory(false);
 
     if (profile) {
-      await saveReportToDatabase(profile, diagnosisResult, answers);
       await saveDiagnosisHistory(profile, diagnosisResult);
     }
 
@@ -273,7 +239,7 @@ function DiagnosisApp() {
             </div>
 
             <div className="mt-8 sm:mt-12">
-              <DiagnosisHistoryList key={historyRefreshKey} onSelectHistory={handleSelectHistory} />
+              <DiagnosisHistoryList refreshTrigger={historyRefreshKey} onSelectHistory={handleSelectHistory} />
             </div>
             </div>
           </div>

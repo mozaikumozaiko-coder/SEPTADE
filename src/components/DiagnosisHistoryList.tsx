@@ -12,15 +12,16 @@ interface HistoryItem {
 
 interface DiagnosisHistoryListProps {
   onSelectHistory: (profile: Profile, result: DiagnosisResult) => void;
+  refreshTrigger?: number;
 }
 
-export function DiagnosisHistoryList({ onSelectHistory }: DiagnosisHistoryListProps) {
+export function DiagnosisHistoryList({ onSelectHistory, refreshTrigger }: DiagnosisHistoryListProps) {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadHistory();
-  }, []);
+  }, [refreshTrigger]);
 
   const loadHistory = async () => {
     setLoading(true);
