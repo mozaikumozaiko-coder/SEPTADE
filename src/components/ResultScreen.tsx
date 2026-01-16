@@ -983,7 +983,7 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
 
         <div className="space-y-3 sm:space-y-4">
           <button
-            onClick={handleUnlockResults}
+            onClick={handleShare}
             className="w-full flex items-center justify-center gap-2 sm:gap-3 px-8 py-6 rounded-lg transition-all duration-300 hover:scale-105"
             style={{
               background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.4), rgba(166, 124, 82, 0.3))',
@@ -992,18 +992,18 @@ export function ResultScreen({ result, profile, onRestart }: ResultScreenProps) 
               textShadow: '0 0 15px rgba(191, 167, 110, 0.8)',
             }}
           >
+            <Share2 size={24} className="sm:w-7 sm:h-7" />
             <span className="text-xl sm:text-2xl md:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
-              全ての結果を開放する
+              魂の形を伝える
             </span>
           </button>
 
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-5">
             <button
-              onClick={handleShare}
+              onClick={handleUnlockResults}
               className="mystic-button flex-1 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-3 sm:py-4"
             >
-              <Share2 size={18} className="sm:w-5 sm:h-5" />
-              <span>魂の形を伝える</span>
+              <span>全ての結果を開放する</span>
             </button>
 
             <button
