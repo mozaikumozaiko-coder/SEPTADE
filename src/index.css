@@ -186,8 +186,8 @@
     content: '';
     position: absolute;
     inset: 10px 55px 20px 55px;
-    background: rgba(10, 8, 5, 0.85);
-    backdrop-filter: blur(3px);
+    background: rgba(20, 15, 10, 0.4);
+    backdrop-filter: blur(0.5px);
     border-radius: 8px;
     pointer-events: none;
     z-index: -1;
