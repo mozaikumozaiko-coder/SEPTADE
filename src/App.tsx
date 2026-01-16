@@ -175,11 +175,20 @@ function DiagnosisApp() {
                 />
               </div>
 
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2 sm:mb-3 glow-text" style={{ color: 'var(--pale-gold)' }}>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2 sm:mb-3 glow-text" style={{
+                color: '#FFE4A0',
+                textShadow: '0 0 20px rgba(255, 228, 160, 0.9), 0 0 40px rgba(255, 228, 160, 0.7), 0 0 60px rgba(255, 228, 160, 0.5), 0 4px 8px rgba(0, 0, 0, 0.9)',
+                fontWeight: '900'
+              }}>
                 七軸十七類診断
               </h1>
 
-              <p className="text-xl sm:text-2xl md:text-3xl mb-4 sm:mb-6 glow-text font-medium" style={{ color: 'var(--ochre)', opacity: 0.9 }}>
+              <p className="text-xl sm:text-2xl md:text-3xl mb-4 sm:mb-6 glow-text font-bold" style={{
+                color: '#FFF8E1',
+                textShadow: '0 0 25px rgba(255, 248, 225, 1), 0 0 50px rgba(255, 248, 225, 0.8), 0 0 75px rgba(255, 248, 225, 0.6), 0 4px 10px rgba(0, 0, 0, 0.95)',
+                fontWeight: '800',
+                letterSpacing: '0.05em'
+              }}>
                 ─ セプテード診断 ─
               </p>
 
