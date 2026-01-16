@@ -224,16 +224,112 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
             </h3>
 
             <div className="mb-8 space-y-3">
-              <p className="text-lg" style={{ color: 'var(--pale-light)' }}>
-                {chapter * 20}の問いに答え終えた
-              </p>
+              {chapter === 1 && (
+                <>
+                  <p className="text-lg" style={{ color: 'var(--pale-light)' }}>
+                    {chapter * 20}の問いに答え終えた
+                  </p>
 
-              <p className="text-base opacity-80 leading-loose" style={{ color: 'var(--dim-light)' }}>
-                汝の魂の輪郭が、徐々に浮かび上がりつつある。<br />
-                <br />
-                されど、真実は未だ深き霧の中。<br />
-                次なる章へと歩を進めよ。
-              </p>
+                  <p className="text-base opacity-80 leading-loose" style={{ color: 'var(--dim-light)' }}>
+                    汝の魂の輪郭が、徐々に浮かび上がりつつある。<br />
+                    <br />
+                    されど、真実は未だ深き霧の中。<br />
+                    次なる章へと歩を進めよ。
+                  </p>
+                </>
+              )}
+
+              {chapter === 2 && (
+                <>
+                  <p className="text-lg font-bold mb-4" style={{ color: 'var(--pale-light)' }}>
+                    第二の問い、答え終えた。
+                  </p>
+
+                  <p className="text-base opacity-80 leading-loose" style={{ color: 'var(--dim-light)' }}>
+                    汝の魂は、ただの輪郭ではない。<br />
+                    光に照らされる部分と、影に潜む衝動がある。<br />
+                    <br />
+                    ここで見えたのは、<br />
+                    汝が「何を求め」、そして「何を恐れる」か。<br />
+                    <br />
+                    されど、まだ足りぬ。<br />
+                    人は願いだけで動かず、痛みでも動く。<br />
+                    <br />
+                    次なる章へと歩を進めよ。
+                  </p>
+                </>
+              )}
+
+              {chapter === 3 && (
+                <>
+                  <p className="text-lg font-bold mb-4" style={{ color: 'var(--pale-light)' }}>
+                    第三の問い、答え終えた。
+                  </p>
+
+                  <p className="text-base opacity-80 leading-loose" style={{ color: 'var(--dim-light)' }}>
+                    汝の内なる癖は、いま明らかになった。<br />
+                    追い風のときに伸びるのか、<br />
+                    逆風のときに燃えるのか。<br />
+                    <br />
+                    そして、崩れる瞬間の型――<br />
+                    汝が弱るのは怠けではない。<br />
+                    「守りたいもの」がある証なり。<br />
+                    <br />
+                    されど、真の試練は外にある。<br />
+                    人と交わる時、魂は最も露わになる。<br />
+                    <br />
+                    次なる章へと歩を進めよ。
+                  </p>
+                </>
+              )}
+
+              {chapter === 4 && (
+                <>
+                  <p className="text-lg font-bold mb-4" style={{ color: 'var(--pale-light)' }}>
+                    第四の問い、答え終えた。
+                  </p>
+
+                  <p className="text-base opacity-80 leading-loose" style={{ color: 'var(--dim-light)' }}>
+                    汝の対人の構えが見えた。<br />
+                    近づきて力となる者。<br />
+                    離れこそ安寧となる者。<br />
+                    言葉よりも先に、空気を読む者。<br />
+                    刃のごとく、正しさを振るう者。<br />
+                    <br />
+                    縁は運命を運ぶ舟。<br />
+                    だが舟を操るのは、汝の選択である。<br />
+                    <br />
+                    されど、縁の先にあるもの――<br />
+                    「進路」を決めねば、舟は漂うのみ。<br />
+                    <br />
+                    次なる章へと歩を進めよ。
+                  </p>
+                </>
+              )}
+
+              {chapter === 5 && (
+                <>
+                  <p className="text-lg font-bold mb-4" style={{ color: 'var(--pale-light)' }}>
+                    第五の問い、答え終えた。
+                  </p>
+
+                  <p className="text-base opacity-80 leading-loose" style={{ color: 'var(--dim-light)' }}>
+                    ここにて、汝の魂は一つに結ばれた。<br />
+                    輪郭、衝動、逆境の型、縁の構え、そして進路。<br />
+                    散らばりし断片は、今や一本の道となる。<br />
+                    <br />
+                    されど、道は知るだけでは開かれぬ。<br />
+                    歩むことで、運命は動く。<br />
+                    <br />
+                    最後に授けよう。<br />
+                    汝の「勝ち筋」と「禁じ手」。<br />
+                    そして、明日からの一手。<br />
+                    <br />
+                    汝はもう、霧の中の旅人ではない。<br />
+                    ――ここより先、汝自身が灯火となれ。
+                  </p>
+                </>
+              )}
             </div>
 
             <button onClick={handleChapterModalClose} className="mystic-button">
