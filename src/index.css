@@ -68,7 +68,7 @@
     color: var(--text-main);
     font-family: 'Noto Serif JP', 'Yu Mincho', 'YuMincho', 'Hiragino Mincho ProN', serif;
     background-image: url('/chatgpt_image_2026年1月5日_20_53_08.png');
-    background-size: cover;
+    background-size: auto;
     background-position: 80% center;
     background-repeat: no-repeat;
     background-attachment: fixed;
