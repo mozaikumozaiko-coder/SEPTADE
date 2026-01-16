@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Profile, DiagnosisResult } from '../types';
-import { User, Calendar, Users, ScrollText, History } from 'lucide-react';
-import { getDiagnosisHistory } from '../lib/diagnosisHistory';
+import { useState } from 'react';
+import { Profile } from '../types';
+import { User, Calendar, Users, ScrollText } from 'lucide-react';
 
 interface ProfileScreenProps {
   onComplete: (profile: Profile) => void;
@@ -16,20 +15,6 @@ export function ProfileScreen({ onComplete }: ProfileScreenProps) {
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof Profile, string>>>({});
-  const [history, setHistory] = useState<Array<{ profile: Profile; result: DiagnosisResult; createdAt: string }>>([]);
-
-  useEffect(() => {
-    const fetchHistory = async () => {
-      if (profile.name.trim() && profile.birthdate) {
-        const historyData = await getDiagnosisHistory(profile.name, profile.birthdate, 5);
-        setHistory(historyData);
-      } else {
-        setHistory([]);
-      }
-    };
-
-    fetchHistory();
-  }, [profile.name, profile.birthdate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -181,41 +166,6 @@ export function ProfileScreen({ onComplete }: ProfileScreenProps) {
             </p>
           </div>
         </form>
-
-        {history.length > 0 && (
-          <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10">
-            <h3 className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 text-lg sm:text-xl font-bold" style={{ color: 'var(--pale-gold)' }}>
-              <History size={20} className="sm:w-6 sm:h-6" style={{ color: 'var(--ochre)' }} />
-              <span>過去の記録</span>
-            </h3>
-            <div className="space-y-3">
-              {history.map((item, index) => (
-                <div
-                  key={index}
-                  className="p-4 rounded-lg transition-all hover:scale-[1.01]"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.15), rgba(122, 29, 46, 0.15))',
-                    border: '1px solid rgba(166, 124, 82, 0.3)',
-                  }}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex-1">
-                      <div className="font-bold text-sm sm:text-base mb-1" style={{ color: 'var(--pale-gold)' }}>
-                        {item.result.type} - {item.result.typeName}
-                      </div>
-                      <div className="text-xs opacity-75" style={{ color: 'var(--pale-light)' }}>
-                        {new Date(item.createdAt).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}
-                      </div>
-                    </div>
-                    <div className="text-xs opacity-60" style={{ color: 'var(--dim-light)' }}>
-                      診断済み
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
         </div>
       </div>
     </div>
