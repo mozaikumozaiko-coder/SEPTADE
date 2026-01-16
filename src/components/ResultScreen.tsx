@@ -8,7 +8,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { selectTarotCard } from '../lib/tarotSelector';
 import { calculateFourPillars } from '../lib/fourPillars';
-import { saveDiagnosisHistory } from '../lib/diagnosisHistory';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -254,12 +253,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       }
     }, 120000);
   };
-
-  useEffect(() => {
-    if (!isFromHistory) {
-      saveDiagnosisHistory(profile, result);
-    }
-  }, [isFromHistory]);
 
   const normalizeScore = (score: number): number => {
     return Math.round(Math.max(0, Math.min(100, ((score + 100) / 2))));

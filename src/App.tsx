@@ -46,6 +46,7 @@ function DiagnosisApp() {
   const [result, setResult] = useState<DiagnosisResult | null>(null);
   const [isFromHistory, setIsFromHistory] = useState(false);
   const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleProfileComplete = (profileData: Profile) => {
     setProfile(profileData);
@@ -53,12 +54,16 @@ function DiagnosisApp() {
   };
 
   const handleQuestionsComplete = async (answers: Answer[]) => {
+    if (isSaving) return;
+
     const diagnosisResult = getDiagnosisResult(answers);
     setResult(diagnosisResult);
     setIsFromHistory(false);
 
     if (profile) {
+      setIsSaving(true);
       await saveDiagnosisHistory(profile, diagnosisResult);
+      setIsSaving(false);
     }
 
     setCurrentScreen('result');
@@ -68,6 +73,7 @@ function DiagnosisApp() {
     setProfile(null);
     setResult(null);
     setIsFromHistory(false);
+    setIsSaving(false);
     setHistoryRefreshKey(prev => prev + 1);
     setCurrentScreen('landing');
   };
