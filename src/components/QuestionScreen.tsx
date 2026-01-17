@@ -221,7 +221,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
               第 {chapter} 章 完
             </h3>
 
-            <div className="mb-8 space-y-3" style={{ pointerEvents: 'none', overflowY: 'auto', flexGrow: 1, paddingRight: '8px' }}>
+            <div className="mb-4 space-y-3" style={{ pointerEvents: 'none', overflowY: 'auto', flexGrow: 1, paddingRight: '8px' }}>
               {chapter === 1 && (
                 <>
                   <p className="text-lg" style={{ color: 'var(--pale-light)' }}>
@@ -231,8 +231,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
                   <p className="text-base opacity-80 leading-loose" style={{ color: 'var(--dim-light)' }}>
                     汝の魂の輪郭が、徐々に浮かび上がりつつある。<br />
                     <br />
-                    されど、真実は未だ深き霧の中。<br />
-                    次なる章へと歩を進めよ。
+                    されど、真実は未だ深き霧の中。
                   </p>
                 </>
               )}
@@ -251,9 +250,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
                     汝が「何を求め」、そして「何を恐れる」か。<br />
                     <br />
                     されど、まだ足りぬ。<br />
-                    人は願いだけで動かず、痛みでも動く。<br />
-                    <br />
-                    次なる章へと歩を進めよ。
+                    人は願いだけで動かず、痛みでも動く。
                   </p>
                 </>
               )}
@@ -274,9 +271,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
                     「守りたいもの」がある証なり。<br />
                     <br />
                     されど、真の試練は外にある。<br />
-                    人と交わる時、魂は最も露わになる。<br />
-                    <br />
-                    次なる章へと歩を進めよ。
+                    人と交わる時、魂は最も露わになる。
                   </p>
                 </>
               )}
@@ -298,9 +293,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
                     だが舟を操るのは、汝の選択である。<br />
                     <br />
                     されど、縁の先にあるもの――<br />
-                    「進路」を決めねば、舟は漂うのみ。<br />
-                    <br />
-                    次なる章へと歩を進めよ。
+                    「進路」を決めねば、舟は漂うのみ。
                   </p>
                 </>
               )}
@@ -330,7 +323,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
               )}
             </div>
 
-            <div style={{ flexShrink: 0, marginTop: '16px', paddingTop: '16px' }}>
+            <div style={{ flexShrink: 0, marginTop: '0px', paddingTop: '8px' }}>
               <button onClick={handleChapterModalClose} className="mystic-button text-sm sm:text-base" style={{ position: 'relative', zIndex: 9999, pointerEvents: 'auto' }}>
                 次章へ進む
               </button>
