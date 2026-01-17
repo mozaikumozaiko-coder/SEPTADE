@@ -215,11 +215,9 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
 
       {showChapterModal && (
         <div className="chapter-modal">
-          <div className="ornate-border max-w-lg w-full rounded-lg p-12 text-center mx-4 relative" style={{ maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
+          <div className="ornate-border max-w-lg w-full rounded-lg p-6 sm:p-12 text-center mx-4 relative" style={{ maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
             <div className="relative z-10" style={{ display: 'flex', flexDirection: 'column', maxHeight: '100%' }}>
-            <div className="ancient-frame w-28 h-28 mx-auto mb-8 rounded" style={{ flexShrink: 0 }}></div>
-
-            <h3 className="text-3xl font-bold mb-4 glow-text" style={{ color: 'var(--pale-gold)', flexShrink: 0 }}>
+            <h3 className="text-2xl sm:text-3xl font-bold mb-6 glow-text" style={{ color: 'var(--pale-gold)', flexShrink: 0 }}>
               第 {chapter} 章 完
             </h3>
 
@@ -332,8 +330,8 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
               )}
             </div>
 
-            <div style={{ flexShrink: 0, marginTop: '16px' }}>
-              <button onClick={handleChapterModalClose} className="mystic-button" style={{ position: 'relative', zIndex: 9999, pointerEvents: 'auto' }}>
+            <div style={{ flexShrink: 0, marginTop: '16px', paddingTop: '16px' }}>
+              <button onClick={handleChapterModalClose} className="mystic-button text-sm sm:text-base" style={{ position: 'relative', zIndex: 9999, pointerEvents: 'auto' }}>
                 次章へ進む
               </button>
             </div>
