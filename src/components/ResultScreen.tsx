@@ -409,7 +409,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                 あなたのタイプ
               </div>
 
-              {['ENFP', 'ENFJ', 'ENTJ', 'ENTP', 'ESFP', 'ESFJ', 'ESTP', 'ESTJ', 'INFP', 'INTJ', 'INTP', 'ISFP', 'ISFJ', 'ISTP', 'ISTJ'].includes(result.type) && (
+              {['ENFP', 'ENFJ', 'ENTJ', 'ENTJ-A', 'ENTP', 'ESFP', 'ESFJ', 'ESTP', 'ESTJ', 'INFP', 'INTJ', 'INTP', 'ISFP', 'ISFJ', 'ISTP', 'ISTJ'].includes(result.type) && (
                 <div className="mb-4">
                   <img
                     src={`/${result.type.toLowerCase()}.gif`}
