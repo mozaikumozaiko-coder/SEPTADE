@@ -417,7 +417,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                     className="mx-auto"
                     style={{
                       width: '300x',
-                      height: '300px',
+                      height: '280px',
                       filter: 'drop-shadow(0 0 20px rgba(191, 167, 110, 0.6))',
                     }}
                   />
