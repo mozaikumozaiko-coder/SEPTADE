@@ -600,12 +600,17 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                         }}
                       >
                         <div
-                          className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-900/40 to-yellow-800/30 border-2 border-amber-700/50 flex items-center justify-center"
+                          className="w-20 h-20 rounded-full border-2 border-amber-700/50 flex items-center justify-center overflow-hidden"
                           style={{
                             boxShadow: '0 4px 10px rgba(166, 124, 82, 0.3)',
+                            background: 'linear-gradient(135deg, rgba(166, 124, 82, 0.2), rgba(107, 68, 35, 0.1))',
                           }}
                         >
-                          <span className="text-xs font-bold text-amber-300">{typeCode}</span>
+                          <img
+                            src={`/${typeCode.toLowerCase()}.gif`}
+                            alt={typeCode}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
                         <div className="text-center">
                           <p className="text-sm font-bold" style={{ color: 'var(--pale-gold)' }}>
@@ -632,12 +637,17 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                         }}
                       >
                         <div
-                          className="w-20 h-20 rounded-full bg-gradient-to-br from-red-900/40 to-red-950/30 border-2 border-red-800/50 flex items-center justify-center"
+                          className="w-20 h-20 rounded-full border-2 border-red-800/50 flex items-center justify-center overflow-hidden"
                           style={{
                             boxShadow: '0 4px 10px rgba(122, 29, 46, 0.3)',
+                            background: 'linear-gradient(135deg, rgba(122, 29, 46, 0.2), rgba(78, 0, 21, 0.1))',
                           }}
                         >
-                          <span className="text-xs font-bold text-red-300">{typeCode}</span>
+                          <img
+                            src={`/${typeCode.toLowerCase()}.gif`}
+                            alt={typeCode}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
                         <div className="text-center">
                           <p className="text-sm font-bold" style={{ color: 'var(--pale-gold)' }}>
