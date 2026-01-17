@@ -262,13 +262,13 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     <>
       {showOrderInput && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center px-4 py-8 overflow-y-auto"
+          className="fixed inset-0 z-[9999] flex items-center justify-center px-4"
           style={{
             background: 'rgba(0, 0, 0, 0.9)',
             backdropFilter: 'blur(15px)',
           }}
         >
-          <div className="max-w-md w-full p-6 sm:p-8 rounded-lg my-auto" style={{
+          <div className="max-w-md w-full p-6 sm:p-8 rounded-lg max-h-[90vh] overflow-y-auto" style={{
             background: 'rgba(0, 0, 0, 0.95)',
             border: '3px solid rgba(191, 167, 110, 0.8)',
             boxShadow: '0 0 60px rgba(191, 167, 110, 0.5), inset 0 0 30px rgba(166, 124, 82, 0.2)',
