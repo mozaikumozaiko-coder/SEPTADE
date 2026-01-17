@@ -414,7 +414,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                   <img
                     src="/enfp.gif"
                     alt="ENFP"
-                    className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto object-contain"
+                    className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 mx-auto object-contain"
                     style={{
                       filter: 'drop-shadow(0 0 20px rgba(191, 167, 110, 0.6))',
                     }}
