@@ -1,0 +1,168 @@
+import { typeDetails } from '../data/typeDetails';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+export function AllTypesScreen() {
+  const navigate = useNavigate();
+  const allTypes = Object.values(typeDetails);
+
+  return (
+    <div className="min-h-screen relative overflow-hidden" style={{
+      background: 'radial-gradient(ellipse at center, rgba(23, 8, 35, 1) 0%, rgba(7, 2, 15, 1) 100%)',
+    }}>
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-10 left-10 w-64 h-64 rounded-full opacity-20 animate-pulse" style={{
+          background: 'radial-gradient(circle, rgba(191, 167, 110, 0.3), transparent)',
+          filter: 'blur(40px)',
+        }}></div>
+        <div className="absolute bottom-20 right-10 w-72 h-72 rounded-full opacity-20 animate-pulse" style={{
+          background: 'radial-gradient(circle, rgba(166, 124, 82, 0.3), transparent)',
+          filter: 'blur(50px)',
+          animationDelay: '1s',
+        }}></div>
+      </div>
+
+      <div className="relative z-10 px-4 py-8 sm:py-12 max-w-7xl mx-auto">
+        <button
+          onClick={() => navigate(-1)}
+          className="mb-6 flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105"
+          style={{
+            background: 'rgba(0, 0, 0, 0.5)',
+            border: '2px solid rgba(191, 167, 110, 0.5)',
+            color: 'var(--pale-gold)',
+          }}
+        >
+          <ArrowLeft size={20} />
+          <span>戻る</span>
+        </button>
+
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 glow-text" style={{
+            color: 'var(--pale-gold)',
+            textShadow: '0 0 30px rgba(191, 167, 110, 0.8)',
+          }}>
+            全16タイプ一覧
+          </h1>
+          <p className="text-base sm:text-lg" style={{ color: 'var(--pale-light)' }}>
+            それぞれのタイプの詳細を知ることができます
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {allTypes.map((type) => (
+            <div
+              key={type.code}
+              className="p-6 rounded-lg"
+              style={{
+                background: 'rgba(0, 0, 0, 0.6)',
+                border: '2px solid rgba(191, 167, 110, 0.5)',
+                boxShadow: '0 0 30px rgba(191, 167, 110, 0.2)',
+              }}
+            >
+              <div className="mb-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--pale-gold)' }}>
+                    {type.code}
+                  </h2>
+                  <span className="text-xl sm:text-2xl font-bold" style={{ color: 'var(--pale-light)' }}>
+                    {type.name}
+                  </span>
+                </div>
+                <h3 className="text-lg sm:text-xl font-semibold mb-3" style={{ color: 'var(--pale-gold)', opacity: 0.9 }}>
+                  {type.title}
+                </h3>
+                <p className="text-sm sm:text-base leading-relaxed mb-4" style={{ color: 'var(--pale-light)' }}>
+                  {type.description}
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                    特徴
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {type.characteristics.map((char, idx) => (
+                      <span
+                        key={idx}
+                        className="px-3 py-1 text-xs sm:text-sm rounded-full"
+                        style={{
+                          background: 'rgba(191, 167, 110, 0.2)',
+                          border: '1px solid rgba(191, 167, 110, 0.5)',
+                          color: 'var(--pale-gold)',
+                        }}
+                      >
+                        {char}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                    強み
+                  </h4>
+                  <ul className="space-y-1">
+                    {type.strengths.map((strength, idx) => (
+                      <li key={idx} className="text-xs sm:text-sm" style={{ color: 'var(--pale-light)' }}>
+                        ・{strength}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                    弱み
+                  </h4>
+                  <ul className="space-y-1">
+                    {type.weaknesses.map((weakness, idx) => (
+                      <li key={idx} className="text-xs sm:text-sm" style={{ color: 'var(--pale-light)' }}>
+                        ・{weakness}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                    アドバイス
+                  </h4>
+                  <p className="text-xs sm:text-sm leading-relaxed" style={{ color: 'var(--pale-light)' }}>
+                    {type.advice}
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                    適職トップ10
+                  </h4>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+                    {type.topCareers.map((career, idx) => (
+                      <li key={idx} className="text-xs sm:text-sm" style={{ color: 'var(--pale-light)' }}>
+                        {idx + 1}. {career}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                    詳細な弱み
+                  </h4>
+                  <ul className="space-y-1">
+                    {type.detailedWeaknesses.map((weakness, idx) => (
+                      <li key={idx} className="text-xs sm:text-sm" style={{ color: 'var(--pale-light)' }}>
+                        ・{weakness}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -11,6 +11,7 @@ import { ProfileScreen } from './components/ProfileScreen';
 import { QuestionScreen } from './components/QuestionScreen';
 import { ResultScreen } from './components/ResultScreen';
 import { DiagnosisHistoryList } from './components/DiagnosisHistoryList';
+import { AllTypesScreen } from './components/AllTypesScreen';
 import { Profile, Answer, DiagnosisResult } from './types';
 import { getDiagnosisResult } from './utils/diagnosis';
 import { saveDiagnosisHistory } from './lib/diagnosisHistory';
@@ -326,6 +327,14 @@ function App() {
             element={
               <PrivateRoute>
                 <DiagnosisApp />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/all-types"
+            element={
+              <PrivateRoute>
+                <AllTypesScreen />
               </PrivateRoute>
             }
           />

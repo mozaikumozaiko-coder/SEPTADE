@@ -1109,10 +1109,11 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
         <div className="text-center">
           <button
+            onClick={() => navigate('/all-types')}
             className="text-sm sm:text-base font-medium opacity-80 hover:opacity-100 transition-opacity underline"
             style={{ color: 'var(--pale-gold)' }}
           >
-            全17タイプ一覧
+            全16タイプ一覧
           </button>
         </div>
 
