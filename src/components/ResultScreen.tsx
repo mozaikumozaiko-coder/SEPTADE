@@ -260,115 +260,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
   return (
     <>
-      {showOrderInput && (
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center px-4"
-          style={{
-            background: 'rgba(0, 0, 0, 0.9)',
-            backdropFilter: 'blur(15px)',
-          }}
-        >
-          <div className="max-w-md w-full p-6 sm:p-8 rounded-lg max-h-[90vh] overflow-y-auto" style={{
-            background: 'rgba(0, 0, 0, 0.95)',
-            border: '3px solid rgba(191, 167, 110, 0.8)',
-            boxShadow: '0 0 60px rgba(191, 167, 110, 0.5), inset 0 0 30px rgba(166, 124, 82, 0.2)',
-          }}>
-            <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-center glow-text" style={{
-              color: 'var(--pale-gold)',
-              textShadow: '0 0 20px rgba(191, 167, 110, 0.8)',
-            }}>
-              オーダー番号を入力してください
-            </h3>
-            <p className="text-sm sm:text-base mb-6 text-center leading-relaxed" style={{ color: 'var(--pale-light)' }}>
-              例：1019088409
-            </p>
-
-            {orderError && (
-              <div className="mb-4 p-4 rounded text-center space-y-3" style={{
-                background: 'rgba(122, 29, 46, 0.3)',
-                border: '2px solid rgba(122, 29, 46, 0.6)',
-                color: 'var(--rust-red)',
-              }}>
-                <div>{orderError}</div>
-                {orderError.includes('無効') && (
-                  <div className="pt-2 border-t border-white/10">
-                    <p className="text-sm mb-3" style={{ color: 'var(--pale-light)' }}>
-                      購入されていない方はこちらから
-                    </p>
-                    <a
-                      href="https://y8q9lwkafozp6bxasu8o.stores.jp"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block px-6 py-3 rounded-lg font-bold transition-all duration-300 hover:scale-105"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.4), rgba(166, 124, 82, 0.3))',
-                        border: '2px solid rgba(191, 167, 110, 0.8)',
-                        color: 'var(--pale-gold)',
-                        textShadow: '0 0 10px rgba(191, 167, 110, 0.6)',
-                      }}
-                    >
-                      購入サイトへ
-                    </a>
-                  </div>
-                )}
-              </div>
-            )}
-
-            <input
-              type="text"
-              value={orderNumber}
-              onChange={(e) => {
-                setOrderNumber(e.target.value);
-                setOrderError('');
-              }}
-              placeholder="オーダー番号"
-              disabled={isSending}
-              className="w-full px-4 py-4 mb-6 rounded text-center text-lg font-medium"
-              style={{
-                background: 'rgba(0, 0, 0, 0.5)',
-                border: '2px solid rgba(166, 124, 82, 0.5)',
-                color: 'var(--pale-light)',
-                outline: 'none',
-              }}
-              onFocus={(e) => {
-                e.target.style.border = '2px solid rgba(191, 167, 110, 0.8)';
-                e.target.style.boxShadow = '0 0 20px rgba(191, 167, 110, 0.3)';
-              }}
-              onBlur={(e) => {
-                e.target.style.border = '2px solid rgba(166, 124, 82, 0.5)';
-                e.target.style.boxShadow = 'none';
-              }}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  handleOrderSubmit();
-                }
-              }}
-            />
-            <div className="flex gap-3">
-              <button
-                onClick={() => {
-                  setShowOrderInput(false);
-                  setOrderNumber('');
-                  setOrderError('');
-                }}
-                disabled={isSending}
-                className="flex-1 px-4 py-3 rounded border-2 border-white/20 hover:bg-white/5 transition-all duration-300 font-semibold text-sm sm:text-base disabled:opacity-50"
-                style={{ color: 'var(--pale-light)' }}
-              >
-                キャンセル
-              </button>
-              <button
-                onClick={handleOrderSubmit}
-                disabled={isSending}
-                className="flex-1 mystic-button px-4 py-3 text-sm sm:text-base font-bold disabled:opacity-50"
-              >
-                {isSending ? '送信中...' : '送信'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="min-h-screen flex items-center justify-center px-3 sm:px-4 py-8 sm:py-12">
         <div className="max-w-4xl w-full relative">
         <div className="relative z-10 space-y-5 sm:space-y-6 md:space-y-8 py-12 px-6 sm:px-8 md:px-12">
@@ -1105,6 +996,107 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
               <span>ログアウト</span>
             </button>
           </div>
+
+          {showOrderInput && (
+            <div className="max-w-2xl mx-auto p-6 sm:p-8 rounded-lg" style={{
+              background: 'rgba(0, 0, 0, 0.95)',
+              border: '3px solid rgba(191, 167, 110, 0.8)',
+              boxShadow: '0 0 60px rgba(191, 167, 110, 0.5), inset 0 0 30px rgba(166, 124, 82, 0.2)',
+            }}>
+              <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-center glow-text" style={{
+                color: 'var(--pale-gold)',
+                textShadow: '0 0 20px rgba(191, 167, 110, 0.8)',
+              }}>
+                オーダー番号を入力してください
+              </h3>
+              <p className="text-sm sm:text-base mb-6 text-center leading-relaxed" style={{ color: 'var(--pale-light)' }}>
+                例：1019088409
+              </p>
+
+              {orderError && (
+                <div className="mb-4 p-4 rounded text-center space-y-3" style={{
+                  background: 'rgba(122, 29, 46, 0.3)',
+                  border: '2px solid rgba(122, 29, 46, 0.6)',
+                  color: 'var(--rust-red)',
+                }}>
+                  <div>{orderError}</div>
+                  {orderError.includes('無効') && (
+                    <div className="pt-2 border-t border-white/10">
+                      <p className="text-sm mb-3" style={{ color: 'var(--pale-light)' }}>
+                        購入されていない方はこちらから
+                      </p>
+                      <a
+                        href="https://y8q9lwkafozp6bxasu8o.stores.jp"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block px-6 py-3 rounded-lg font-bold transition-all duration-300 hover:scale-105"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.4), rgba(166, 124, 82, 0.3))',
+                          border: '2px solid rgba(191, 167, 110, 0.8)',
+                          color: 'var(--pale-gold)',
+                          textShadow: '0 0 10px rgba(191, 167, 110, 0.6)',
+                        }}
+                      >
+                        購入サイトへ
+                      </a>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <input
+                type="text"
+                value={orderNumber}
+                onChange={(e) => {
+                  setOrderNumber(e.target.value);
+                  setOrderError('');
+                }}
+                placeholder="オーダー番号"
+                disabled={isSending}
+                className="w-full px-4 py-4 mb-6 rounded text-center text-lg font-medium"
+                style={{
+                  background: 'rgba(0, 0, 0, 0.5)',
+                  border: '2px solid rgba(166, 124, 82, 0.5)',
+                  color: 'var(--pale-light)',
+                  outline: 'none',
+                }}
+                onFocus={(e) => {
+                  e.target.style.border = '2px solid rgba(191, 167, 110, 0.8)';
+                  e.target.style.boxShadow = '0 0 20px rgba(191, 167, 110, 0.3)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.border = '2px solid rgba(166, 124, 82, 0.5)';
+                  e.target.style.boxShadow = 'none';
+                }}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    handleOrderSubmit();
+                  }
+                }}
+              />
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowOrderInput(false);
+                    setOrderNumber('');
+                    setOrderError('');
+                  }}
+                  disabled={isSending}
+                  className="flex-1 px-4 py-3 rounded border-2 border-white/20 hover:bg-white/5 transition-all duration-300 font-semibold text-sm sm:text-base disabled:opacity-50"
+                  style={{ color: 'var(--pale-light)' }}
+                >
+                  キャンセル
+                </button>
+                <button
+                  onClick={handleOrderSubmit}
+                  disabled={isSending}
+                  className="flex-1 mystic-button px-4 py-3 text-sm sm:text-base font-bold disabled:opacity-50"
+                >
+                  {isSending ? '送信中...' : '送信'}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
 
