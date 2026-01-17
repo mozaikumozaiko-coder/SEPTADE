@@ -595,20 +595,28 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
               return (
                 <div className="space-y-6">
                   <div className="flex flex-col items-center">
-                    <div className="w-40 h-56 rounded-lg flex flex-col items-center justify-center text-center p-4 mb-4" style={{
-                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.4), rgba(122, 29, 46, 0.4))',
-                      border: '3px solid rgba(166, 124, 82, 0.7)',
-                      boxShadow: '0 0 30px rgba(166, 124, 82, 0.4)',
-                    }}>
-                      <div className="text-5xl mb-3">🃏</div>
-                      <div className="text-lg font-bold mb-1" style={{ color: 'var(--pale-gold)' }}>
-                        {tarotCard.name}
-                      </div>
-                      <div className="text-xs opacity-70" style={{ color: 'var(--pale-light)' }}>
-                        {tarotCard.reading}
-                      </div>
-                      <div className="text-xs opacity-60 mt-2" style={{ color: 'var(--pale-light)' }}>
-                        〔{tarotCard.originalName}〕
+                    <div className="mb-4">
+                      <img
+                        src={`/${tarotCard.id}_-_${tarotCard.name}(${tarotCard.originalName}).png`}
+                        alt={tarotCard.name}
+                        className="mx-auto rounded-lg"
+                        style={{
+                          width: '280px',
+                          height: 'auto',
+                          filter: 'drop-shadow(0 0 30px rgba(166, 124, 82, 0.6))',
+                          border: '3px solid rgba(166, 124, 82, 0.7)',
+                        }}
+                      />
+                      <div className="text-center mt-4">
+                        <div className="text-lg font-bold mb-1" style={{ color: 'var(--pale-gold)' }}>
+                          {tarotCard.name}
+                        </div>
+                        <div className="text-xs opacity-70" style={{ color: 'var(--pale-light)' }}>
+                          {tarotCard.reading}
+                        </div>
+                        <div className="text-xs opacity-60 mt-2" style={{ color: 'var(--pale-light)' }}>
+                          〔{tarotCard.originalName}〕
+                        </div>
                       </div>
                     </div>
                   </div>
