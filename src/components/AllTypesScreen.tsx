@@ -151,6 +151,19 @@ export function AllTypesScreen() {
 
                 <div>
                   <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                    詳細な強み
+                  </h4>
+                  <ul className="space-y-1">
+                    {type.detailedStrengths.map((strength, idx) => (
+                      <li key={idx} className="text-xs sm:text-sm" style={{ color: 'var(--pale-light)' }}>
+                        ・{strength}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
                     適職トップ10
                   </h4>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1">
