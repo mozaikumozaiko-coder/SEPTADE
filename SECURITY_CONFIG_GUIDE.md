@@ -16,19 +16,20 @@ These security issues require configuration changes in the Supabase Dashboard. F
 7. Set percentage to **10-15%** (recommended for most projects)
 8. Click **Save**
 
-## 2. Disable Anonymous Access
+## 2. Anonymous Access Policies - FIXED ✅
 
-**Issue**: Anonymous sign-ins are enabled, allowing unauthenticated access.
+**Status**: This issue has been resolved via database migration.
 
-**Steps to Fix**:
-1. In Supabase Dashboard, go to **Authentication** (in sidebar)
-2. Click **Providers** in the submenu
-3. Scroll down to find **Anonymous Sign-ins**
-4. Toggle it **OFF** (disable anonymous sign-ins)
-5. Click **Save**
+**What was fixed**:
+- Removed all policies that allowed anonymous (anon) access
+- Removed `USING (true)` policies from diagnosis_history table
+- Removed `WITH CHECK (true)` policies that bypassed RLS
+- All data now requires authentication
 
-**Alternative via SQL** (if you need to keep anonymous disabled):
-This is a configuration setting that persists across deployments. The Dashboard method is recommended.
+**Note**: If you want to completely disable anonymous sign-ins as a feature (not just RLS):
+1. In Supabase Dashboard, go to **Authentication** → **Providers**
+2. Find **Anonymous Sign-ins** and toggle it OFF
+3. However, this is optional since RLS already blocks anonymous access
 
 ## 3. Enable Leaked Password Protection
 
@@ -36,23 +37,35 @@ This is a configuration setting that persists across deployments. The Dashboard 
 
 **Steps to Fix**:
 1. In Supabase Dashboard, go to **Authentication**
-2. Click **Policies** in the submenu
-3. Find **Password Protection** section
-4. Enable **"Check passwords against HaveIBeenPwned"**
-5. Click **Save**
+2. Click **Settings** in the submenu (not Policies)
+3. Scroll down to **Security and Protection** section
+4. Find **Password breach detection**
+5. Enable **"Enable leaked password protection"**
+6. Click **Save**
 
 This will:
-- Check new passwords against known breached passwords
+- Check new passwords against known breached passwords database
 - Reject passwords found in data breaches
 - Enhance user account security
+- Applies to new signups and password changes
 
 ## Verification
 
-After making these changes:
+After making the dashboard changes:
 
-1. **Connection Strategy**: You should see auth connections scale with database load
-2. **Anonymous Access**: Users must create accounts to access the app
-3. **Password Protection**: Try signing up with a common password like "password123" - it should be rejected
+1. **Connection Strategy**: Run this query to verify percentage-based pooling is active:
+   ```sql
+   SHOW pool_mode;
+   ```
+
+2. **Password Protection**: Test by:
+   - Try signing up with a known breached password like "password123"
+   - It should be rejected with an error message
+
+3. **RLS Policies** (already fixed): Test by:
+   - Try accessing data without authentication (should fail)
+   - Try accessing another user's data (should fail)
+   - Verify you can only see your own data
 
 ## Important Notes
 
@@ -63,16 +76,16 @@ After making these changes:
 
 ## Current Security Status
 
-✅ **Already Secure**:
-- All RLS policies check `auth.uid()`
-- No public access to sensitive data
+✅ **Fixed via Migration** (completed):
+- All RLS policies now require authentication
+- Removed anonymous access policies (`USING (true)` and `WITH CHECK (true)`)
+- All policies check `auth.uid()` for ownership
 - User data properly isolated
 - Proper ownership checks on all tables
 
-⚠️ **Needs Dashboard Configuration**:
-- Connection pooling strategy
-- Anonymous sign-ins
-- Password breach detection
+⚠️ **Needs Dashboard Configuration** (manual steps required):
+- Connection pooling strategy (switch to percentage-based)
+- Password breach detection (enable HaveIBeenPwned check)
 
 ---
 
