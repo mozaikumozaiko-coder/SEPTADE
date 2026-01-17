@@ -60,13 +60,29 @@ export function AllTypesScreen() {
               }}
             >
               <div className="mb-4">
-                <div className="flex items-center gap-3 mb-2">
-                  <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--pale-gold)' }}>
-                    {type.code}
-                  </h2>
-                  <span className="text-xl sm:text-2xl font-bold" style={{ color: 'var(--pale-light)' }}>
-                    {type.name}
-                  </span>
+                <div className="flex items-start gap-4 mb-2">
+                  <div className="flex-shrink-0">
+                    <img
+                      src={`/${type.code.toLowerCase()}.gif`}
+                      alt={type.name}
+                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-lg object-cover"
+                      style={{
+                        border: '2px solid rgba(191, 167, 110, 0.5)',
+                        boxShadow: '0 0 20px rgba(191, 167, 110, 0.3)',
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--pale-gold)' }}>
+                      {type.code}
+                    </h2>
+                    <span className="text-xl sm:text-2xl font-bold block" style={{ color: 'var(--pale-light)' }}>
+                      {type.name}
+                    </span>
+                  </div>
                 </div>
                 <h3 className="text-lg sm:text-xl font-semibold mb-3" style={{ color: 'var(--pale-gold)', opacity: 0.9 }}>
                   {type.title}
