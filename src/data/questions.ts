@@ -70,7 +70,7 @@ export const questions: Question[] = [
   { id: 56, text: '構造化されたスケジュールを好みますか？', category: 'J' },
   { id: 57, text: '自由で柔軟な環境を好みますか？', category: 'J', reverse: true },
   { id: 58, text: '結論を出すことを急ぐ傾向がありますか？', category: 'J' },
-  { id: 59, text: 'オプションを開いたままにしておきますか？', category: 'J', reverse: true },
+  { id: 59, text: '普段、本やメニューなどを開いたままにしますか？', category: 'J', reverse: true },
   { id: 60, text: '計画通りに進めることに満足を感じますか？', category: 'J' },
 
   { id: 61, text: '他者と協力して目標を達成することを楽しみますか？', category: 'E' },
