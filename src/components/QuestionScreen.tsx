@@ -223,7 +223,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
               第 {chapter} 章 完
             </h3>
 
-            <div className="mb-8 space-y-3">
+            <div className="mb-8 space-y-3" style={{ pointerEvents: 'none' }}>
               {chapter === 1 && (
                 <>
                   <p className="text-lg" style={{ color: 'var(--pale-light)' }}>
@@ -332,7 +332,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
               )}
             </div>
 
-            <button onClick={handleChapterModalClose} className="mystic-button">
+            <button onClick={handleChapterModalClose} className="mystic-button" style={{ position: 'relative', zIndex: 9999, pointerEvents: 'auto' }}>
               次章へ進む
             </button>
             </div>
