@@ -328,48 +328,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
           </div>
         </div>
 
-        {hasMultipleReports && (
-          <div className="relative p-4 rounded-lg text-center" style={{
-            background: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(10px)',
-            border: '2px solid rgba(166, 124, 82, 0.3)',
-          }}>
-            <div className="flex items-center justify-between gap-4">
-              <button
-                onClick={() => setSelectedReportIndex(Math.max(0, selectedReportIndex - 1))}
-                disabled={selectedReportIndex === 0}
-                className="px-4 py-2 rounded font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(166, 124, 82, 0.4), rgba(107, 68, 35, 0.3))',
-                  border: '2px solid rgba(166, 124, 82, 0.6)',
-                  color: 'var(--pale-gold)',
-                }}
-              >
-                前のレポート
-              </button>
-              <div className="flex-1">
-                <div className="text-sm font-bold" style={{ color: 'var(--pale-gold)' }}>
-                  レポート {selectedReportIndex + 1}/{allReports.length}
-                </div>
-                <div className="text-xs opacity-70 mt-1" style={{ color: 'var(--pale-light)' }}>
-                  全{allReports.length}件のレポート
-                </div>
-              </div>
-              <button
-                onClick={() => setSelectedReportIndex(Math.min(allReports.length - 1, selectedReportIndex + 1))}
-                disabled={selectedReportIndex >= allReports.length - 1}
-                className="px-4 py-2 rounded font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(166, 124, 82, 0.4), rgba(107, 68, 35, 0.3))',
-                  border: '2px solid rgba(166, 124, 82, 0.6)',
-                  color: 'var(--pale-gold)',
-                }}
-              >
-                次のレポート
-              </button>
-            </div>
-          </div>
-        )}
 
         <div className="relative p-5 sm:p-6 md:p-8 lg:p-10 rounded-lg" style={{
           background: 'rgba(0, 0, 0, 0.4)',
