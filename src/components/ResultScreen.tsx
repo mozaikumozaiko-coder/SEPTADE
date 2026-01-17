@@ -148,33 +148,27 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       });
 
       if (response.ok) {
-        const responseData = await response.json().catch(() => ({}));
+        const responseData = await response.json().catch(() => ({ success: false, orderValid: false }));
+        console.log('Make response:', responseData);
 
-        if (responseData.valid === false || responseData.status === 'invalid' || responseData.error === 'invalid') {
-          setSendStatus('error');
-          setOrderError('オーダー番号が無効です。再度入力してください。');
-          setOrderNumber('');
-        } else {
+        if (responseData.orderValid === true && responseData.success === true) {
           setSendStatus('success');
-          console.log('Successfully sent to Make');
+          console.log('Order validated successfully');
           alert('番号を確認できました　そのままお待ちください');
           setShowOrderInput(false);
           setOrderNumber('');
           setOrderError('');
           setIsLoadingReport(true);
           startReportPolling();
-        }
-      } else {
-        const errorData = await response.text().catch(() => '');
-        if (errorData.includes('無効') || errorData.includes('invalid') || response.status === 400) {
-          setSendStatus('error');
-          setOrderError('オーダー番号が無効です。再度入力してください。');
-          setOrderNumber('');
         } else {
           setSendStatus('error');
-          console.error('Failed to send to Make:', response.status, response.statusText);
-          setOrderError('送信に失敗しました。もう一度お試しください。');
+          setOrderError(responseData.message || 'オーダー番号が見つかりません');
+          setOrderNumber('');
         }
+      } else {
+        setSendStatus('error');
+        console.error('Failed to send to Make:', response.status, response.statusText);
+        setOrderError('送信に失敗しました。もう一度お試しください。');
       }
     } catch (error) {
       console.error('Error sending to Make:', error);
