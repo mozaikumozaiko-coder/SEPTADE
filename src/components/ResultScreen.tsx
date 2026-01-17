@@ -21,7 +21,6 @@ interface ResultScreenProps {
 export function ResultScreen({ result, profile, onRestart, isFromHistory = false }: ResultScreenProps) {
   const [isSending, setIsSending] = useState(false);
   const [, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [autoSent, setAutoSent] = useState(false);
   const [gptReport, setGptReport] = useState<GPTReport | null>(null);
   const [isLoadingReport, setIsLoadingReport] = useState(false);
   const { user, signOut } = useAuth();
@@ -36,7 +35,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
   const allReports = gptReport ? [gptReport, ...pastReports] : (isLoadingReport ? [] : pastReports);
   const displayReport = allReports[selectedReportIndex] || null;
-  const hasMultipleReports = allReports.length > 1;
 
   const fetchPastReports = useCallback(async () => {
     try {
@@ -76,7 +74,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       console.error('Webhook URL is not configured');
       setSendStatus('error');
       setIsSending(false);
-      setAutoSent(true);
       return;
     }
 
@@ -176,7 +173,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       setOrderError('送信に失敗しました。もう一度お試しください。');
     } finally {
       setIsSending(false);
-      setAutoSent(true);
     }
   };
 

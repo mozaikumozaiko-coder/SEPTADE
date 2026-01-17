@@ -28,7 +28,6 @@ const pageVariants = {
     filter: 'blur(0px)',
     transition: {
       duration: 0.8,
-      ease: 'easeOut',
     },
   },
   exit: {
@@ -36,7 +35,6 @@ const pageVariants = {
     filter: 'blur(10px)',
     transition: {
       duration: 0.5,
-      ease: 'easeIn',
     },
   },
 };
