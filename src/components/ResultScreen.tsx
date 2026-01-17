@@ -416,8 +416,8 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                     alt="ENFP"
                     className="mx-auto"
                     style={{
-                      width: '400x',
-                      height: '400px',
+                      width: '320x',
+                      height: '320px',
                       filter: 'drop-shadow(0 0 20px rgba(191, 167, 110, 0.6))',
                     }}
                   />
