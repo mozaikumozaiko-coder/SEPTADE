@@ -126,7 +126,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
                   filter: 'drop-shadow(0 0 20px rgba(166, 124, 82, 0.3))'
                 }}>
                   <img
-                    src="/巫女s.gif"
+                    src="/マイビデオ copy copy.gif"
                     alt="巫女"
                     className="w-full h-full object-contain miko-image"
                   />
