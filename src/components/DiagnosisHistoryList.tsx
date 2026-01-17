@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Clock, ChevronRight, ChevronDown } from 'lucide-react';
+import { Clock, ChevronRight, ChevronDown, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { getUserDiagnosisHistory } from '../lib/diagnosisHistory';
 import { Profile, DiagnosisResult } from '../types';
 
@@ -17,6 +18,7 @@ interface DiagnosisHistoryListProps {
 }
 
 export function DiagnosisHistoryList({ onSelectHistory, refreshTrigger }: DiagnosisHistoryListProps) {
+  const navigate = useNavigate();
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -164,6 +166,22 @@ export function DiagnosisHistoryList({ onSelectHistory, refreshTrigger }: Diagno
           </motion.div>
         )}
       </AnimatePresence>
+
+      <div className="mt-4 text-center">
+        <button
+          onClick={() => navigate('/all-types')}
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105"
+          style={{
+            background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.3), rgba(166, 124, 82, 0.2))',
+            border: '2px solid rgba(166, 124, 82, 0.6)',
+            color: 'var(--pale-gold)',
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.4)',
+          }}
+        >
+          <BookOpen size={20} />
+          <span>全17タイプ一覧</span>
+        </button>
+      </div>
     </div>
   );
 }

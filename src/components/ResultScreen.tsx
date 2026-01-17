@@ -1,5 +1,5 @@
 import { DiagnosisResult, Profile, GPTReport } from '../types';
-import { RotateCcw, LogOut } from 'lucide-react';
+import { RotateCcw, LogOut, BookOpen } from 'lucide-react';
 import { CircularChart } from './CircularChart';
 import { RadarChart } from './RadarChart';
 import { compatibility } from '../data/compatibility';
@@ -1110,10 +1110,16 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         <div className="text-center">
           <button
             onClick={() => navigate('/all-types')}
-            className="text-sm sm:text-base font-medium opacity-80 hover:opacity-100 transition-opacity underline"
-            style={{ color: 'var(--pale-gold)' }}
+            className="inline-flex items-center gap-2 sm:gap-3 px-8 sm:px-10 py-4 sm:py-5 rounded-lg text-base sm:text-lg font-bold transition-all duration-300 hover:scale-105 glow-text"
+            style={{
+              background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.3), rgba(166, 124, 82, 0.2))',
+              border: '2px solid rgba(166, 124, 82, 0.6)',
+              color: 'var(--pale-gold)',
+              boxShadow: '0 6px 15px rgba(0, 0, 0, 0.5), 0 0 20px rgba(191, 167, 110, 0.3)',
+            }}
           >
-            全17タイプ一覧
+            <BookOpen size={24} className="sm:w-7 sm:h-7" />
+            <span>全17タイプ一覧</span>
           </button>
         </div>
 
