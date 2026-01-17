@@ -85,6 +85,42 @@ function DiagnosisApp() {
     setCurrentScreen('result');
   };
 
+  const handleTestType = (type: string) => {
+    const testProfile: Profile = {
+      name: 'テストユーザー',
+      birthdate: '2000-01-01',
+      gender: 'その他',
+      concern: 'テスト診断'
+    };
+
+    const scores: Scores = {
+      E: type[0] === 'E' ? 50 : -50,
+      S: type[1] === 'S' ? 50 : -50,
+      T: type[2] === 'T' ? 50 : -50,
+      J: type[3] === 'J' ? 50 : -50,
+    };
+
+    if (type === 'ENTJ-A') {
+      scores.E = 50;
+      scores.T = 50;
+      scores.J = 50;
+    }
+
+    const mockAnswers: Answer[] = Array(100).fill(0).map((_, i) => ({
+      questionId: i + 1,
+      value: 4
+    }));
+
+    const diagnosisResult = getDiagnosisResult(mockAnswers);
+    diagnosisResult.scores = scores;
+    diagnosisResult.type = type;
+
+    setProfile(testProfile);
+    setResult(diagnosisResult);
+    setIsFromHistory(true);
+    setCurrentScreen('result');
+  };
+
   return (
     <AnimatePresence mode="wait">
       {currentScreen === 'profile' && (
@@ -242,6 +278,23 @@ function DiagnosisApp() {
               <p className="text-xs sm:text-sm mt-4 sm:mt-6 glow-text" style={{ color: 'var(--pale-light)', opacity: 0.85 }}>
                 ─ 所要刻：約十五分 ─
               </p>
+            </div>
+
+            <div className="mt-8 sm:mt-12 p-4 border border-red-500/30 rounded-lg bg-red-950/20">
+              <h3 className="text-center text-lg font-bold mb-4 text-red-300">
+                テストモード（開発用）
+              </h3>
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                {['ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP', 'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ', 'ENTJ-A'].map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => handleTestType(type)}
+                    className="px-2 py-1 text-xs sm:text-sm bg-red-900/40 hover:bg-red-800/60 text-red-200 rounded border border-red-500/50 transition-colors"
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="mt-8 sm:mt-12">
