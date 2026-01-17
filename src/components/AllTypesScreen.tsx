@@ -41,7 +41,7 @@ export function AllTypesScreen() {
             color: 'var(--pale-gold)',
             textShadow: '0 0 30px rgba(191, 167, 110, 0.8)',
           }}>
-            全16タイプ一覧
+            全17タイプ一覧
           </h1>
           <p className="text-base sm:text-lg" style={{ color: 'var(--pale-light)' }}>
             それぞれのタイプの詳細を知ることができます

@@ -1113,7 +1113,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
             className="text-sm sm:text-base font-medium opacity-80 hover:opacity-100 transition-opacity underline"
             style={{ color: 'var(--pale-gold)' }}
           >
-            全16タイプ一覧
+            全17タイプ一覧
           </button>
         </div>
 
