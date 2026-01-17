@@ -204,7 +204,9 @@ const MAJOR_ARCANA: TarotCard[] = [
 export function selectTarotCard(type: string, scores: Scores): TarotCard {
   const typeValue = type.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
   const scoresSum = scores.E + scores.S + scores.T + scores.J;
-  const seed = typeValue + scoresSum;
-  const index = Math.abs(seed) % MAJOR_ARCANA.length;
+  const timestamp = Date.now();
+  const randomFactor = Math.random() * 1000000;
+  const seed = typeValue + scoresSum + timestamp + randomFactor;
+  const index = Math.abs(Math.floor(seed)) % MAJOR_ARCANA.length;
   return MAJOR_ARCANA[index];
 }

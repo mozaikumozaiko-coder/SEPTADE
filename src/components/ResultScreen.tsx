@@ -31,6 +31,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [orderError, setOrderError] = useState('');
   const [pastReports, setPastReports] = useState<GPTReport[]>([]);
   const [selectedReportIndex, setSelectedReportIndex] = useState(0);
+  const [pollingStartTime, setPollingStartTime] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const allReports = gptReport ? [gptReport, ...pastReports] : (isLoadingReport ? [] : pastReports);
@@ -202,11 +203,17 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
   const fetchReportFromSupabase = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('reports')
-        .select('report_data')
+        .select('report_data, created_at')
         .eq('user_id', userId)
-        .maybeSingle();
+        .order('created_at', { ascending: false });
+
+      if (pollingStartTime) {
+        query = query.gte('created_at', pollingStartTime);
+      }
+
+      const { data, error } = await query.limit(1).maybeSingle();
 
       if (error) {
         console.error('Error fetching report:', error);
@@ -231,7 +238,9 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const startReportPolling = () => {
     setIsLoadingReport(true);
     setPastReports([]);
+    setGptReport(null);
     setSelectedReportIndex(0);
+    setPollingStartTime(new Date().toISOString());
 
     const pollInterval = setInterval(async () => {
       const report = await fetchReportFromSupabase();
@@ -338,7 +347,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
               </button>
               <div className="flex-1">
                 <div className="text-sm font-bold" style={{ color: 'var(--pale-gold)' }}>
-                  {gptReport && selectedReportIndex === 0 ? '最新の診断結果' : `過去のレポート ${selectedReportIndex + 1}/${allReports.length}`}
+                  レポート {selectedReportIndex + 1}/{allReports.length}
                 </div>
                 <div className="text-xs opacity-70 mt-1" style={{ color: 'var(--pale-light)' }}>
                   全{allReports.length}件のレポート
