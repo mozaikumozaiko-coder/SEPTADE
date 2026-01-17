@@ -1,5 +1,5 @@
 import { DiagnosisResult, Profile, GPTReport } from '../types';
-import { Share2, RotateCcw, LogOut } from 'lucide-react';
+import { RotateCcw, LogOut } from 'lucide-react';
 import { CircularChart } from './CircularChart';
 import { RadarChart } from './RadarChart';
 import { compatibility } from '../data/compatibility';
@@ -67,20 +67,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       setSelectedReportIndex(0);
     }
   }, [isFromHistory, fetchPastReports]);
-
-  const handleShare = () => {
-    const shareText = `セプテード診断\n\n私の魂の型: ${result.type} - ${result.typeName}\n${result.description}`;
-
-    if (navigator.share) {
-      navigator.share({
-        title: 'セプテード診断',
-        text: shareText,
-      });
-    } else {
-      navigator.clipboard.writeText(shareText);
-      alert('結果を記憶の欠片に写し取った');
-    }
-  };
 
   const handleSendToMake = async (orderId: string) => {
     const webhookUrl = import.meta.env.VITE_MAKE_WEBHOOK_URL;
@@ -1085,22 +1071,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         </div>
 
         <div className="space-y-3 sm:space-y-4">
-          <button
-            onClick={handleShare}
-            className="w-full flex items-center justify-center gap-2 sm:gap-3 px-8 py-6 rounded-lg transition-all duration-300 hover:scale-105"
-            style={{
-              background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.4), rgba(166, 124, 82, 0.3))',
-              border: '3px solid rgba(191, 167, 110, 0.9)',
-              boxShadow: '0 0 50px rgba(191, 167, 110, 0.6), inset 0 0 30px rgba(166, 124, 82, 0.3)',
-              textShadow: '0 0 15px rgba(191, 167, 110, 0.8)',
-            }}
-          >
-            <Share2 size={24} className="sm:w-7 sm:h-7" />
-            <span className="text-xl sm:text-2xl md:text-3xl font-bold glow-text" style={{ color: 'var(--pale-gold)' }}>
-              魂の形を伝える
-            </span>
-          </button>
-
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-5">
             <button
               onClick={handleUnlockResults}
