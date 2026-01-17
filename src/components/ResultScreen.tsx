@@ -33,7 +33,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [selectedReportIndex, setSelectedReportIndex] = useState(0);
   const navigate = useNavigate();
 
-  const allReports = gptReport ? [gptReport, ...pastReports] : pastReports;
+  const allReports = gptReport ? [gptReport, ...pastReports] : (isLoadingReport ? [] : pastReports);
   const displayReport = allReports[selectedReportIndex] || null;
   const hasMultipleReports = allReports.length > 1;
 
@@ -230,6 +230,8 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
   const startReportPolling = () => {
     setIsLoadingReport(true);
+    setPastReports([]);
+    setSelectedReportIndex(0);
 
     const pollInterval = setInterval(async () => {
       const report = await fetchReportFromSupabase();
