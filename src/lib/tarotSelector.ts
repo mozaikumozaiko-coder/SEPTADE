@@ -212,49 +212,6 @@ export interface TarotCard {
 }
 
 export function selectTarotCard(type: string, scores: Scores): TarotCard {
-  const firstChar = type[0];
-  const secondChar = type[1];
-  const thirdChar = type[2];
-  const fourthChar = type[3];
-
-  if (firstChar === 'E' && scores.E > 30) {
-    if (thirdChar === 'T') return MAJOR_ARCANA[4];
-    if (fourthChar === 'J') return MAJOR_ARCANA[7];
-    return MAJOR_ARCANA[19];
-  }
-
-  if (firstChar === 'I' && scores.E < -30) {
-    if (secondChar === 'N') return MAJOR_ARCANA[9];
-    if (thirdChar === 'F') return MAJOR_ARCANA[2];
-    return MAJOR_ARCANA[17];
-  }
-
-  if (secondChar === 'N' && scores.S < -30) {
-    if (thirdChar === 'F') return MAJOR_ARCANA[3];
-    return MAJOR_ARCANA[1];
-  }
-
-  if (secondChar === 'S' && scores.S > 30) {
-    if (fourthChar === 'J') return MAJOR_ARCANA[11];
-    return MAJOR_ARCANA[14];
-  }
-
-  if (thirdChar === 'T' && scores.T > 30) {
-    return MAJOR_ARCANA[1];
-  }
-
-  if (thirdChar === 'F' && scores.T < -30) {
-    return MAJOR_ARCANA[6];
-  }
-
-  if (fourthChar === 'P' && scores.J < -30) {
-    return MAJOR_ARCANA[0];
-  }
-
-  const avgScore = (Math.abs(scores.E) + Math.abs(scores.S) + Math.abs(scores.T) + Math.abs(scores.J)) / 4;
-  if (avgScore < 15) {
-    return MAJOR_ARCANA[14];
-  }
-
-  return MAJOR_ARCANA[10];
+  const randomIndex = Math.floor(Math.random() * MAJOR_ARCANA.length);
+  return MAJOR_ARCANA[randomIndex];
 }
