@@ -963,4 +963,267 @@
       transform: translateX(100%) translateY(100%);
     }
   }
+
+  .mystical-spores {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .spore {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, rgba(255, 228, 160, 0.9), rgba(191, 167, 110, 0.6), transparent);
+    border-radius: 50%;
+    box-shadow:
+      0 0 10px rgba(255, 228, 160, 0.8),
+      0 0 20px rgba(255, 228, 160, 0.5),
+      0 0 30px rgba(191, 167, 110, 0.3);
+    animation: floatSpore 20s ease-in-out infinite;
+    opacity: 0;
+  }
+
+  .spore::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: radial-gradient(circle, rgba(255, 228, 160, 0.3), transparent 70%);
+    border-radius: 50%;
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    50% {
+      transform: scale(1.8);
+      opacity: 0.8;
+    }
+  }
+
+  .spore:nth-child(1) {
+    top: 10%;
+    left: 15%;
+    animation-delay: 0s;
+    animation-duration: 25s;
+  }
+
+  .spore:nth-child(2) {
+    top: 30%;
+    left: 75%;
+    animation-delay: 2s;
+    animation-duration: 22s;
+  }
+
+  .spore:nth-child(3) {
+    top: 50%;
+    left: 25%;
+    animation-delay: 4s;
+    animation-duration: 28s;
+  }
+
+  .spore:nth-child(4) {
+    top: 70%;
+    left: 80%;
+    animation-delay: 6s;
+    animation-duration: 24s;
+  }
+
+  .spore:nth-child(5) {
+    top: 20%;
+    left: 90%;
+    animation-delay: 8s;
+    animation-duration: 26s;
+  }
+
+  .spore:nth-child(6) {
+    top: 85%;
+    left: 40%;
+    animation-delay: 10s;
+    animation-duration: 23s;
+  }
+
+  .spore:nth-child(7) {
+    top: 40%;
+    left: 10%;
+    animation-delay: 3s;
+    animation-duration: 27s;
+  }
+
+  .spore:nth-child(8) {
+    top: 60%;
+    left: 60%;
+    animation-delay: 7s;
+    animation-duration: 21s;
+  }
+
+  .spore:nth-child(9) {
+    top: 15%;
+    left: 50%;
+    animation-delay: 5s;
+    animation-duration: 29s;
+  }
+
+  .spore:nth-child(10) {
+    top: 80%;
+    left: 20%;
+    animation-delay: 9s;
+    animation-duration: 25s;
+  }
+
+  .spore:nth-child(11) {
+    top: 35%;
+    left: 85%;
+    animation-delay: 1s;
+    animation-duration: 24s;
+  }
+
+  .spore:nth-child(12) {
+    top: 55%;
+    left: 35%;
+    animation-delay: 11s;
+    animation-duration: 26s;
+  }
+
+  .spore:nth-child(13) {
+    top: 25%;
+    left: 65%;
+    animation-delay: 4.5s;
+    animation-duration: 22s;
+  }
+
+  .spore:nth-child(14) {
+    top: 75%;
+    left: 70%;
+    animation-delay: 6.5s;
+    animation-duration: 28s;
+  }
+
+  .spore:nth-child(15) {
+    top: 45%;
+    left: 45%;
+    animation-delay: 8.5s;
+    animation-duration: 23s;
+  }
+
+  .spore:nth-child(16) {
+    top: 90%;
+    left: 55%;
+    animation-delay: 2.5s;
+    animation-duration: 27s;
+  }
+
+  .spore:nth-child(17) {
+    top: 5%;
+    left: 30%;
+    animation-delay: 10.5s;
+    animation-duration: 25s;
+  }
+
+  .spore:nth-child(18) {
+    top: 65%;
+    left: 10%;
+    animation-delay: 3.5s;
+    animation-duration: 29s;
+  }
+
+  .spore:nth-child(19) {
+    top: 95%;
+    left: 85%;
+    animation-delay: 7.5s;
+    animation-duration: 21s;
+  }
+
+  .spore:nth-child(20) {
+    top: 50%;
+    left: 95%;
+    animation-delay: 5.5s;
+    animation-duration: 24s;
+  }
+
+  @keyframes floatSpore {
+    0% {
+      transform: translate(0, 0) scale(0.5);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.9;
+    }
+    20% {
+      transform: translate(15px, -40px) rotate(45deg) scale(1);
+      opacity: 1;
+    }
+    35% {
+      transform: translate(-25px, -80px) rotate(90deg) scale(0.8);
+      opacity: 0.8;
+    }
+    50% {
+      transform: translate(30px, -120px) rotate(180deg) scale(1.2);
+      opacity: 0.9;
+    }
+    65% {
+      transform: translate(-20px, -160px) rotate(270deg) scale(0.9);
+      opacity: 0.7;
+    }
+    80% {
+      transform: translate(40px, -200px) rotate(360deg) scale(1.1);
+      opacity: 0.5;
+    }
+    90% {
+      opacity: 0.2;
+    }
+    100% {
+      transform: translate(0, -240px) rotate(405deg) scale(0.5);
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .spore {
+      width: 4px;
+      height: 4px;
+    }
+
+    @keyframes floatSpore {
+      0% {
+        transform: translate(0, 0) scale(0.4);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.8;
+      }
+      20% {
+        transform: translate(10px, -30px) rotate(45deg) scale(0.8);
+        opacity: 1;
+      }
+      35% {
+        transform: translate(-15px, -60px) rotate(90deg) scale(0.6);
+        opacity: 0.7;
+      }
+      50% {
+        transform: translate(20px, -90px) rotate(180deg) scale(1);
+        opacity: 0.8;
+      }
+      65% {
+        transform: translate(-10px, -120px) rotate(270deg) scale(0.7);
+        opacity: 0.6;
+      }
+      80% {
+        transform: translate(25px, -150px) rotate(360deg) scale(0.9);
+        opacity: 0.4;
+      }
+      90% {
+        opacity: 0.2;
+      }
+      100% {
+        transform: translate(0, -180px) rotate(405deg) scale(0.4);
+        opacity: 0;
+      }
+    }
+  }
 }

@@ -168,6 +168,11 @@ function DiagnosisApp() {
           exit="exit"
           className="min-h-screen flex items-center justify-center px-1 sm:px-4 py-8 sm:py-12"
         >
+          <div className="mystical-spores">
+            {[...Array(20)].map((_, i) => (
+              <div key={i} className="spore" />
+            ))}
+          </div>
           <div className="landing-border max-w-3xl w-full rounded-lg p-3 sm:p-8 md:p-12 lg:p-16 relative">
             <div className="relative z-10">
             <div className="text-center mb-8 sm:mb-10">
