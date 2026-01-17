@@ -707,7 +707,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                 </>
               ) : (
                 <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                  四柱推命による運命分析がGPTにて生成されます
+                  四柱推命による運命分析がすべて開放後に生成されます
                 </p>
               )}
             </div>
