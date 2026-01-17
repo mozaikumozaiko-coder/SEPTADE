@@ -215,15 +215,15 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
 
       {showChapterModal && (
         <div className="chapter-modal">
-          <div className="ornate-border max-w-lg w-full rounded-lg p-12 text-center mx-4 relative">
-            <div className="relative z-10">
-            <div className="ancient-frame w-28 h-28 mx-auto mb-8 rounded"></div>
+          <div className="ornate-border max-w-lg w-full rounded-lg p-12 text-center mx-4 relative" style={{ maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
+            <div className="relative z-10" style={{ display: 'flex', flexDirection: 'column', maxHeight: '100%' }}>
+            <div className="ancient-frame w-28 h-28 mx-auto mb-8 rounded" style={{ flexShrink: 0 }}></div>
 
-            <h3 className="text-3xl font-bold mb-4 glow-text" style={{ color: 'var(--pale-gold)' }}>
+            <h3 className="text-3xl font-bold mb-4 glow-text" style={{ color: 'var(--pale-gold)', flexShrink: 0 }}>
               第 {chapter} 章 完
             </h3>
 
-            <div className="mb-8 space-y-3" style={{ pointerEvents: 'none' }}>
+            <div className="mb-8 space-y-3" style={{ pointerEvents: 'none', overflowY: 'auto', flexGrow: 1, paddingRight: '8px' }}>
               {chapter === 1 && (
                 <>
                   <p className="text-lg" style={{ color: 'var(--pale-light)' }}>
@@ -332,9 +332,11 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
               )}
             </div>
 
-            <button onClick={handleChapterModalClose} className="mystic-button" style={{ position: 'relative', zIndex: 9999, pointerEvents: 'auto' }}>
-              次章へ進む
-            </button>
+            <div style={{ flexShrink: 0, marginTop: '16px' }}>
+              <button onClick={handleChapterModalClose} className="mystic-button" style={{ position: 'relative', zIndex: 9999, pointerEvents: 'auto' }}>
+                次章へ進む
+              </button>
+            </div>
             </div>
           </div>
         </div>
