@@ -408,6 +408,20 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
               <div className="text-sm opacity-70 mb-2" style={{ color: 'var(--pale-light)' }}>
                 あなたのタイプ
               </div>
+
+              {result.type === 'ENFP' && (
+                <div className="mb-4">
+                  <img
+                    src="/enfp.gif"
+                    alt="ENFP"
+                    className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto object-contain"
+                    style={{
+                      filter: 'drop-shadow(0 0 20px rgba(191, 167, 110, 0.6))',
+                    }}
+                  />
+                </div>
+              )}
+
               <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-2 sm:mb-3 glow-text" style={{ color: 'var(--pale-gold)' }}>
                 {result.type}
               </div>
