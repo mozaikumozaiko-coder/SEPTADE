@@ -414,7 +414,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                   <img
                     src="/enfp.gif"
                     alt="ENFP"
-                    className="mx-auto object-contain"
+                    className="mx-auto"
                     style={{
                       width: '384px',
                       height: '384px',
