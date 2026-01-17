@@ -1081,8 +1081,13 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
             <button
               onClick={onRestart}
-              className="flex-1 px-6 sm:px-8 py-3 sm:py-4 rounded border-2 border-white/20 hover:bg-white/5 transition-all duration-300 font-semibold text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 sm:gap-3"
-              style={{ color: 'var(--pale-light)' }}
+              className="flex-1 px-6 sm:px-8 py-3 sm:py-4 rounded transition-all duration-300 hover:scale-105 font-semibold text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 sm:gap-3"
+              style={{
+                background: 'linear-gradient(135deg, rgba(40, 30, 20, 0.95), rgba(30, 20, 15, 0.95))',
+                border: '2px solid rgba(80, 60, 40, 0.8)',
+                color: '#f5f5dc',
+                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.5)',
+              }}
             >
               <RotateCcw size={18} className="sm:w-5 sm:h-5" />
               <span>再び巡礼する</span>
