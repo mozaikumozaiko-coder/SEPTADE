@@ -593,12 +593,15 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                     {compatibility[result.type]?.goodMatches.map((typeCode) => (
                       <div
                         key={typeCode}
-                        className="flex flex-col items-center gap-3 p-4 rounded-lg transition-transform hover:scale-105"
+                        className="flex flex-col items-center gap-2 p-4 rounded-lg transition-transform hover:scale-105"
                         style={{
                           background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.3), rgba(166, 124, 82, 0.2))',
                           border: '2px solid rgba(166, 124, 82, 0.4)',
                         }}
                       >
+                        <p className="text-xs font-semibold opacity-80" style={{ color: 'var(--pale-gold)' }}>
+                          {typeCode}
+                        </p>
                         <div
                           className="w-20 h-20 rounded-full border-2 border-amber-700/50 flex items-center justify-center overflow-hidden"
                           style={{
@@ -630,12 +633,15 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                     {compatibility[result.type]?.badMatches.map((typeCode) => (
                       <div
                         key={typeCode}
-                        className="flex flex-col items-center gap-3 p-4 rounded-lg transition-transform hover:scale-105"
+                        className="flex flex-col items-center gap-2 p-4 rounded-lg transition-transform hover:scale-105"
                         style={{
                           background: 'linear-gradient(135deg, rgba(122, 29, 46, 0.3), rgba(78, 0, 21, 0.2))',
                           border: '2px solid rgba(122, 29, 46, 0.4)',
                         }}
                       >
+                        <p className="text-xs font-semibold opacity-80" style={{ color: 'var(--pale-gold)' }}>
+                          {typeCode}
+                        </p>
                         <div
                           className="w-20 h-20 rounded-full border-2 border-red-800/50 flex items-center justify-center overflow-hidden"
                           style={{
