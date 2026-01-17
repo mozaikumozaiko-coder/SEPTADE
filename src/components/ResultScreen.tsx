@@ -330,10 +330,15 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
 
         <div className="relative p-5 sm:p-6 md:p-8 lg:p-10 rounded-lg" style={{
-          background: 'rgba(0, 0, 0, 0.4)',
-          backdropFilter: 'blur(10px)',
+          backgroundImage: 'url(/背景.png)',
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          minHeight: '600px',
         }}>
-          <div className="relative z-10">
+          <div className="relative z-10 bg-black/30 rounded-lg p-4 sm:p-6" style={{
+            backdropFilter: 'blur(4px)',
+          }}>
             <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 sm:mb-8 text-center glow-text" style={{ color: 'var(--pale-gold)' }}>
               魂の特性
             </h3>
