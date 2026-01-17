@@ -996,9 +996,29 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
               }}>
                 オーダー番号を入力してください
               </h3>
-              <p className="text-sm sm:text-base mb-6 text-center leading-relaxed" style={{ color: 'var(--pale-light)' }}>
+              <p className="text-sm sm:text-base mb-4 text-center leading-relaxed" style={{ color: 'var(--pale-light)' }}>
                 例：1019088409
               </p>
+
+              <div className="mb-6 text-center">
+                <p className="text-sm mb-3" style={{ color: 'var(--pale-light)' }}>
+                  まだ購入していない方はこちらから
+                </p>
+                <a
+                  href="https://y8q9lwkafozp6bxasu8o.stores.jp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-6 py-3 rounded-lg font-bold transition-all duration-300 hover:scale-105"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.4), rgba(166, 124, 82, 0.3))',
+                    border: '2px solid rgba(191, 167, 110, 0.8)',
+                    color: 'var(--pale-gold)',
+                    textShadow: '0 0 10px rgba(191, 167, 110, 0.6)',
+                  }}
+                >
+                  購入サイトへ
+                </a>
+              </div>
 
               {orderError && (
                 <div className="mb-4 p-4 rounded text-center space-y-3" style={{
