@@ -59,8 +59,14 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   }, [userId]);
 
   useEffect(() => {
-    fetchPastReports();
-  }, [fetchPastReports]);
+    if (isFromHistory) {
+      fetchPastReports();
+    } else {
+      setPastReports([]);
+      setGptReport(null);
+      setSelectedReportIndex(0);
+    }
+  }, [isFromHistory, fetchPastReports]);
 
   const handleShare = () => {
     const shareText = `セプテード診断\n\n私の魂の型: ${result.type} - ${result.typeName}\n${result.description}`;
