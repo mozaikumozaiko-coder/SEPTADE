@@ -600,7 +600,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                         }}
                       >
                         <div
-                          className="w-20 h-20 rounded-full border-2 border-amber-700/50 flex items-center justify-center overflow-hidden"
+                          className="w-20 h-20 rounded-full border-2 border-amber-700/50 flex items-center justify-center overflow-hidden relative"
                           style={{
                             boxShadow: '0 4px 10px rgba(166, 124, 82, 0.3)',
                             background: 'linear-gradient(135deg, rgba(166, 124, 82, 0.2), rgba(107, 68, 35, 0.1))',
@@ -609,8 +609,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                           <img
                             src={`/${typeCode.toLowerCase()}.gif`}
                             alt={typeCode}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover absolute inset-0"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
                           />
+                          <span className="text-xs font-bold text-amber-300 z-10">{typeCode}</span>
                         </div>
                         <div className="text-center">
                           <p className="text-sm font-bold" style={{ color: 'var(--pale-gold)' }}>
@@ -637,7 +641,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                         }}
                       >
                         <div
-                          className="w-20 h-20 rounded-full border-2 border-red-800/50 flex items-center justify-center overflow-hidden"
+                          className="w-20 h-20 rounded-full border-2 border-red-800/50 flex items-center justify-center overflow-hidden relative"
                           style={{
                             boxShadow: '0 4px 10px rgba(122, 29, 46, 0.3)',
                             background: 'linear-gradient(135deg, rgba(122, 29, 46, 0.2), rgba(78, 0, 21, 0.1))',
@@ -646,8 +650,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
                           <img
                             src={`/${typeCode.toLowerCase()}.gif`}
                             alt={typeCode}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover absolute inset-0"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
                           />
+                          <span className="text-xs font-bold text-red-300 z-10">{typeCode}</span>
                         </div>
                         <div className="text-center">
                           <p className="text-sm font-bold" style={{ color: 'var(--pale-gold)' }}>
