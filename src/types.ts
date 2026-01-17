@@ -24,6 +24,16 @@ export interface Scores {
   J: number;
 }
 
+export interface TarotCard {
+  id: number;
+  name: string;
+  reading: string;
+  originalName: string;
+  keywords: string;
+  upright: string;
+  reversed: string;
+}
+
 export interface DiagnosisResult {
   type: string;
   typeName: string;
@@ -32,6 +42,7 @@ export interface DiagnosisResult {
   characteristics: string[];
   strengths: string[];
   weaknesses: string[];
+  tarotCard?: TarotCard;
 }
 
 export interface TypeDetail {

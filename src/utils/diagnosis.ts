@@ -2,6 +2,7 @@ import { Answer, Scores, DiagnosisResult } from '../types';
 import { questions } from '../data/questions';
 import { typeDetails } from '../data/typeDetails';
 import { scoreFortune } from '../lib/scoreFortune';
+import { selectTarotCard } from '../lib/tarotSelector';
 
 function generateTags(): string[] {
   return questions.map((q) => {
@@ -62,6 +63,7 @@ export function getDiagnosisResult(answers: Answer[]): DiagnosisResult {
   const scores = calculateScores(answers);
   const type = determineType(scores);
   const details = typeDetails[type] || typeDetails['INFP'];
+  const tarotCard = selectTarotCard(type, scores);
 
   return {
     type: details.code,
@@ -71,6 +73,7 @@ export function getDiagnosisResult(answers: Answer[]): DiagnosisResult {
     characteristics: details.characteristics,
     strengths: details.strengths,
     weaknesses: details.weaknesses,
+    tarotCard,
   };
 }
 

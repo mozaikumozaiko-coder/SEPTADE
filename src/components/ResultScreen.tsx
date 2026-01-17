@@ -86,7 +86,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       return Math.round(Math.max(0, Math.min(100, ((score + 100) / 2))));
     };
 
-    const tarotCard = selectTarotCard(result.type, result.scores);
+    const tarotCard = result.tarotCard || selectTarotCard(result.type, result.scores);
     const fourPillarsChart = calculateFourPillars(profile.birthdate);
 
     const dataToSend = {
@@ -468,7 +468,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
             </p>
 
             {(() => {
-              const tarotCard = selectTarotCard(result.type, result.scores);
+              const tarotCard = result.tarotCard || selectTarotCard(result.type, result.scores);
               return (
                 <div className="space-y-6">
                   <div className="flex flex-col items-center">

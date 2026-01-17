@@ -1,6 +1,6 @@
-import { Scores } from '../types';
+import { Scores, TarotCard } from '../types';
 
-const MAJOR_ARCANA = [
+const MAJOR_ARCANA: TarotCard[] = [
   {
     id: 0,
     name: "旅装の童",
@@ -201,17 +201,10 @@ const MAJOR_ARCANA = [
   }
 ];
 
-export interface TarotCard {
-  id: number;
-  name: string;
-  reading: string;
-  originalName: string;
-  keywords: string;
-  upright: string;
-  reversed: string;
-}
-
 export function selectTarotCard(type: string, scores: Scores): TarotCard {
-  const randomIndex = Math.floor(Math.random() * MAJOR_ARCANA.length);
-  return MAJOR_ARCANA[randomIndex];
+  const typeValue = type.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  const scoresSum = scores.E + scores.S + scores.T + scores.J;
+  const seed = typeValue + scoresSum;
+  const index = Math.abs(seed) % MAJOR_ARCANA.length;
+  return MAJOR_ARCANA[index];
 }
