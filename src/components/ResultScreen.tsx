@@ -44,9 +44,8 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     if (user?.email && userId !== user.email) {
       setUserId(user.email);
       localStorage.removeItem('temp_user_id');
-      fetchPastReports();
     }
-  }, [user, userId, fetchPastReports]);
+  }, [user, userId]);
 
   const allReports = gptReport ? [gptReport, ...pastReports] : (isLoadingReport ? [] : pastReports);
   const displayReport = allReports[selectedReportIndex] || null;
@@ -75,12 +74,8 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   useEffect(() => {
     if (isFromHistory) {
       fetchPastReports();
-    } else {
-      setPastReports([]);
-      setGptReport(null);
-      setSelectedReportIndex(0);
     }
-  }, [isFromHistory, fetchPastReports, userId]);
+  }, [isFromHistory, fetchPastReports]);
 
   const handleSendToMake = async (orderId: string) => {
     const webhookUrl = import.meta.env.VITE_MAKE_WEBHOOK_URL;
