@@ -105,7 +105,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
               <div className="progress-fill" style={{ width: `${progress}%` }} />
             </div>
             <img
-              src="/ap-2.gif"
+              src="/マイビデオ.gif"
               alt="mascot"
               className="absolute transition-all duration-300 ease-out pointer-events-none w-8 h-8 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24"
               style={{

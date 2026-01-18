@@ -221,22 +221,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   };
 
   const handleUnlockResults = () => {
-    if (!user) {
-      setOrderError('オーダー番号を送信するにはログインが必要です');
-      navigate('/login');
-      return;
-    }
     setShowOrderInput(true);
     setOrderError('');
     setOrderNumber('');
   };
 
   const handleOrderSubmit = () => {
-    if (!user) {
-      setOrderError('オーダー番号を送信するにはログインが必要です');
-      navigate('/login');
-      return;
-    }
     if (!orderNumber.trim()) {
       setOrderError('オーダー番号を入力してください');
       return;
