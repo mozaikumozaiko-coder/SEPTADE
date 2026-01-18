@@ -58,11 +58,11 @@ Deno.serve(async (req: Request) => {
       query = query.eq("order_number", orderId);
     }
 
-    query = query.order("created_at", { ascending: false });
-
     if (pollingStartTime && !allReports) {
-      query = query.gte("updated_at", pollingStartTime);
+      query = query.gte("created_at", pollingStartTime);
     }
+
+    query = query.order("created_at", { ascending: false });
 
     if (allReports) {
       const { data, error } = await query;
