@@ -70,10 +70,15 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const handleSendToMake = async (orderId: string) => {
     const webhookUrl = import.meta.env.VITE_MAKE_WEBHOOK_URL;
 
+    console.log('=== Make送信デバッグ ===');
+    console.log('Webhook URL:', webhookUrl);
+    console.log('Order ID:', orderId);
+
     if (!webhookUrl || webhookUrl === 'YOUR_MAKE_WEBHOOK_URL_HERE') {
       console.error('Webhook URL is not configured');
       setSendStatus('error');
       setIsSending(false);
+      setOrderError('Webhook URLが設定されていません。環境変数を確認してください。');
       return;
     }
 
@@ -134,7 +139,8 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     };
 
     try {
-      console.log('Sending data to Make:', JSON.stringify(dataToSend, null, 2));
+      console.log('📤 Makeにデータを送信中...');
+      console.log('送信データ:', JSON.stringify(dataToSend, null, 2));
 
       const response = await fetch(webhookUrl, {
         method: 'POST',
@@ -144,9 +150,15 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         body: JSON.stringify(dataToSend),
       });
 
+      console.log('📥 Makeからの応答:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok
+      });
+
       if (response.ok) {
         const responseData = await response.json().catch(() => ({ success: false, orderValid: false }));
-        console.log('Make response:', responseData);
+        console.log('✅ Make response:', responseData);
 
         if (responseData.orderValid === true && responseData.success === true) {
           setSendStatus('success');
@@ -163,14 +175,15 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
           setOrderNumber('');
         }
       } else {
+        const errorText = await response.text().catch(() => '');
         setSendStatus('error');
-        console.error('Failed to send to Make:', response.status, response.statusText);
+        console.error('Failed to send to Make:', response.status, response.statusText, errorText);
         setOrderError('送信に失敗しました。もう一度お試しください。');
       }
     } catch (error) {
       console.error('Error sending to Make:', error);
       setSendStatus('error');
-      setOrderError('送信に失敗しました。もう一度お試しください。');
+      setOrderError('ネットワークエラーが発生しました。接続を確認してください。');
     } finally {
       setIsSending(false);
     }
@@ -261,12 +274,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center px-3 sm:px-4 py-8 sm:py-12">
+      <div className="min-h-screen flex items-center justify-center px-3 sm:px-4 py-8 sm:py-12 pb-16 sm:pb-20">
         <div className="max-w-4xl w-full relative rounded-lg" style={{
           background: 'rgba(0, 0, 0, 0.5)',
           backdropFilter: 'blur(15px)',
         }}>
-        <div className="relative z-10 space-y-5 sm:space-y-6 md:space-y-8 py-12 px-6 sm:px-8 md:px-12">
+        <div className="relative z-10 space-y-5 sm:space-y-6 md:space-y-8 py-12 px-6 sm:px-8 md:px-12 pb-16 sm:pb-20">
         <div className="rounded-lg p-6 sm:p-8 md:p-12 lg:p-16 text-center relative luxurious-result-bg">
           <div className="decorative-corners"></div>
           <div className="seigaiha-pattern"></div>

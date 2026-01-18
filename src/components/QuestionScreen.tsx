@@ -120,15 +120,19 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
           </div>
 
           <div className="mb-0.5 sm:mb-10">
-            <div className="flex flex-col md:flex-row items-start gap-0.5 sm:gap-6 mb-0.5 sm:mb-8">
+            <div className="flex flex-col md:flex-row items-start gap-2 sm:gap-6 mb-4 sm:mb-8">
               <div className="w-full md:w-2/5 flex justify-center md:justify-start">
-                <div className="relative w-20 h-20 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 miko-container" style={{
-                  filter: 'drop-shadow(0 0 20px rgba(166, 124, 82, 0.3))'
+                <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 miko-container" style={{
+                  filter: 'drop-shadow(0 0 30px rgba(166, 124, 82, 0.5))',
+                  animation: 'float 3s ease-in-out infinite'
                 }}>
                   <img
                     src="/マイビデオ copy copy.gif"
                     alt="巫女"
                     className="w-full h-full object-contain miko-image"
+                    style={{
+                      imageRendering: 'crisp-edges'
+                    }}
                   />
                 </div>
               </div>
