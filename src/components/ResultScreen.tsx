@@ -5,7 +5,6 @@ import { RadarChart } from './RadarChart';
 import { compatibility } from '../data/compatibility';
 import { typeDetails } from '../data/typeDetails';
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../lib/supabase';
 import { selectTarotCard } from '../lib/tarotSelector';
 import { calculateFourPillars } from '../lib/fourPillars';
 import { useAuth } from '../contexts/AuthContext';
@@ -52,19 +51,21 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
   const fetchPastReports = useCallback(async () => {
     try {
-      const { data, error } = await supabase
-        .from('reports')
-        .select('report_data, created_at, updated_at')
-        .eq('user_id', userId)
-        .order('updated_at', { ascending: false });
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const apiUrl = `${supabaseUrl}/functions/v1/get-report`;
 
-      if (error) {
-        console.error('Error fetching past reports:', error);
+      const params = new URLSearchParams({ userId, all: 'true' });
+
+      const response = await fetch(`${apiUrl}?${params}`);
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error('Error fetching past reports:', result.error);
         return;
       }
 
-      if (data) {
-        setPastReports(data.map(item => item.report_data as GPTReport));
+      if (result.data) {
+        setPastReports(result.data.map((item: any) => item.report_data as GPTReport));
       }
     } catch (error) {
       console.error('Error fetching past reports:', error);

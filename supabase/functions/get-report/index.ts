@@ -31,8 +31,9 @@ Deno.serve(async (req: Request) => {
     const url = new URL(req.url);
     const userId = url.searchParams.get("userId");
     const pollingStartTime = url.searchParams.get("pollingStartTime");
+    const allReports = url.searchParams.get("all") === "true";
 
-    console.log("Request params:", { userId, pollingStartTime });
+    console.log("Request params:", { userId, pollingStartTime, allReports });
 
     if (!userId) {
       return new Response(
@@ -53,31 +54,49 @@ Deno.serve(async (req: Request) => {
       .eq("user_id", userId)
       .order("updated_at", { ascending: false });
 
-    if (pollingStartTime) {
+    if (pollingStartTime && !allReports) {
       query = query.gte("updated_at", pollingStartTime);
     }
 
-    const { data, error } = await query.limit(1).maybeSingle();
-
-    if (error) {
-      console.error("Database error:", error);
-      throw error;
-    }
-
-    console.log("Report found:", data ? "Yes" : "No");
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-        data: data,
-      }),
-      {
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json",
-        },
+    if (allReports) {
+      const { data, error } = await query;
+      if (error) {
+        console.error("Database error:", error);
+        throw error;
       }
-    );
+      console.log(`Found ${data?.length || 0} reports`);
+      return new Response(
+        JSON.stringify({
+          success: true,
+          data: data || [],
+        }),
+        {
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } else {
+      const { data, error } = await query.limit(1).maybeSingle();
+      if (error) {
+        console.error("Database error:", error);
+        throw error;
+      }
+      console.log("Report found:", data ? "Yes" : "No");
+      return new Response(
+        JSON.stringify({
+          success: true,
+          data: data,
+        }),
+        {
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
   } catch (error) {
     console.error("Error fetching report:", error);
     return new Response(
