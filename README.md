@@ -1,5 +1,11 @@
 SEPTADE
 
+## デプロイメント
+
+**Vercelにデプロイする方法**: [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)を参照してください。
+
+**重要**: bolt.newから直接公開することはできません。Vercel等のホスティングサービスが必要です。
+
 ## Supabase認証セットアップ
 
 このアプリケーションはSupabase Authを使用してメール/パスワード認証を実装しています。
