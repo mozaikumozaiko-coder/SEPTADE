@@ -54,9 +54,9 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     try {
       const { data, error } = await supabase
         .from('reports')
-        .select('report_data, created_at')
+        .select('report_data, created_at, updated_at')
         .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+        .order('updated_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching past reports:', error);
@@ -262,12 +262,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
       let query = supabase
         .from('reports')
-        .select('report_data, created_at')
+        .select('report_data, created_at, updated_at')
         .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+        .order('updated_at', { ascending: false });
 
       if (pollingStartTime) {
-        query = query.gte('created_at', pollingStartTime);
+        query = query.gte('updated_at', pollingStartTime);
       }
 
       const { data, error } = await query.limit(1).maybeSingle();
