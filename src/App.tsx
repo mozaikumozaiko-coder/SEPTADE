@@ -267,23 +267,9 @@ function App() {
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/signup" element={<SignUpScreen />} />
           <Route path="/reset" element={<ResetPasswordScreen />} />
-          <Route
-            path="/app"
-            element={
-              <PrivateRoute>
-                <DiagnosisApp />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/all-types"
-            element={
-              <PrivateRoute>
-                <AllTypesScreen />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/" element={<Navigate to="/app" replace />} />
+          <Route path="/app" element={<DiagnosisApp />} />
+          <Route path="/all-types" element={<AllTypesScreen />} />
+          <Route path="/" element={<DiagnosisApp />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
