@@ -1,6 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, UserPlus, Shield } from 'lucide-react';
+import { Mail, Lock, UserPlus, Shield, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getAuthErrorMessage } from '../../utils/authErrors';
 import { validatePassword } from '../../utils/passwordSecurity';
@@ -95,7 +95,20 @@ export function SignUpScreen() {
     <div className="min-h-screen flex items-center justify-center px-3 sm:px-4 py-8 sm:py-12">
       <div className="scroll-panel max-w-md w-full relative p-5 sm:p-6 md:p-8 lg:p-10">
         <div className="relative z-10">
-          <div className="text-center mb-6 sm:mb-8">
+          <button
+            onClick={() => navigate('/')}
+            className="absolute top-0 left-0 flex items-center gap-2 px-3 py-2 rounded transition-all hover:scale-105 text-sm"
+            style={{
+              background: 'rgba(107, 68, 35, 0.3)',
+              border: '1px solid rgba(166, 124, 82, 0.4)',
+              color: 'var(--pale-light)'
+            }}
+          >
+            <ArrowLeft size={16} />
+            <span>戻る</span>
+          </button>
+
+          <div className="text-center mb-6 sm:mb-8 mt-12">
             <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-5 sm:mb-6 relative" style={{
               filter: 'drop-shadow(0 0 30px rgba(166, 124, 82, 0.5))',
               border: '3px solid rgba(166, 124, 82, 0.6)',

@@ -24,7 +24,14 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [gptReport, setGptReport] = useState<GPTReport | null>(null);
   const [isLoadingReport, setIsLoadingReport] = useState(false);
   const { user, signOut } = useAuth();
-  const [userId] = useState(() => user?.email || `user_${Date.now()}_${Math.random().toString(36).substring(7)}`);
+  const [userId, setUserId] = useState(() => {
+    if (user?.email) return user.email;
+    const stored = localStorage.getItem('temp_user_id');
+    if (stored) return stored;
+    const newId = `user_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    localStorage.setItem('temp_user_id', newId);
+    return newId;
+  });
   const [showOrderInput, setShowOrderInput] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   const [orderError, setOrderError] = useState('');
@@ -32,6 +39,14 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [selectedReportIndex, setSelectedReportIndex] = useState(0);
   const [pollingStartTime, setPollingStartTime] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user?.email && userId !== user.email) {
+      setUserId(user.email);
+      localStorage.removeItem('temp_user_id');
+      fetchPastReports();
+    }
+  }, [user, userId, fetchPastReports]);
 
   const allReports = gptReport ? [gptReport, ...pastReports] : (isLoadingReport ? [] : pastReports);
   const displayReport = allReports[selectedReportIndex] || null;
@@ -65,7 +80,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       setGptReport(null);
       setSelectedReportIndex(0);
     }
-  }, [isFromHistory, fetchPastReports]);
+  }, [isFromHistory, fetchPastReports, userId]);
 
   const handleSendToMake = async (orderId: string) => {
     const webhookUrl = import.meta.env.VITE_MAKE_WEBHOOK_URL;
@@ -73,6 +88,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     console.log('=== Make送信デバッグ ===');
     console.log('Webhook URL:', webhookUrl);
     console.log('Order ID:', orderId);
+    console.log('User ID:', userId);
 
     if (!webhookUrl || webhookUrl === 'YOUR_MAKE_WEBHOOK_URL_HERE') {
       console.error('Webhook URL is not configured');
@@ -246,6 +262,9 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
   const fetchReportFromSupabase = async () => {
     try {
+      console.log('📊 Fetching report from Supabase for userId:', userId);
+      console.log('📊 Polling start time:', pollingStartTime);
+
       let query = supabase
         .from('reports')
         .select('report_data, created_at')
@@ -259,42 +278,53 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       const { data, error } = await query.limit(1).maybeSingle();
 
       if (error) {
-        console.error('Error fetching report:', error);
+        console.error('❌ Error fetching report:', error);
         return null;
       }
 
       if (data && data.report_data) {
+        console.log('✅ Report found!', data);
         setGptReport(data.report_data as GPTReport);
         setSelectedReportIndex(0);
         setIsLoadingReport(false);
         fetchPastReports();
         return data.report_data;
+      } else {
+        console.log('⏳ No report found yet...');
       }
 
       return null;
     } catch (error) {
-      console.error('Error fetching report:', error);
+      console.error('❌ Error fetching report:', error);
       return null;
     }
   };
 
   const startReportPolling = () => {
+    const startTime = new Date().toISOString();
+    console.log('🔄 Starting report polling...');
+    console.log('👤 User ID:', userId);
+    console.log('⏰ Start time:', startTime);
+
     setIsLoadingReport(true);
     setPastReports([]);
     setGptReport(null);
     setSelectedReportIndex(0);
-    setPollingStartTime(new Date().toISOString());
+    setPollingStartTime(startTime);
 
     const pollInterval = setInterval(async () => {
       const report = await fetchReportFromSupabase();
       if (report) {
+        console.log('✅ Report polling completed successfully');
         clearInterval(pollInterval);
       }
     }, 3000);
 
     setTimeout(() => {
+      console.log('⏱️ Polling timeout reached (120 seconds)');
       clearInterval(pollInterval);
       if (!gptReport) {
+        console.log('❌ No report received within timeout period');
         setIsLoadingReport(false);
       }
     }, 120000);
