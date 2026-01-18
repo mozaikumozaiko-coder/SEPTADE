@@ -2,49 +2,72 @@
 
 This guide addresses the security issues identified in your Supabase project.
 
-## 🔴 Critical Security Issues to Fix
+## ✅ Fixed Automatically (via SQL migrations)
 
-### 1. Auth DB Connection Strategy (Change to Percentage-Based)
+The following issues have been resolved:
+- ✅ **Function Search Path Security** - Fixed `verify_rls_enabled()` function with immutable search_path
+- ✅ **Row Level Security** - All tables have RLS enabled with proper authentication policies
+- ✅ **Ownership Verification** - All policies verify user ownership using `auth.uid()`
+
+## ⚠️ IMPORTANT: Dashboard Configuration Required
+
+The following issues CANNOT be fixed via SQL migrations. You MUST configure them in the Supabase Dashboard.
+
+## 🔴 Critical Security Issues Requiring Manual Configuration
+
+### 1. Auth DB Connection Strategy (REQUIRED - Dashboard Only)
 
 **Issue:** Your Auth server uses a fixed number (10) of connections, limiting scalability.
 
-**Fix Steps:**
-1. Go to Supabase Dashboard → **Settings** → **Database**
-2. Scroll to **Connection Pooling** section
-3. Find **Auth Server Connection Pool**
-4. Change from **Fixed Number (10)** to **Percentage-Based**
-5. Set to **15-20%** of available connections (recommended)
-6. Click **Save**
+**Action Required - Configure in Supabase Dashboard:**
 
-**Why:** This allows the Auth server to scale with your database instance size.
+1. Open your Supabase project at https://supabase.com/dashboard
+2. Navigate to **Settings** → **Database**
+3. Scroll to **Connection Pooling** section
+4. Find **Auth Server Connection Pool** setting
+5. Change from **Fixed Number (10)** to **Percentage-Based**
+6. Set to **15-20%** of available connections (recommended starting point)
+7. Click **Save** or **Update**
 
----
+**Why:** This allows the Auth server to scale with your database instance size automatically.
 
-### 2. Disable Anonymous Sign-ins
-
-**Issue:** Anonymous access is enabled, allowing unauthenticated users to create sessions.
-
-**Fix Steps:**
-1. Go to Supabase Dashboard → **Authentication** → **Providers**
-2. Find **Anonymous Sign-ins** section
-3. Toggle it **OFF** (disabled)
-4. Click **Save**
-
-**Why:** Your app requires email/password authentication. Anonymous access creates security risks and bypasses your RLS policies.
+**Status:** ⚠️ REQUIRES MANUAL DASHBOARD CONFIGURATION
 
 ---
 
-### 3. Enable Leaked Password Protection
+### 2. Disable Anonymous Sign-ins (REQUIRED - Dashboard Only)
 
-**Issue:** Compromised password checking is disabled.
+**Issue:** Anonymous access is enabled, allowing unauthenticated users to create sessions without credentials.
 
-**Fix Steps:**
-1. Go to Supabase Dashboard → **Authentication** → **Policies**
-2. Find **Password Protection** section
-3. Enable **"Check passwords against HaveIBeenPwned.org"**
-4. Click **Save**
+**Action Required - Configure in Supabase Dashboard:**
 
-**Why:** This prevents users from using passwords that have been exposed in data breaches, significantly improving security.
+1. Open your Supabase project at https://supabase.com/dashboard
+2. Navigate to **Authentication** → **Providers**
+3. Scroll down to find **Anonymous Sign-ins** section
+4. Toggle the switch to **OFF** (disabled)
+5. Click **Save** or **Confirm**
+
+**Why:** Your app requires email/password authentication. Anonymous access creates security risks and can bypass your RLS policies.
+
+**Status:** ⚠️ REQUIRES MANUAL DASHBOARD CONFIGURATION
+
+---
+
+### 3. Enable Leaked Password Protection (REQUIRED - Dashboard Only)
+
+**Issue:** Compromised password checking is disabled, allowing users to set passwords that have been exposed in data breaches.
+
+**Action Required - Configure in Supabase Dashboard:**
+
+1. Open your Supabase project at https://supabase.com/dashboard
+2. Navigate to **Authentication** → **Policies** (or **Settings**)
+3. Find **Password Protection** or **Security** section
+4. Enable the toggle for **"Check passwords against HaveIBeenPwned.org"** or **"Breach password protection"**
+5. Click **Save** or **Update**
+
+**Why:** This prevents users from using passwords that have been exposed in known data breaches, significantly improving account security.
+
+**Status:** ⚠️ REQUIRES MANUAL DASHBOARD CONFIGURATION
 
 ---
 
