@@ -166,15 +166,25 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
         let responseData;
         try {
-          responseData = JSON.parse(responseText);
+          responseData = responseText ? JSON.parse(responseText) : {};
         } catch (parseError) {
           console.error('❌ JSON解析エラー:', parseError);
-          responseData = { success: false, orderValid: false };
+          console.log('受信した生データ:', responseText);
+          responseData = {};
         }
 
         console.log('✅ Make response:', responseData);
 
-        if (responseData.orderValid === true && responseData.success === true) {
+        if (response.status === 200) {
+          setSendStatus('success');
+          console.log('✅ Makeへの送信成功 - データ処理中');
+          alert('データを送信しました。レポート生成中です...');
+          setShowOrderInput(false);
+          setOrderNumber('');
+          setOrderError('');
+          setIsLoadingReport(true);
+          startReportPolling();
+        } else if (responseData.orderValid === true && responseData.success === true) {
           setSendStatus('success');
           console.log('Order validated successfully');
           alert('番号を確認できました　そのままお待ちください');
@@ -196,7 +206,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
           statusText: response.statusText,
           errorBody: errorText
         });
-        setOrderError(`送信に失敗しました (${response.status})。もう一度お試しください。`);
+        setOrderError(`送信に失敗しました (${response.status})。\n詳細: ${errorText || response.statusText}\nMakeのシナリオが有効か確認してください。`);
       }
     } catch (error) {
       console.error('❌ ネットワークエラー:', error);
