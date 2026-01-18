@@ -31,7 +31,7 @@ Deno.serve(async (req: Request) => {
     const requestData = await req.json();
     console.log("Request data received:", JSON.stringify(requestData, null, 2));
 
-    const { userId, reportData } = requestData;
+    const { userId, reportData, orderId } = requestData;
 
     if (!userId || !reportData) {
       console.error("Missing required fields:", { userId: !!userId, reportData: !!reportData });
@@ -47,18 +47,23 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    console.log("Checking for existing report for userId:", userId);
-    const { data: existingReport } = await supabase
-      .from("reports")
-      .select("id")
-      .eq("user_id", userId)
-      .maybeSingle();
+    console.log("Checking for existing report:", { userId, orderId });
 
-    console.log("Existing report:", existingReport ? "Found" : "Not found");
+    let existingReport = null;
+    if (orderId) {
+      const { data } = await supabase
+        .from("reports")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("order_number", orderId)
+        .maybeSingle();
+      existingReport = data;
+      console.log("Existing report with orderId:", existingReport ? "Found" : "Not found");
+    }
 
     let result;
     if (existingReport) {
-      console.log("Updating existing report...");
+      console.log("Updating existing report with orderId:", orderId);
       result = await supabase
         .from("reports")
         .update({
@@ -66,6 +71,7 @@ Deno.serve(async (req: Request) => {
           updated_at: new Date().toISOString(),
         })
         .eq("user_id", userId)
+        .eq("order_number", orderId)
         .select();
     } else {
       console.log("Inserting new report...");
@@ -74,6 +80,7 @@ Deno.serve(async (req: Request) => {
         .insert({
           user_id: userId,
           report_data: reportData,
+          order_number: orderId || null,
         })
         .select();
     }
