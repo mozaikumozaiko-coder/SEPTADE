@@ -1,8 +1,9 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, UserPlus } from 'lucide-react';
+import { Mail, Lock, UserPlus, Shield } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getAuthErrorMessage } from '../../utils/authErrors';
+import { validatePassword } from '../../utils/passwordSecurity';
 
 export function SignUpScreen() {
   const [email, setEmail] = useState('');
@@ -11,6 +12,7 @@ export function SignUpScreen() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [validatingPassword, setValidatingPassword] = useState(false);
   const { signUp } = useAuth();
   const navigate = useNavigate();
 
@@ -54,8 +56,20 @@ export function SignUpScreen() {
     }
 
     setLoading(true);
+    setValidatingPassword(true);
 
     try {
+      const passwordValidation = await validatePassword(password);
+
+      if (!passwordValidation.isValid) {
+        setError(passwordValidation.errors[0]);
+        setLoading(false);
+        setValidatingPassword(false);
+        return;
+      }
+
+      setValidatingPassword(false);
+
       const { error } = await signUp(email, password);
 
       if (error) {
@@ -174,9 +188,15 @@ export function SignUpScreen() {
               disabled={loading || success}
               className="mystic-button w-full text-sm sm:text-base px-6 py-3 flex items-center justify-center gap-2"
             >
-              <UserPlus size={18} />
-              {loading ? '登録中...' : '新規登録'}
+              {validatingPassword ? <Shield size={18} /> : <UserPlus size={18} />}
+              {validatingPassword ? 'パスワード検証中...' : loading ? '登録中...' : '新規登録'}
             </button>
+
+            {validatingPassword && (
+              <p className="text-xs text-center mt-2" style={{ color: 'var(--dim-light)' }}>
+                セキュリティのため、データ漏洩の履歴を確認しています
+              </p>
+            )}
           </form>
 
           <div className="mt-6 text-center">

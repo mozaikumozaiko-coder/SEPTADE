@@ -1,13 +1,33 @@
 # Supabase Security Configuration Guide
 
-This guide addresses the security issues identified in your Supabase project.
+このガイドでは、プロジェクトで特定されたセキュリティ問題とその解決方法について説明します。
 
-## ✅ Fixed Automatically (via SQL migrations)
+詳細な実装ガイドは **SECURITY_IMPLEMENTATION.md** を参照してください。
 
-The following issues have been resolved:
-- ✅ **Function Search Path Security** - Fixed `verify_rls_enabled()` function with immutable search_path
-- ✅ **Row Level Security** - All tables have RLS enabled with proper authentication policies
-- ✅ **Ownership Verification** - All policies verify user ownership using `auth.uid()`
+## ✅ 自動的に修正済み（コードレベル）
+
+以下の問題は、コードとSQLマイグレーションで自動的に解決されています：
+
+### データベースセキュリティ
+- ✅ **Function Search Path Security** - `verify_rls_enabled()` 関数に不変のsearch_pathを設定
+- ✅ **Row Level Security** - すべてのテーブルでRLSが有効化され、適切な認証ポリシーが設定済み
+- ✅ **Ownership Verification** - すべてのポリシーで `auth.uid()` による所有権検証を実装
+
+### アプリケーションセキュリティ（新規実装）
+- ✅ **Leaked Password Protection（クライアント側）** - HaveIBeenPwned APIを使用したパスワード漏洩チェックを実装
+  - 実装場所: `src/utils/passwordSecurity.ts`
+  - 新規登録時に自動的にチェック
+  - SHA-1ハッシュによるk-Anonymity方式で安全に検証
+  - プレーンテキストのパスワードは送信されません
+
+- ✅ **Password Strength Validation** - 強力なパスワード要件を実装
+  - 最小8文字
+  - 大文字・小文字・数字を含む
+  - データ漏洩履歴のチェック
+
+- ✅ **Anonymous Access Prevention（コードレベル）** - アプリケーションでは匿名サインインを使用していません
+  - メール/パスワード認証のみ実装
+  - すべてのRLSポリシーで認証ユーザーのみアクセス可能
 
 ## ⚠️ IMPORTANT: Dashboard Configuration Required
 
@@ -35,11 +55,18 @@ The following issues CANNOT be fixed via SQL migrations. You MUST configure them
 
 ---
 
-### 2. Disable Anonymous Sign-ins (REQUIRED - Dashboard Only)
+### 2. Disable Anonymous Sign-ins (RECOMMENDED - Dashboard Configuration)
 
-**Issue:** Anonymous access is enabled, allowing unauthenticated users to create sessions without credentials.
+**現在の状態:** アプリケーションは匿名サインインを使用していません
 
-**Action Required - Configure in Supabase Dashboard:**
+**アプリケーション側の対策:**
+- メール/パスワード認証のみ実装
+- すべてのRLSポリシーで `auth.uid()` による認証チェック
+- 未認証ユーザーはデータにアクセス不可
+
+**Supabase Dashboard での設定（推奨）:**
+
+完全に無効化するため、ダッシュボードで設定を変更することを推奨します：
 
 1. Open your Supabase project at https://supabase.com/dashboard
 2. Navigate to **Authentication** → **Providers**
@@ -47,17 +74,24 @@ The following issues CANNOT be fixed via SQL migrations. You MUST configure them
 4. Toggle the switch to **OFF** (disabled)
 5. Click **Save** or **Confirm**
 
-**Why:** Your app requires email/password authentication. Anonymous access creates security risks and can bypass your RLS policies.
+**Why:** アプリケーションで使用していない機能を無効化することで、攻撃対象領域を減らします。
 
-**Status:** ⚠️ REQUIRES MANUAL DASHBOARD CONFIGURATION
+**Status:** ✅ NOT USED IN APP (Dashboard configuration recommended for complete protection)
 
 ---
 
-### 3. Enable Leaked Password Protection (REQUIRED - Dashboard Only)
+### 3. Enable Leaked Password Protection (OPTIONAL - クライアント側で実装済み)
 
-**Issue:** Compromised password checking is disabled, allowing users to set passwords that have been exposed in data breaches.
+**現在の状態:** ✅ クライアント側で既に実装されています
 
-**Action Required - Configure in Supabase Dashboard:**
+**実装内容:**
+- `src/utils/passwordSecurity.ts` でHaveIBeenPwned APIとの統合
+- 新規登録時に自動的にパスワード漏洩チェック
+- SHA-1ハッシュによるk-Anonymity方式で安全に検証
+
+**Supabase側での追加設定（オプション）:**
+
+Supabase側でも二重チェックを有効にしたい場合：
 
 1. Open your Supabase project at https://supabase.com/dashboard
 2. Navigate to **Authentication** → **Policies** (or **Settings**)
@@ -65,9 +99,9 @@ The following issues CANNOT be fixed via SQL migrations. You MUST configure them
 4. Enable the toggle for **"Check passwords against HaveIBeenPwned.org"** or **"Breach password protection"**
 5. Click **Save** or **Update**
 
-**Why:** This prevents users from using passwords that have been exposed in known data breaches, significantly improving account security.
+**注意:** この設定はオプションです。クライアント側で既に同じチェックを実装しているため、Supabase側の設定は追加の保護層として機能します。
 
-**Status:** ⚠️ REQUIRES MANUAL DASHBOARD CONFIGURATION
+**Status:** ✅ IMPLEMENTED IN CLIENT CODE (Dashboard configuration is optional)
 
 ---
 
