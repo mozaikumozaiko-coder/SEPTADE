@@ -257,25 +257,26 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
   const fetchReportFromSupabase = async () => {
     try {
-      console.log('📊 Fetching report from Supabase for userId:', userId);
+      console.log('📊 Fetching report from Edge Function for userId:', userId);
       console.log('📊 Polling start time:', pollingStartTime);
 
-      let query = supabase
-        .from('reports')
-        .select('report_data, created_at, updated_at')
-        .eq('user_id', userId)
-        .order('updated_at', { ascending: false });
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const apiUrl = `${supabaseUrl}/functions/v1/get-report`;
 
+      const params = new URLSearchParams({ userId });
       if (pollingStartTime) {
-        query = query.gte('updated_at', pollingStartTime);
+        params.append('pollingStartTime', pollingStartTime);
       }
 
-      const { data, error } = await query.limit(1).maybeSingle();
+      const response = await fetch(`${apiUrl}?${params}`);
+      const result = await response.json();
 
-      if (error) {
-        console.error('❌ Error fetching report:', error);
+      if (!response.ok) {
+        console.error('❌ Error fetching report:', result.error);
         return null;
       }
+
+      const data = result.data;
 
       if (data && data.report_data) {
         console.log('✅ Report found!', data);
