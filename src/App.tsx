@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, BookOpen, Target } from 'lucide-react';
+import { Sparkles, BookOpen, Target, AlertTriangle } from 'lucide-react';
 import { AuthProvider } from './contexts/AuthContext';
 import { PrivateRoute } from './components/auth/PrivateRoute';
 import { LoginScreen } from './components/auth/LoginScreen';
@@ -15,6 +15,7 @@ import { AllTypesScreen } from './components/AllTypesScreen';
 import { Profile, Answer, DiagnosisResult } from './types';
 import { getDiagnosisResult } from './utils/diagnosis';
 import { saveDiagnosisHistory } from './lib/diagnosisHistory';
+import { hasSupabaseConfig } from './lib/supabase';
 
 type Screen = 'landing' | 'profile' | 'questions' | 'result';
 
@@ -259,7 +260,63 @@ function DiagnosisApp() {
   );
 }
 
+function ConfigErrorScreen() {
+  return (
+    <div className="min-h-screen flex items-center justify-center px-4 py-12">
+      <div className="max-w-2xl w-full rounded-lg p-8" style={{
+        background: 'linear-gradient(135deg, rgba(20, 15, 10, 0.95), rgba(30, 20, 15, 0.92))',
+        border: '2px solid rgba(166, 124, 82, 0.6)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
+      }}>
+        <div className="text-center">
+          <AlertTriangle
+            size={64}
+            className="mx-auto mb-6"
+            style={{
+              color: 'var(--torii-red)',
+              filter: 'drop-shadow(0 0 10px rgba(122, 29, 46, 0.8))'
+            }}
+          />
+          <h1 className="text-3xl font-bold mb-4 glow-text" style={{ color: 'var(--pale-gold)' }}>
+            環境変数が設定されていません
+          </h1>
+          <div className="text-left space-y-4" style={{ color: 'var(--pale-light)' }}>
+            <p>
+              このアプリケーションを動作させるには、Vercelの環境変数を設定する必要があります。
+            </p>
+            <div className="p-4 rounded" style={{
+              background: 'rgba(107, 68, 35, 0.3)',
+              border: '1px solid rgba(166, 124, 82, 0.4)'
+            }}>
+              <h3 className="font-bold mb-2" style={{ color: 'var(--ochre)' }}>設定手順：</h3>
+              <ol className="list-decimal list-inside space-y-2 text-sm">
+                <li>Vercelダッシュボードでプロジェクトを開く</li>
+                <li>Settings → Environment Variables に移動</li>
+                <li>以下の環境変数を追加：
+                  <ul className="list-disc list-inside ml-4 mt-2 space-y-1" style={{ color: 'var(--dim-light)' }}>
+                    <li>VITE_SUPABASE_URL</li>
+                    <li>VITE_SUPABASE_ANON_KEY</li>
+                    <li>VITE_MAKE_WEBHOOK_URL</li>
+                  </ul>
+                </li>
+                <li>プロジェクトを再デプロイ</li>
+              </ol>
+            </div>
+            <p className="text-sm opacity-75">
+              詳細はプロジェクトの <code style={{ color: 'var(--ochre)' }}>VERCEL_SETUP.md</code> ファイルを参照してください。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function App() {
+  if (!hasSupabaseConfig) {
+    return <ConfigErrorScreen />;
+  }
+
   return (
     <BrowserRouter>
       <AuthProvider>
