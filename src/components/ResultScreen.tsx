@@ -37,6 +37,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [pastReports, setPastReports] = useState<GPTReport[]>([]);
   const [selectedReportIndex, setSelectedReportIndex] = useState(0);
   const [pollingStartTime, setPollingStartTime] = useState<string | null>(null);
+  const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -253,18 +254,23 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       return;
     }
     setOrderError('');
+    setCurrentOrderId(orderNumber);
     handleSendToMake(orderNumber);
   };
 
   const fetchReportFromSupabase = async () => {
     try {
       console.log('📊 Fetching report from Edge Function for userId:', userId);
+      console.log('📊 Order ID:', currentOrderId);
       console.log('📊 Polling start time:', pollingStartTime);
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const apiUrl = `${supabaseUrl}/functions/v1/get-report`;
 
       const params = new URLSearchParams({ userId });
+      if (currentOrderId) {
+        params.append('orderId', currentOrderId);
+      }
       if (pollingStartTime) {
         params.append('pollingStartTime', pollingStartTime);
       }

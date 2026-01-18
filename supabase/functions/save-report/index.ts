@@ -47,43 +47,16 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    console.log("Checking for existing report:", { userId, orderId });
+    console.log("Inserting new report:", { userId, orderId });
 
-    let existingReport = null;
-    if (orderId) {
-      const { data } = await supabase
-        .from("reports")
-        .select("id")
-        .eq("user_id", userId)
-        .eq("order_number", orderId)
-        .maybeSingle();
-      existingReport = data;
-      console.log("Existing report with orderId:", existingReport ? "Found" : "Not found");
-    }
-
-    let result;
-    if (existingReport) {
-      console.log("Updating existing report with orderId:", orderId);
-      result = await supabase
-        .from("reports")
-        .update({
-          report_data: reportData,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("user_id", userId)
-        .eq("order_number", orderId)
-        .select();
-    } else {
-      console.log("Inserting new report...");
-      result = await supabase
-        .from("reports")
-        .insert({
-          user_id: userId,
-          report_data: reportData,
-          order_number: orderId || null,
-        })
-        .select();
-    }
+    const result = await supabase
+      .from("reports")
+      .insert({
+        user_id: userId,
+        report_data: reportData,
+        order_number: orderId || null,
+      })
+      .select();
 
     if (result.error) {
       console.error("Database operation error:", result.error);

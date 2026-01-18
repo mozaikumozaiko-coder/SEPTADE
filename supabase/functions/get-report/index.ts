@@ -30,10 +30,11 @@ Deno.serve(async (req: Request) => {
 
     const url = new URL(req.url);
     const userId = url.searchParams.get("userId");
+    const orderId = url.searchParams.get("orderId");
     const pollingStartTime = url.searchParams.get("pollingStartTime");
     const allReports = url.searchParams.get("all") === "true";
 
-    console.log("Request params:", { userId, pollingStartTime, allReports });
+    console.log("Request params:", { userId, orderId, pollingStartTime, allReports });
 
     if (!userId) {
       return new Response(
@@ -50,9 +51,14 @@ Deno.serve(async (req: Request) => {
 
     let query = supabase
       .from("reports")
-      .select("report_data, created_at, updated_at")
-      .eq("user_id", userId)
-      .order("updated_at", { ascending: false });
+      .select("report_data, created_at, updated_at, order_number")
+      .eq("user_id", userId);
+
+    if (orderId) {
+      query = query.eq("order_number", orderId);
+    }
+
+    query = query.order("created_at", { ascending: false });
 
     if (pollingStartTime && !allReports) {
       query = query.gte("updated_at", pollingStartTime);
