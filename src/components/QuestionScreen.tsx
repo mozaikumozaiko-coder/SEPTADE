@@ -89,7 +89,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
   return (
     <>
       <div className="question-screen-container">
-        <div className="ornate-border max-w-4xl w-full rounded-lg p-2 sm:p-8 md:p-16 relative">
+        <div className="ornate-border max-w-4xl w-full rounded-lg p-4 sm:p-8 md:p-16 relative">
           <div className="relative z-10">
           <div className="mb-0.5 sm:mb-8" style={{ position: 'relative', zIndex: 10000 }}>
             <div className="flex items-center justify-between mb-0.5 sm:mb-4">
@@ -107,7 +107,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
             <img
               src="/マイビデオ.gif"
               alt="mascot"
-              className="absolute transition-all duration-300 ease-out pointer-events-none w-12 h-12 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-36 lg:h-36"
+              className="absolute transition-all duration-300 ease-out pointer-events-none w-8 h-8 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24"
               style={{
                 left: `${progress}%`,
                 top: '50%',
@@ -122,7 +122,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
           <div className="mb-0.5 sm:mb-10">
             <div className="flex flex-col md:flex-row items-start gap-0.5 sm:gap-6 mb-0.5 sm:mb-8">
               <div className="w-full md:w-2/5 flex justify-center md:justify-start">
-                <div className="relative w-24 h-24 sm:w-40 sm:h-40 md:w-56 md:h-56 lg:w-64 lg:h-64 miko-container" style={{
+                <div className="relative w-20 h-20 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 miko-container" style={{
                   filter: 'drop-shadow(0 0 20px rgba(166, 124, 82, 0.3))'
                 }}>
                   <img

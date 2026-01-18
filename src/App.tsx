@@ -137,7 +137,7 @@ function DiagnosisApp() {
           initial="initial"
           animate="animate"
           exit="exit"
-          className="min-h-screen flex items-center justify-center px-1 sm:px-4 py-8 sm:py-12"
+          className="min-h-screen flex items-center justify-center px-4 sm:px-4 py-8 sm:py-12"
         >
           <div className="mystical-spores">
             {[...Array(20)].map((_, i) => (
@@ -145,62 +145,9 @@ function DiagnosisApp() {
             ))}
           </div>
           <div className="landing-border max-w-3xl w-full rounded-lg p-3 sm:p-8 md:p-12 lg:p-16 relative">
-            <div className="absolute top-4 right-4 z-20 flex gap-2">
-              {user ? (
-                <>
-                  <div className="flex items-center gap-2 px-3 py-2 rounded" style={{
-                    background: 'rgba(107, 68, 35, 0.3)',
-                    border: '1px solid rgba(166, 124, 82, 0.4)',
-                    color: 'var(--pale-gold)'
-                  }}>
-                    <User size={16} />
-                    <span className="text-sm">{user.email}</span>
-                  </div>
-                  <button
-                    onClick={handleSignOut}
-                    className="flex items-center gap-2 px-3 py-2 rounded transition-all"
-                    style={{
-                      background: 'rgba(122, 29, 46, 0.3)',
-                      border: '1px solid rgba(122, 29, 46, 0.4)',
-                      color: 'var(--pale-light)'
-                    }}
-                  >
-                    <LogOut size={16} />
-                    <span className="text-sm">ログアウト</span>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => navigate('/login')}
-                    className="flex items-center gap-2 px-3 py-2 rounded transition-all"
-                    style={{
-                      background: 'rgba(107, 68, 35, 0.3)',
-                      border: '1px solid rgba(166, 124, 82, 0.4)',
-                      color: 'var(--pale-light)'
-                    }}
-                  >
-                    <LogIn size={16} />
-                    <span className="text-sm">ログイン</span>
-                  </button>
-                  <button
-                    onClick={() => navigate('/signup')}
-                    className="flex items-center gap-2 px-3 py-2 rounded transition-all"
-                    style={{
-                      background: 'rgba(107, 68, 35, 0.3)',
-                      border: '1px solid rgba(166, 124, 82, 0.4)',
-                      color: 'var(--pale-light)'
-                    }}
-                  >
-                    <UserPlus size={16} />
-                    <span className="text-sm">サインアップ</span>
-                  </button>
-                </>
-              )}
-            </div>
             <div className="relative z-10">
             <div className="text-center mb-8 sm:mb-10">
-              <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto mb-6 sm:mb-8 relative" style={{
+              <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 mx-auto mb-6 sm:mb-8 relative" style={{
                 filter: 'drop-shadow(0 0 30px rgba(166, 124, 82, 0.5))',
                 border: '3px solid rgba(166, 124, 82, 0.6)',
                 borderRadius: '50%',
@@ -311,6 +258,60 @@ function DiagnosisApp() {
 
             <div className="mt-8 sm:mt-12">
               <DiagnosisHistoryList refreshTrigger={historyRefreshKey} onSelectHistory={handleSelectHistory} />
+            </div>
+
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center items-center">
+              {user ? (
+                <>
+                  <div className="flex items-center gap-2 px-4 py-2 rounded" style={{
+                    background: 'rgba(107, 68, 35, 0.3)',
+                    border: '1px solid rgba(166, 124, 82, 0.4)',
+                    color: 'var(--pale-gold)'
+                  }}>
+                    <User size={16} />
+                    <span className="text-sm">{user.email}</span>
+                  </div>
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center gap-2 px-4 py-2 rounded transition-all hover:scale-105"
+                    style={{
+                      background: 'rgba(122, 29, 46, 0.3)',
+                      border: '1px solid rgba(122, 29, 46, 0.4)',
+                      color: 'var(--pale-light)'
+                    }}
+                  >
+                    <LogOut size={16} />
+                    <span className="text-sm">ログアウト</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => navigate('/login')}
+                    className="flex items-center gap-2 px-4 py-2 rounded transition-all hover:scale-105"
+                    style={{
+                      background: 'rgba(107, 68, 35, 0.3)',
+                      border: '1px solid rgba(166, 124, 82, 0.4)',
+                      color: 'var(--pale-light)'
+                    }}
+                  >
+                    <LogIn size={16} />
+                    <span className="text-sm">ログイン</span>
+                  </button>
+                  <button
+                    onClick={() => navigate('/signup')}
+                    className="flex items-center gap-2 px-4 py-2 rounded transition-all hover:scale-105"
+                    style={{
+                      background: 'rgba(107, 68, 35, 0.3)',
+                      border: '1px solid rgba(166, 124, 82, 0.4)',
+                      color: 'var(--pale-light)'
+                    }}
+                  >
+                    <UserPlus size={16} />
+                    <span className="text-sm">サインアップ</span>
+                  </button>
+                </>
+              )}
             </div>
             </div>
           </div>

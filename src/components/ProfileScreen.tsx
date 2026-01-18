@@ -41,7 +41,7 @@ export function ProfileScreen({ onComplete }: ProfileScreenProps) {
       <div className="scroll-panel max-w-2xl w-full relative p-5 sm:p-6 md:p-8 lg:p-12">
         <div className="relative z-10">
         <div className="text-center mb-6 sm:mb-8">
-          <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto mb-5 sm:mb-6 relative" style={{
+          <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 mx-auto mb-5 sm:mb-6 relative" style={{
             filter: 'drop-shadow(0 0 30px rgba(166, 124, 82, 0.5))',
             border: '3px solid rgba(166, 124, 82, 0.6)',
             borderRadius: '50%',
