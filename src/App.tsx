@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, BookOpen, Target, AlertTriangle, LogIn, UserPlus, LogOut, User } from 'lucide-react';
@@ -49,6 +49,25 @@ function DiagnosisApp() {
   const [isFromHistory, setIsFromHistory] = useState(false);
   const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      const pendingData = sessionStorage.getItem('pendingDiagnosisResult');
+      if (pendingData) {
+        try {
+          const { profile: savedProfile, result: savedResult } = JSON.parse(pendingData);
+          setProfile(savedProfile);
+          setResult(savedResult);
+          setIsFromHistory(false);
+          setCurrentScreen('result');
+          sessionStorage.removeItem('pendingDiagnosisResult');
+        } catch (error) {
+          console.error('Failed to restore diagnosis result:', error);
+          sessionStorage.removeItem('pendingDiagnosisResult');
+        }
+      }
+    }
+  }, [user]);
 
   const handleSignOut = async () => {
     await signOut();

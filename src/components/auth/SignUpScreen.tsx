@@ -76,6 +76,10 @@ export function SignUpScreen() {
         setError(getAuthErrorMessage(error));
       } else {
         setSuccess(true);
+        const pendingData = sessionStorage.getItem('pendingDiagnosisResult');
+        if (pendingData) {
+          sessionStorage.removeItem('pendingDiagnosisResult');
+        }
         setTimeout(() => {
           navigate('/app');
         }, 2000);

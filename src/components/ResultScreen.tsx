@@ -221,6 +221,15 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   };
 
   const handleUnlockResults = () => {
+    if (!user) {
+      sessionStorage.setItem('pendingDiagnosisResult', JSON.stringify({
+        profile,
+        result,
+        returnToResults: true
+      }));
+      navigate('/login');
+      return;
+    }
     setShowOrderInput(true);
     setOrderError('');
     setOrderNumber('');

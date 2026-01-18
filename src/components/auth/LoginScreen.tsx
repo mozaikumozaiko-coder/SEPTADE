@@ -53,6 +53,10 @@ export function LoginScreen() {
       if (error) {
         setError(getAuthErrorMessage(error));
       } else {
+        const pendingData = sessionStorage.getItem('pendingDiagnosisResult');
+        if (pendingData) {
+          sessionStorage.removeItem('pendingDiagnosisResult');
+        }
         navigate('/app');
       }
     } catch (err) {
