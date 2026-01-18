@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, BookOpen, Target, AlertTriangle } from 'lucide-react';
-import { AuthProvider } from './contexts/AuthContext';
+import { Sparkles, BookOpen, Target, AlertTriangle, LogIn, UserPlus, LogOut, User } from 'lucide-react';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { PrivateRoute } from './components/auth/PrivateRoute';
 import { LoginScreen } from './components/auth/LoginScreen';
 import { SignUpScreen } from './components/auth/SignUpScreen';
@@ -41,12 +41,19 @@ const pageVariants = {
 };
 
 function DiagnosisApp() {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
   const [profile, setProfile] = useState<Profile | null>(null);
   const [result, setResult] = useState<DiagnosisResult | null>(null);
   const [isFromHistory, setIsFromHistory] = useState(false);
   const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
+
+  const handleSignOut = async () => {
+    await signOut();
+    handleRestart();
+  };
 
   const handleProfileComplete = (profileData: Profile) => {
     setProfile(profileData);
@@ -138,6 +145,59 @@ function DiagnosisApp() {
             ))}
           </div>
           <div className="landing-border max-w-3xl w-full rounded-lg p-3 sm:p-8 md:p-12 lg:p-16 relative">
+            <div className="absolute top-4 right-4 z-20 flex gap-2">
+              {user ? (
+                <>
+                  <div className="flex items-center gap-2 px-3 py-2 rounded" style={{
+                    background: 'rgba(107, 68, 35, 0.3)',
+                    border: '1px solid rgba(166, 124, 82, 0.4)',
+                    color: 'var(--pale-gold)'
+                  }}>
+                    <User size={16} />
+                    <span className="text-sm">{user.email}</span>
+                  </div>
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center gap-2 px-3 py-2 rounded transition-all"
+                    style={{
+                      background: 'rgba(122, 29, 46, 0.3)',
+                      border: '1px solid rgba(122, 29, 46, 0.4)',
+                      color: 'var(--pale-light)'
+                    }}
+                  >
+                    <LogOut size={16} />
+                    <span className="text-sm">ログアウト</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => navigate('/login')}
+                    className="flex items-center gap-2 px-3 py-2 rounded transition-all"
+                    style={{
+                      background: 'rgba(107, 68, 35, 0.3)',
+                      border: '1px solid rgba(166, 124, 82, 0.4)',
+                      color: 'var(--pale-light)'
+                    }}
+                  >
+                    <LogIn size={16} />
+                    <span className="text-sm">ログイン</span>
+                  </button>
+                  <button
+                    onClick={() => navigate('/signup')}
+                    className="flex items-center gap-2 px-3 py-2 rounded transition-all"
+                    style={{
+                      background: 'rgba(107, 68, 35, 0.3)',
+                      border: '1px solid rgba(166, 124, 82, 0.4)',
+                      color: 'var(--pale-light)'
+                    }}
+                  >
+                    <UserPlus size={16} />
+                    <span className="text-sm">サインアップ</span>
+                  </button>
+                </>
+              )}
+            </div>
             <div className="relative z-10">
             <div className="text-center mb-8 sm:mb-10">
               <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto mb-6 sm:mb-8 relative" style={{
@@ -313,10 +373,6 @@ function ConfigErrorScreen() {
 }
 
 function App() {
-  if (!hasSupabaseConfig) {
-    return <ConfigErrorScreen />;
-  }
-
   return (
     <BrowserRouter>
       <AuthProvider>
