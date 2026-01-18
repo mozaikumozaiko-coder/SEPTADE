@@ -127,7 +127,7 @@ export function QuestionScreen({ onComplete }: QuestionScreenProps) {
                   animation: 'float 3s ease-in-out infinite'
                 }}>
                   <img
-                    src="/マイビデオ copy copy.gif"
+                    src="/ap-2 copy.gif"
                     alt="巫女"
                     className="w-full h-full object-contain miko-image"
                     style={{
