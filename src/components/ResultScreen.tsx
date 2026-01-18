@@ -221,6 +221,10 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   };
 
   const handleUnlockResults = () => {
+    if (!user) {
+      setOrderError('オーダー番号を入力するにはログインが必要です。');
+      return;
+    }
     setShowOrderInput(true);
     setOrderError('');
     setOrderNumber('');
@@ -983,10 +987,21 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         </div>
 
         <div className="space-y-3 sm:space-y-4">
+          {!user && orderError && (
+            <div className="p-4 rounded text-center" style={{
+              background: 'rgba(122, 29, 46, 0.3)',
+              border: '2px solid rgba(122, 29, 46, 0.6)',
+              color: 'var(--rust-red)',
+            }}>
+              {orderError}
+            </div>
+          )}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-5">
             <button
               onClick={handleUnlockResults}
-              className="mystic-button flex-1 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-3 sm:py-4"
+              disabled={!user}
+              className="mystic-button flex-1 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-3 sm:py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              title={!user ? 'ログインが必要です' : ''}
             >
               <span>全ての結果を開放する</span>
             </button>

@@ -156,7 +156,7 @@ function DiagnosisApp() {
                 background: 'rgba(0, 0, 0, 0.3)'
               }}>
                 <img
-                  src="/a_mystical_and_adorable_shrine_mascot_character_de-1767804824217.png"
+                  src="/ap-2.gif"
                   alt="神社のマスコット"
                   className="w-full h-full object-contain"
                   style={{ borderRadius: '50%' }}
