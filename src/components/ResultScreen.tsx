@@ -140,24 +140,38 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
     try {
       console.log('📤 Makeにデータを送信中...');
+      console.log('送信先URL:', webhookUrl);
       console.log('送信データ:', JSON.stringify(dataToSend, null, 2));
 
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
+        mode: 'cors',
         body: JSON.stringify(dataToSend),
       });
 
       console.log('📥 Makeからの応答:', {
         status: response.status,
         statusText: response.statusText,
-        ok: response.ok
+        ok: response.ok,
+        headers: Array.from(response.headers.entries())
       });
 
       if (response.ok) {
-        const responseData = await response.json().catch(() => ({ success: false, orderValid: false }));
+        const responseText = await response.text();
+        console.log('📄 レスポンステキスト:', responseText);
+
+        let responseData;
+        try {
+          responseData = JSON.parse(responseText);
+        } catch (parseError) {
+          console.error('❌ JSON解析エラー:', parseError);
+          responseData = { success: false, orderValid: false };
+        }
+
         console.log('✅ Make response:', responseData);
 
         if (responseData.orderValid === true && responseData.success === true) {
@@ -177,11 +191,18 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       } else {
         const errorText = await response.text().catch(() => '');
         setSendStatus('error');
-        console.error('Failed to send to Make:', response.status, response.statusText, errorText);
-        setOrderError('送信に失敗しました。もう一度お試しください。');
+        console.error('❌ Makeへの送信失敗:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorBody: errorText
+        });
+        setOrderError(`送信に失敗しました (${response.status})。もう一度お試しください。`);
       }
     } catch (error) {
-      console.error('Error sending to Make:', error);
+      console.error('❌ ネットワークエラー:', error);
+      if (error instanceof TypeError) {
+        console.error('これはネットワーク接続の問題かCORSエラーです');
+      }
       setSendStatus('error');
       setOrderError('ネットワークエラーが発生しました。接続を確認してください。');
     } finally {
