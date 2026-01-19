@@ -113,6 +113,11 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
           sessionStorage.removeItem('currentOrderId');
           sessionStorage.removeItem('isWaitingForNewReport');
           setIsWaitingForNewReport(false);
+          fetchPastReports();
+          if (onHistoryRefresh) {
+            console.log('🔄 Triggering history refresh...');
+            onHistoryRefresh();
+          }
         }
       }, 3000);
 
@@ -147,7 +152,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
       return () => clearInterval(pollInterval);
     }
-  }, [isLoadingReport, pollingStartTime, currentOrderId, fetchReportFromSupabase, gptReport]);
+  }, [isLoadingReport, pollingStartTime, currentOrderId, gptReport, fetchReportFromSupabase, fetchPastReports, onHistoryRefresh]);
 
   const handleSendToMake = async (orderId: string) => {
     const webhookUrl = import.meta.env.VITE_MAKE_WEBHOOK_URL;
@@ -396,11 +401,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         sessionStorage.removeItem('currentOrderId');
         sessionStorage.removeItem('isWaitingForNewReport');
         setIsWaitingForNewReport(false);
-        fetchPastReports();
-        if (onHistoryRefresh) {
-          console.log('🔄 Triggering history refresh...');
-          onHistoryRefresh();
-        }
         return data.report_data;
       } else {
         console.log('⏳ No report found yet...');
@@ -411,7 +411,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       console.error('❌ Error fetching report:', error);
       return null;
     }
-  }, [userId, currentOrderId, pollingStartTime, fetchPastReports, onHistoryRefresh]);
+  }, [userId, currentOrderId, pollingStartTime]);
 
   const startReportPolling = () => {
     const startTime = new Date().toISOString();
