@@ -33,6 +33,13 @@ export function ProfileScreen({ onComplete }: ProfileScreenProps) {
       return;
     }
 
+    // Clear all session storage when starting new diagnosis
+    sessionStorage.removeItem('isLoadingReport');
+    sessionStorage.removeItem('pollingStartTime');
+    sessionStorage.removeItem('currentOrderId');
+    sessionStorage.removeItem('isWaitingForNewReport');
+    sessionStorage.removeItem('pendingDiagnosisResult');
+
     onComplete(profile);
   };
 

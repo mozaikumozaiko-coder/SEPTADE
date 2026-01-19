@@ -52,6 +52,7 @@ function DiagnosisApp() {
   const [historyGptReport, setHistoryGptReport] = useState<any>(undefined);
   const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
+  const [resultKey, setResultKey] = useState(0);
 
   useEffect(() => {
     if (user) {
@@ -88,6 +89,7 @@ function DiagnosisApp() {
     const diagnosisResult = getDiagnosisResult(answers);
     setResult(diagnosisResult);
     setIsFromHistory(false);
+    setResultKey(prev => prev + 1);
 
     if (profile) {
       setIsSaving(true);
@@ -106,6 +108,14 @@ function DiagnosisApp() {
     setHistoryGptReport(undefined);
     setIsSaving(false);
     setHistoryRefreshKey(prev => prev + 1);
+
+    // Clear all session storage to prevent stale data on mobile
+    sessionStorage.removeItem('isLoadingReport');
+    sessionStorage.removeItem('pollingStartTime');
+    sessionStorage.removeItem('currentOrderId');
+    sessionStorage.removeItem('isWaitingForNewReport');
+    sessionStorage.removeItem('pendingDiagnosisResult');
+
     setCurrentScreen('landing');
   };
 
@@ -115,6 +125,7 @@ function DiagnosisApp() {
     setIsFromHistory(true);
     setHistorySendUserId(sendUserId);
     setHistoryGptReport(gptReport);
+    setResultKey(prev => prev + 1);
     setCurrentScreen('result');
   };
 
@@ -150,7 +161,7 @@ function DiagnosisApp() {
 
       {currentScreen === 'result' && result && profile && (
         <motion.div
-          key={`result-${isFromHistory ? 'history' : 'new'}-${profile.birthdate}-${result.type}`}
+          key={`result-${resultKey}`}
           variants={pageVariants}
           initial="initial"
           animate="animate"

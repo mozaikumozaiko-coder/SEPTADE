@@ -75,6 +75,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
   useEffect(() => {
     if (isFromHistory) {
+      // Clear polling state when viewing history
       sessionStorage.removeItem('isLoadingReport');
       sessionStorage.removeItem('pollingStartTime');
       sessionStorage.removeItem('currentOrderId');
