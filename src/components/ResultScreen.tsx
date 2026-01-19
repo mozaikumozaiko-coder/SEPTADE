@@ -1122,12 +1122,14 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
         <div className="space-y-3 sm:space-y-4">
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-5">
-            <button
-              onClick={handleUnlockResults}
-              className="mystic-button flex-1 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-3 sm:py-4"
-            >
-              <span>全ての結果を開放する</span>
-            </button>
+            {!gptReport && (
+              <button
+                onClick={handleUnlockResults}
+                className="mystic-button flex-1 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-3 sm:py-4"
+              >
+                <span>全ての結果を開放する</span>
+              </button>
+            )}
 
             <button
               onClick={onRestart}
