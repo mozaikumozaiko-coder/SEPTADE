@@ -97,6 +97,9 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
     setIsSending(true);
     setSendStatus('idle');
+    setPastReports([]);
+    setGptReport(null);
+    setSelectedReportIndex(0);
 
     const normalizeScoreForWebhook = (score: number): number => {
       return Math.round(Math.max(0, Math.min(100, ((score + 100) / 2))));
@@ -255,6 +258,10 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     }
     setOrderError('');
     setCurrentOrderId(orderNumber);
+    setPastReports([]);
+    setGptReport(null);
+    setSelectedReportIndex(0);
+    setIsLoadingReport(true);
     handleSendToMake(orderNumber);
   };
 
@@ -621,7 +628,22 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
             <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
               {isLoadingReport ? (
-                <p>神託を読み解いています...</p>
+                <div className="flex flex-col items-center justify-center py-12 space-y-6">
+                  <div className="relative w-24 h-24">
+                    <div className="absolute inset-0 border-4 border-t-transparent rounded-full animate-spin" style={{
+                      borderColor: 'rgba(191, 167, 110, 0.3)',
+                      borderTopColor: 'transparent',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                    <div className="absolute inset-3 border-4 border-b-transparent rounded-full animate-spin" style={{
+                      borderColor: 'rgba(166, 124, 82, 0.5)',
+                      borderBottomColor: 'transparent',
+                      animation: 'spin 1.5s linear infinite reverse'
+                    }}></div>
+                  </div>
+                  <p className="text-lg font-medium glow-text" style={{ color: 'var(--pale-gold)' }}>神託を読み解いています...</p>
+                  <p className="text-sm opacity-70">約3分ほどお待ちください</p>
+                </div>
               ) : displayReport?.section1?.content ? (
                 <p>{displayReport.section1.content}</p>
               ) : (
@@ -749,9 +771,18 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
             <div>
               <h4 className="text-lg sm:text-xl font-bold mb-4" style={{ color: 'var(--pale-gold)' }}>四柱推命占い</h4>
               {isLoadingReport ? (
-                <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
-                  命式を読み解いています...
-                </p>
+                <div className="flex flex-col items-center justify-center py-8 space-y-4">
+                  <div className="relative w-16 h-16">
+                    <div className="absolute inset-0 border-4 border-t-transparent rounded-full animate-spin" style={{
+                      borderColor: 'rgba(191, 167, 110, 0.3)',
+                      borderTopColor: 'transparent',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                  </div>
+                  <p className="text-sm leading-relaxed opacity-90" style={{ color: 'var(--pale-light)' }}>
+                    命式を読み解いています...
+                  </p>
+                </div>
               ) : displayReport?.fourPillars ? (
                 <>
                   <div className="mb-4 p-4 rounded-lg" style={{
@@ -806,7 +837,22 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
             <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
               {isLoadingReport ? (
-                <p>分析中...</p>
+                <div className="flex flex-col items-center justify-center py-12 space-y-6">
+                  <div className="relative w-24 h-24">
+                    <div className="absolute inset-0 border-4 border-t-transparent rounded-full animate-spin" style={{
+                      borderColor: 'rgba(191, 167, 110, 0.3)',
+                      borderTopColor: 'transparent',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                    <div className="absolute inset-3 border-4 border-b-transparent rounded-full animate-spin" style={{
+                      borderColor: 'rgba(166, 124, 82, 0.5)',
+                      borderBottomColor: 'transparent',
+                      animation: 'spin 1.5s linear infinite reverse'
+                    }}></div>
+                  </div>
+                  <p className="text-lg font-medium glow-text" style={{ color: 'var(--pale-gold)' }}>分析中...</p>
+                  <p className="text-sm opacity-70">約3分ほどお待ちください</p>
+                </div>
               ) : displayReport?.section2?.content ? (
                 <p>{displayReport.section2.content}</p>
               ) : (
@@ -899,7 +945,22 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
             <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
               {isLoadingReport ? (
-                <p>分析中...</p>
+                <div className="flex flex-col items-center justify-center py-12 space-y-6">
+                  <div className="relative w-24 h-24">
+                    <div className="absolute inset-0 border-4 border-t-transparent rounded-full animate-spin" style={{
+                      borderColor: 'rgba(191, 167, 110, 0.3)',
+                      borderTopColor: 'transparent',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                    <div className="absolute inset-3 border-4 border-b-transparent rounded-full animate-spin" style={{
+                      borderColor: 'rgba(166, 124, 82, 0.5)',
+                      borderBottomColor: 'transparent',
+                      animation: 'spin 1.5s linear infinite reverse'
+                    }}></div>
+                  </div>
+                  <p className="text-lg font-medium glow-text" style={{ color: 'var(--pale-gold)' }}>分析中...</p>
+                  <p className="text-sm opacity-70">約3分ほどお待ちください</p>
+                </div>
               ) : displayReport?.section3?.content ? (
                 <p>{displayReport.section3.content}</p>
               ) : (
@@ -961,7 +1022,22 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
             <div className="leading-loose opacity-90 text-sm sm:text-base" style={{ color: 'var(--pale-light)' }}>
               {isLoadingReport ? (
-                <p>分析中...</p>
+                <div className="flex flex-col items-center justify-center py-12 space-y-6">
+                  <div className="relative w-24 h-24">
+                    <div className="absolute inset-0 border-4 border-t-transparent rounded-full animate-spin" style={{
+                      borderColor: 'rgba(191, 167, 110, 0.3)',
+                      borderTopColor: 'transparent',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                    <div className="absolute inset-3 border-4 border-b-transparent rounded-full animate-spin" style={{
+                      borderColor: 'rgba(166, 124, 82, 0.5)',
+                      borderBottomColor: 'transparent',
+                      animation: 'spin 1.5s linear infinite reverse'
+                    }}></div>
+                  </div>
+                  <p className="text-lg font-medium glow-text" style={{ color: 'var(--pale-gold)' }}>分析中...</p>
+                  <p className="text-sm opacity-70">約3分ほどお待ちください</p>
+                </div>
               ) : displayReport?.section4?.content ? (
                 <p>{displayReport.section4.content}</p>
               ) : (
