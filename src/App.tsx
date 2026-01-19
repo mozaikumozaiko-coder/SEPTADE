@@ -15,7 +15,6 @@ import { AllTypesScreen } from './components/AllTypesScreen';
 import { AllTarotCardsScreen } from './components/AllTarotCardsScreen';
 import { Profile, Answer, DiagnosisResult } from './types';
 import { getDiagnosisResult } from './utils/diagnosis';
-import { saveDiagnosisHistory } from './lib/diagnosisHistory';
 import { hasSupabaseConfig } from './lib/supabase';
 
 type Screen = 'landing' | 'profile' | 'questions' | 'result';
@@ -51,7 +50,6 @@ function DiagnosisApp() {
   const [historySendUserId, setHistorySendUserId] = useState<string | undefined>(undefined);
   const [historyGptReport, setHistoryGptReport] = useState<any>(undefined);
   const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
-  const [isSaving, setIsSaving] = useState(false);
   const [resultKey, setResultKey] = useState(0);
 
   useEffect(() => {
@@ -83,20 +81,11 @@ function DiagnosisApp() {
     setCurrentScreen('questions');
   };
 
-  const handleQuestionsComplete = async (answers: Answer[]) => {
-    if (isSaving) return;
-
+  const handleQuestionsComplete = (answers: Answer[]) => {
     const diagnosisResult = getDiagnosisResult(answers);
     setResult(diagnosisResult);
     setIsFromHistory(false);
     setResultKey(prev => prev + 1);
-
-    if (profile) {
-      setIsSaving(true);
-      await saveDiagnosisHistory(profile, diagnosisResult);
-      setIsSaving(false);
-    }
-
     setCurrentScreen('result');
   };
 
@@ -106,7 +95,6 @@ function DiagnosisApp() {
     setIsFromHistory(false);
     setHistorySendUserId(undefined);
     setHistoryGptReport(undefined);
-    setIsSaving(false);
     setHistoryRefreshKey(prev => prev + 1);
 
     // Clear all session storage to prevent stale data on mobile

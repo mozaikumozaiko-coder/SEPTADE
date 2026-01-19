@@ -66,12 +66,15 @@ Deno.serve(async (req: Request) => {
 
     console.log("Updating diagnosis history with GPT report:", { userId, orderId: finalOrderId });
 
-    // First, check if a record exists
+    // First, find the most recent record with this order_number and send_user_id
+    // This prevents updating multiple records with the same order number
     const checkResult = await supabase
       .from("diagnosis_history")
-      .select("id, order_number, send_user_id, created_at")
+      .select("id, order_number, send_user_id, created_at, updated_at")
       .eq("order_number", finalOrderId)
       .eq("send_user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(1)
       .maybeSingle();
 
     console.log("Existing record check:", JSON.stringify(checkResult.data, null, 2));
@@ -79,8 +82,8 @@ Deno.serve(async (req: Request) => {
     let result;
 
     if (checkResult.data) {
-      // Record exists, update it
-      console.log("Record exists, updating...");
+      // Record exists, update only this specific record by ID
+      console.log("Record exists, updating record ID:", checkResult.data.id);
       result = await supabase
         .from("diagnosis_history")
         .update({
@@ -90,8 +93,7 @@ Deno.serve(async (req: Request) => {
         .eq("id", checkResult.data.id)
         .select();
     } else {
-      // Record doesn't exist, this means Make created it but we don't have the initial data
-      // This shouldn't happen in normal flow, log a warning
+      // Record doesn't exist
       console.warn("No existing diagnosis history found for order:", finalOrderId);
       return new Response(
         JSON.stringify({
