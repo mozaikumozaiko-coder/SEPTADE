@@ -30,8 +30,17 @@ Deno.serve(async (req: Request) => {
 
     const requestData = await req.json();
     console.log("Request data received:", JSON.stringify(requestData, null, 2));
+    console.log("Request data keys:", Object.keys(requestData));
 
     const { userId, reportData, orderId } = requestData;
+
+    console.log("Extracted values:", {
+      userId,
+      orderId,
+      reportData: reportData ? "exists" : "missing",
+      userIdType: typeof userId,
+      orderIdType: typeof orderId
+    });
 
     if (!userId || !reportData) {
       console.error("Missing required fields:", { userId: !!userId, reportData: !!reportData });
