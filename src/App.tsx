@@ -16,6 +16,7 @@ import { AllTarotCardsScreen } from './components/AllTarotCardsScreen';
 import { Profile, Answer, DiagnosisResult } from './types';
 import { getDiagnosisResult } from './utils/diagnosis';
 import { hasSupabaseConfig } from './lib/supabase';
+import { saveDiagnosisHistory } from './lib/diagnosisHistory';
 
 type Screen = 'landing' | 'profile' | 'questions' | 'result';
 
@@ -63,6 +64,17 @@ function DiagnosisApp() {
           setIsFromHistory(false);
           setCurrentScreen('result');
           sessionStorage.removeItem('pendingDiagnosisResult');
+
+          // Save diagnosis history after login
+          console.log('💾 Saving diagnosis history after login...');
+          saveDiagnosisHistory(savedProfile, savedResult).then((savedId) => {
+            if (savedId) {
+              console.log('✅ Diagnosis history saved with ID:', savedId);
+              handleHistoryRefresh();
+            } else {
+              console.error('❌ Failed to save diagnosis history');
+            }
+          });
         } catch (error) {
           console.error('Failed to restore diagnosis result:', error);
           sessionStorage.removeItem('pendingDiagnosisResult');
@@ -81,12 +93,27 @@ function DiagnosisApp() {
     setCurrentScreen('questions');
   };
 
-  const handleQuestionsComplete = (answers: Answer[]) => {
+  const handleQuestionsComplete = async (answers: Answer[]) => {
     const diagnosisResult = getDiagnosisResult(answers);
     setResult(diagnosisResult);
     setIsFromHistory(false);
     setResultKey(prev => prev + 1);
     setCurrentScreen('result');
+
+    // Save diagnosis history
+    if (profile && user) {
+      console.log('💾 Saving diagnosis history...');
+      const savedId = await saveDiagnosisHistory(profile, diagnosisResult);
+      if (savedId) {
+        console.log('✅ Diagnosis history saved with ID:', savedId);
+        // Refresh history list
+        handleHistoryRefresh();
+      } else {
+        console.error('❌ Failed to save diagnosis history');
+      }
+    } else {
+      console.log('⚠️ Cannot save diagnosis history: user not authenticated');
+    }
   };
 
   const handleRestart = () => {
