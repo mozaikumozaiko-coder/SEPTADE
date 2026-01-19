@@ -459,6 +459,11 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         sessionStorage.removeItem('currentOrderId');
         sessionStorage.removeItem('isWaitingForNewReport');
         setIsWaitingForNewReport(false);
+        fetchPastReports();
+        if (onHistoryRefresh) {
+          console.log('🔄 Triggering history refresh...');
+          onHistoryRefresh();
+        }
       }
     }, 3000);
 

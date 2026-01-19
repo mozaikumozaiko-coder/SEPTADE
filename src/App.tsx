@@ -147,7 +147,7 @@ function DiagnosisApp() {
 
       {currentScreen === 'result' && result && profile && (
         <motion.div
-          key="result"
+          key={`result-${isFromHistory ? 'history' : 'new'}-${profile.birthdate}-${result.type}`}
           variants={pageVariants}
           initial="initial"
           animate="animate"
