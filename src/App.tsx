@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, BookOpen, Target, AlertTriangle, LogIn, UserPlus, LogOut, User } from 'lucide-react';
+import { Sparkles, BookOpen, Target, AlertTriangle, LogIn, UserPlus, LogOut, User, Users } from 'lucide-react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { PrivateRoute } from './components/auth/PrivateRoute';
 import { LoginScreen } from './components/auth/LoginScreen';
@@ -278,6 +278,23 @@ function DiagnosisApp() {
 
             <div className="mt-8 sm:mt-12">
               <DiagnosisHistoryList refreshTrigger={historyRefreshKey} onSelectHistory={handleSelectHistory} />
+            </div>
+
+            <div className="mt-8 sm:mt-10 flex flex-wrap justify-center gap-4">
+              <button
+                onClick={() => navigate('/all-types')}
+                className="mystic-button inline-flex items-center justify-center gap-3 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg"
+              >
+                <Users size={20} className="sm:w-6 sm:h-6" />
+                <span>全17タイプを見る</span>
+              </button>
+              <button
+                onClick={() => navigate('/tarot-cards')}
+                className="mystic-button inline-flex items-center justify-center gap-3 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg"
+              >
+                <BookOpen size={20} className="sm:w-6 sm:h-6" />
+                <span>すべてのタロットを見る</span>
+              </button>
             </div>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center items-center">
