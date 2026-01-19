@@ -32,6 +32,18 @@ export function DiagnosisHistoryList({ onSelectHistory, refreshTrigger }: Diagno
     console.log('🔄 Loading diagnosis history... (refreshTrigger:', refreshTrigger, ')');
     const data = await getUserDiagnosisHistory(10);
     console.log('✅ Diagnosis history loaded:', data.length, 'items');
+
+    // Log each item to verify gptReport data
+    data.forEach((item, index) => {
+      console.log(`  Item ${index + 1}:`, {
+        id: item.id,
+        hasGptReport: !!item.gptReport,
+        orderNumber: item.orderNumber,
+        sendUserId: item.sendUserId,
+        createdAt: item.createdAt,
+      });
+    });
+
     setHistory(data);
     setLoading(false);
   }, [refreshTrigger]);

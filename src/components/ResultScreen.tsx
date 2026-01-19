@@ -28,9 +28,16 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [isSending, setIsSending] = useState(false);
   const [, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [gptReport, setGptReport] = useState<GPTReport | null>(() => {
+    console.log('🎯 ResultScreen initializing with:', {
+      isFromHistory,
+      hasHistoryGptReport: !!historyGptReport,
+      historySendUserId,
+    });
     if (isFromHistory && historyGptReport) {
+      console.log('✅ Using history GPT report');
       return historyGptReport;
     }
+    console.log('📭 No history GPT report to display');
     return null;
   });
   const [isLoadingReport, setIsLoadingReport] = useState(() => {
@@ -86,6 +93,14 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     }
   }, [isFromHistory]);
 
+  // Update gptReport when historyGptReport changes (when switching history items)
+  useEffect(() => {
+    if (isFromHistory && historyGptReport) {
+      console.log('🔄 Updating GPT report from history');
+      setGptReport(historyGptReport);
+    }
+  }, [isFromHistory, historyGptReport]);
+
   useEffect(() => {
     if (user?.email && userId !== user.email) {
       setUserId(user.email);
@@ -94,7 +109,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   }, [user, userId]);
 
   // CRITICAL: Don't show old reports when waiting for a new report
-  const allReports = (isWaitingForNewReport || isLoadingReport) ? [] : (gptReport ? [gptReport, ...pastReports] : []);
+  // When viewing from history, only show the history report (don't mix with past reports)
+  const allReports = (isWaitingForNewReport || isLoadingReport)
+    ? []
+    : isFromHistory && gptReport
+    ? [gptReport]
+    : (gptReport ? [gptReport, ...pastReports] : []);
   const displayReport = allReports[selectedReportIndex] || null;
 
   const fetchPastReports = useCallback(async () => {
