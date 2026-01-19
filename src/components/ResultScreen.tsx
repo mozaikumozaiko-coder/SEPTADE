@@ -23,6 +23,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [gptReport, setGptReport] = useState<GPTReport | null>(null);
   const [isLoadingReport, setIsLoadingReport] = useState(() => {
+    if (isFromHistory) return false;
     const stored = sessionStorage.getItem('isLoadingReport');
     return stored === 'true';
   });
@@ -41,12 +42,15 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [pastReports, setPastReports] = useState<GPTReport[]>([]);
   const [selectedReportIndex, setSelectedReportIndex] = useState(0);
   const [pollingStartTime, setPollingStartTime] = useState<string | null>(() => {
+    if (isFromHistory) return null;
     return sessionStorage.getItem('pollingStartTime');
   });
   const [currentOrderId, setCurrentOrderId] = useState<string | null>(() => {
+    if (isFromHistory) return null;
     return sessionStorage.getItem('currentOrderId');
   });
   const [isWaitingForNewReport, setIsWaitingForNewReport] = useState(() => {
+    if (isFromHistory) return false;
     return sessionStorage.getItem('isWaitingForNewReport') === 'true';
   });
   const [isMobile, setIsMobile] = useState(false);
@@ -60,6 +64,15 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    if (isFromHistory) {
+      sessionStorage.removeItem('isLoadingReport');
+      sessionStorage.removeItem('pollingStartTime');
+      sessionStorage.removeItem('currentOrderId');
+      sessionStorage.removeItem('isWaitingForNewReport');
+    }
+  }, [isFromHistory]);
 
   useEffect(() => {
     if (user?.email && userId !== user.email) {
