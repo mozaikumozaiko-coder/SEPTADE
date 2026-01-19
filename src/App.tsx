@@ -11,6 +11,7 @@ import { ProfileScreen } from './components/ProfileScreen';
 import { QuestionScreen } from './components/QuestionScreen';
 import { ResultScreen } from './components/ResultScreen';
 import { DiagnosisHistoryList } from './components/DiagnosisHistoryList';
+import { CompleteDiagnosisHistoryList } from './components/CompleteDiagnosisHistoryList';
 import { AllTypesScreen } from './components/AllTypesScreen';
 import { AllTarotCardsScreen } from './components/AllTarotCardsScreen';
 import { Profile, Answer, DiagnosisResult } from './types';
@@ -324,6 +325,10 @@ function DiagnosisApp() {
 
             <div className="mt-8 sm:mt-12">
               <DiagnosisHistoryList refreshTrigger={historyRefreshKey} onSelectHistory={handleSelectHistory} />
+            </div>
+
+            <div className="mt-4">
+              <CompleteDiagnosisHistoryList refreshTrigger={historyRefreshKey} onSelectHistory={handleSelectHistory} />
             </div>
 
             <div className="mt-8 sm:mt-10 flex flex-wrap justify-center gap-4">

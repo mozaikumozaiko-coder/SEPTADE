@@ -135,6 +135,41 @@ export async function getUserDiagnosisHistory(
   }));
 }
 
+export async function getUserCompleteDiagnosisHistory(): Promise<Array<{ id: string; profile: Profile; result: DiagnosisResult; createdAt: string; sendUserId?: string; gptReport: any; orderNumber?: string; updatedAt?: string }>> {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return [];
+  }
+
+  console.log('📊 Fetching complete diagnosis history (with GPT reports) for user:', user.id);
+
+  const { data, error } = await supabase
+    .from('diagnosis_history')
+    .select('id, profile_data, result_data, created_at, updated_at, send_user_id, gpt_report_data, order_number')
+    .eq('user_id', user.id)
+    .not('gpt_report_data', 'is', null)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching complete diagnosis history:', error);
+    return [];
+  }
+
+  console.log(`✅ Found ${data?.length || 0} complete diagnosis history records`);
+
+  return (data || []).map(item => ({
+    id: item.id,
+    profile: item.profile_data as Profile,
+    result: item.result_data as DiagnosisResult,
+    createdAt: item.created_at,
+    updatedAt: item.updated_at || undefined,
+    sendUserId: item.send_user_id || undefined,
+    gptReport: item.gpt_report_data,
+    orderNumber: item.order_number || undefined,
+  }));
+}
+
 export async function updateDiagnosisHistoryWithGPTReport(
   orderNumber: string,
   userId: string,

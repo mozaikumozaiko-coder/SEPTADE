@@ -11,6 +11,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { saveDiagnosisHistory } from '../lib/diagnosisHistory';
 import { DiagnosisHistoryList } from './DiagnosisHistoryList';
+import { CompleteDiagnosisHistoryList } from './CompleteDiagnosisHistoryList';
 
 interface ResultScreenProps {
   result: DiagnosisResult;
@@ -1508,6 +1509,13 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
         <div className="mt-8 sm:mt-12">
           <DiagnosisHistoryList
+            refreshTrigger={historyRefreshKey}
+            onSelectHistory={onSelectHistory || (() => {})}
+          />
+        </div>
+
+        <div className="mt-4">
+          <CompleteDiagnosisHistoryList
             refreshTrigger={historyRefreshKey}
             onSelectHistory={onSelectHistory || (() => {})}
           />
