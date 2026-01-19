@@ -32,20 +32,28 @@ Deno.serve(async (req: Request) => {
     console.log("Request data received:", JSON.stringify(requestData, null, 2));
     console.log("Request data keys:", Object.keys(requestData));
 
-    const { userId, reportData, orderId } = requestData;
+    // Support both orderId and orderNumber for flexibility
+    const { userId, reportData, orderId, orderNumber } = requestData;
+    const finalOrderId = orderId || orderNumber;
 
     console.log("Extracted values:", {
       userId,
       orderId,
+      orderNumber,
+      finalOrderId,
       reportData: reportData ? "exists" : "missing",
       userIdType: typeof userId,
-      orderIdType: typeof orderId
+      orderIdType: typeof finalOrderId
     });
 
-    if (!userId || !reportData) {
-      console.error("Missing required fields:", { userId: !!userId, reportData: !!reportData });
+    if (!userId || !reportData || !finalOrderId) {
+      console.error("Missing required fields:", {
+        userId: !!userId,
+        reportData: !!reportData,
+        finalOrderId: !!finalOrderId
+      });
       return new Response(
-        JSON.stringify({ error: "Missing userId or reportData" }),
+        JSON.stringify({ error: "Missing userId, reportData, or orderId/orderNumber" }),
         {
           status: 400,
           headers: {
@@ -56,13 +64,13 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    console.log("Updating diagnosis history with GPT report:", { userId, orderId });
+    console.log("Updating diagnosis history with GPT report:", { userId, orderId: finalOrderId });
 
     // First, let's check what records exist
     const checkResult = await supabase
       .from("diagnosis_history")
       .select("id, order_number, send_user_id, created_at")
-      .eq("order_number", orderId);
+      .eq("order_number", finalOrderId);
 
     console.log("Existing records with this order_number:", JSON.stringify(checkResult.data, null, 2));
 
@@ -72,7 +80,7 @@ Deno.serve(async (req: Request) => {
       .update({
         gpt_report_data: reportData,
       })
-      .eq("order_number", orderId)
+      .eq("order_number", finalOrderId)
       .eq("send_user_id", userId)
       .select();
 
@@ -82,7 +90,7 @@ Deno.serve(async (req: Request) => {
     }
 
     if (!result.data || result.data.length === 0) {
-      console.error("No matching diagnosis history found for order:", orderId);
+      console.error("No matching diagnosis history found for order:", finalOrderId);
       return new Response(
         JSON.stringify({
           success: false,
