@@ -55,11 +55,17 @@ Deno.serve(async (req: Request) => {
       .eq("send_user_id", userId)
       .not("gpt_report_data", "is", null);
 
+    // CRITICAL: If orderId is specified, ONLY return reports with that exact order_number
     if (orderId) {
+      console.log("Filtering by order_number:", orderId);
       query = query.eq("order_number", orderId);
+      // Also ensure order_number is not null
+      query = query.not("order_number", "is", null);
     }
 
+    // CRITICAL: If pollingStartTime is specified, ONLY return reports updated after that time
     if (pollingStartTime && !allReports) {
+      console.log("Filtering by updated_at >=", pollingStartTime);
       query = query.gte("updated_at", pollingStartTime);
     }
 

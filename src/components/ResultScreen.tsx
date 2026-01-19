@@ -155,11 +155,18 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         console.log('📋 Report updated_at:', data.updated_at);
         console.log('📋 Polling start time:', pollingStartTime);
 
-        // CRITICAL: Check order number first - if we're polling for a specific order, reject any mismatch
-        if (currentOrderId && data.order_number !== currentOrderId) {
-          console.log('⚠️ Order number mismatch! Expected:', currentOrderId, 'Got:', data.order_number);
-          console.log('⚠️ Ignoring this report - it belongs to a different order.');
-          return null;
+        // CRITICAL: If we're polling for a specific order, the report MUST have that order number
+        if (currentOrderId) {
+          if (!data.order_number) {
+            console.log('⚠️ Report has no order_number but we are polling for order:', currentOrderId);
+            console.log('⚠️ This is an old report without order tracking. Ignoring.');
+            return null;
+          }
+          if (data.order_number !== currentOrderId) {
+            console.log('⚠️ Order number mismatch! Expected:', currentOrderId, 'Got:', data.order_number);
+            console.log('⚠️ Ignoring this report - it belongs to a different order.');
+            return null;
+          }
         }
 
         // CRITICAL: If we're polling (have a start time), only accept reports updated AFTER polling started
