@@ -163,6 +163,8 @@ function DiagnosisApp() {
             onHistoryRefresh={handleHistoryRefresh}
             historySendUserId={historySendUserId}
             historyGptReport={historyGptReport}
+            historyRefreshKey={historyRefreshKey}
+            onSelectHistory={handleSelectHistory}
           />
         </motion.div>
       )}

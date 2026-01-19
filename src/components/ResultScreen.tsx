@@ -10,6 +10,7 @@ import { calculateFourPillars } from '../lib/fourPillars';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { saveDiagnosisHistory } from '../lib/diagnosisHistory';
+import { DiagnosisHistoryList } from './DiagnosisHistoryList';
 
 interface ResultScreenProps {
   result: DiagnosisResult;
@@ -19,9 +20,11 @@ interface ResultScreenProps {
   onHistoryRefresh?: () => void;
   historySendUserId?: string;
   historyGptReport?: any;
+  historyRefreshKey?: number;
+  onSelectHistory?: (profile: Profile, result: DiagnosisResult, sendUserId?: string, gptReport?: any) => void;
 }
 
-export function ResultScreen({ result, profile, onRestart, isFromHistory = false, onHistoryRefresh, historySendUserId, historyGptReport }: ResultScreenProps) {
+export function ResultScreen({ result, profile, onRestart, isFromHistory = false, onHistoryRefresh, historySendUserId, historyGptReport, historyRefreshKey, onSelectHistory }: ResultScreenProps) {
   const [isSending, setIsSending] = useState(false);
   const [, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [gptReport, setGptReport] = useState<GPTReport | null>(() => {
@@ -1478,6 +1481,13 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
             <BookOpen size={24} className="sm:w-7 sm:h-7" />
             <span>すべてのタロットを見る</span>
           </button>
+        </div>
+
+        <div className="mt-8 sm:mt-12">
+          <DiagnosisHistoryList
+            refreshTrigger={historyRefreshKey}
+            onSelectHistory={onSelectHistory || (() => {})}
+          />
         </div>
 
         <div className="text-center pt-4 sm:pt-6 px-2">
