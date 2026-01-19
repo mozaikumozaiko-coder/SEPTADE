@@ -1,5 +1,5 @@
 import { MAJOR_ARCANA } from '../lib/tarotSelector';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export function AllTarotCardsScreen() {
@@ -135,6 +135,16 @@ export function AllTarotCardsScreen() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <button
+            onClick={() => navigate('/all-types')}
+            className="mystic-button inline-flex items-center justify-center gap-3 px-8 py-4 text-lg"
+          >
+            <Users size={24} />
+            <span>全17タイプを見る</span>
+          </button>
         </div>
       </div>
     </div>
