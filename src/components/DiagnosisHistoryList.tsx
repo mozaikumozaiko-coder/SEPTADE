@@ -11,10 +11,12 @@ interface HistoryItem {
   result: DiagnosisResult;
   createdAt: string;
   sendUserId?: string;
+  gptReport?: any;
+  orderNumber?: string;
 }
 
 interface DiagnosisHistoryListProps {
-  onSelectHistory: (profile: Profile, result: DiagnosisResult, sendUserId?: string) => void;
+  onSelectHistory: (profile: Profile, result: DiagnosisResult, sendUserId?: string, gptReport?: any) => void;
   refreshTrigger?: number;
 }
 
@@ -126,7 +128,7 @@ export function DiagnosisHistoryList({ onSelectHistory, refreshTrigger }: Diagno
                 {history.map((item) => (
                   <button
                     key={item.id}
-                    onClick={() => onSelectHistory(item.profile, item.result, item.sendUserId)}
+                    onClick={() => onSelectHistory(item.profile, item.result, item.sendUserId, item.gptReport)}
                     className="w-full p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] text-left"
                     style={{
                       background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.7), rgba(122, 29, 46, 0.6))',

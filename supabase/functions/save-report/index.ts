@@ -47,15 +47,16 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    console.log("Inserting new report:", { userId, orderId });
+    console.log("Updating diagnosis history with GPT report:", { userId, orderId });
 
+    // Update the diagnosis_history record with the GPT report
     const result = await supabase
-      .from("reports")
-      .insert({
-        user_id: userId,
-        report_data: reportData,
-        order_number: orderId || null,
+      .from("diagnosis_history")
+      .update({
+        gpt_report_data: reportData,
       })
+      .eq("order_number", orderId)
+      .eq("send_user_id", userId)
       .select();
 
     if (result.error) {
@@ -63,7 +64,24 @@ Deno.serve(async (req: Request) => {
       throw result.error;
     }
 
-    console.log("Report saved successfully:", result.data);
+    if (!result.data || result.data.length === 0) {
+      console.error("No matching diagnosis history found for order:", orderId);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "No matching diagnosis history found",
+        }),
+        {
+          status: 404,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
+    console.log("GPT report saved successfully:", result.data);
 
     return new Response(
       JSON.stringify({

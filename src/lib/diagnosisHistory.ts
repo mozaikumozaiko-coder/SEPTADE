@@ -15,13 +15,14 @@ export function createUserIdentifier(name: string, birthdate: string): string {
 export async function saveDiagnosisHistory(
   profile: Profile,
   result: DiagnosisResult,
-  sendUserId?: string
-): Promise<void> {
+  sendUserId?: string,
+  orderNumber?: string
+): Promise<string | null> {
   const userIdentifier = createUserIdentifier(profile.name, profile.birthdate);
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('diagnosis_history')
     .insert({
       user_identifier: userIdentifier,
@@ -29,11 +30,17 @@ export async function saveDiagnosisHistory(
       profile_data: profile,
       result_data: result,
       send_user_id: sendUserId || null,
-    });
+      order_number: orderNumber || null,
+    })
+    .select('id')
+    .single();
 
   if (error) {
     console.error('Error saving diagnosis history:', error);
+    return null;
   }
+
+  return data?.id || null;
 }
 
 export async function getDiagnosisHistory(
@@ -64,7 +71,7 @@ export async function getDiagnosisHistory(
 
 export async function getUserDiagnosisHistory(
   limit: number = 3
-): Promise<Array<{ id: string; profile: Profile; result: DiagnosisResult; createdAt: string; sendUserId?: string }>> {
+): Promise<Array<{ id: string; profile: Profile; result: DiagnosisResult; createdAt: string; sendUserId?: string; gptReport?: any; orderNumber?: string }>> {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
@@ -73,7 +80,7 @@ export async function getUserDiagnosisHistory(
 
   const { data, error } = await supabase
     .from('diagnosis_history')
-    .select('id, profile_data, result_data, created_at, send_user_id')
+    .select('id, profile_data, result_data, created_at, send_user_id, gpt_report_data, order_number')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(limit);
@@ -89,5 +96,26 @@ export async function getUserDiagnosisHistory(
     result: item.result_data as DiagnosisResult,
     createdAt: item.created_at,
     sendUserId: item.send_user_id || undefined,
+    gptReport: item.gpt_report_data || undefined,
+    orderNumber: item.order_number || undefined,
   }));
+}
+
+export async function updateDiagnosisHistoryWithGPTReport(
+  orderNumber: string,
+  userId: string,
+  gptReportData: any
+): Promise<boolean> {
+  const { error } = await supabase
+    .from('diagnosis_history')
+    .update({ gpt_report_data: gptReportData })
+    .eq('order_number', orderNumber)
+    .eq('send_user_id', userId);
+
+  if (error) {
+    console.error('Error updating diagnosis history with GPT report:', error);
+    return false;
+  }
+
+  return true;
 }

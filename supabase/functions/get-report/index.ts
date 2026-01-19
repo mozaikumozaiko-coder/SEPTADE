@@ -50,19 +50,20 @@ Deno.serve(async (req: Request) => {
     }
 
     let query = supabase
-      .from("reports")
-      .select("report_data, created_at, updated_at, order_number")
-      .eq("user_id", userId);
+      .from("diagnosis_history")
+      .select("gpt_report_data, created_at, updated_at, order_number")
+      .eq("send_user_id", userId)
+      .not("gpt_report_data", "is", null);
 
     if (orderId) {
       query = query.eq("order_number", orderId);
     }
 
     if (pollingStartTime && !allReports) {
-      query = query.gte("created_at", pollingStartTime);
+      query = query.gte("updated_at", pollingStartTime);
     }
 
-    query = query.order("created_at", { ascending: false });
+    query = query.order("updated_at", { ascending: false });
 
     if (allReports) {
       const { data, error } = await query;
@@ -71,10 +72,19 @@ Deno.serve(async (req: Request) => {
         throw error;
       }
       console.log(`Found ${data?.length || 0} reports`);
+
+      // Transform data to match expected format
+      const transformedData = (data || []).map(item => ({
+        report_data: item.gpt_report_data,
+        created_at: item.created_at,
+        updated_at: item.updated_at,
+        order_number: item.order_number,
+      }));
+
       return new Response(
         JSON.stringify({
           success: true,
-          data: data || [],
+          data: transformedData,
         }),
         {
           headers: {
@@ -90,10 +100,19 @@ Deno.serve(async (req: Request) => {
         throw error;
       }
       console.log("Report found:", data ? "Yes" : "No");
+
+      // Transform data to match expected format
+      const transformedData = data ? {
+        report_data: data.gpt_report_data,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        order_number: data.order_number,
+      } : null;
+
       return new Response(
         JSON.stringify({
           success: true,
-          data: data,
+          data: transformedData,
         }),
         {
           headers: {

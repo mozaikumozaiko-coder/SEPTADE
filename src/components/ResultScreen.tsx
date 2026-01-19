@@ -18,12 +18,18 @@ interface ResultScreenProps {
   isFromHistory?: boolean;
   onHistoryRefresh?: () => void;
   historySendUserId?: string;
+  historyGptReport?: any;
 }
 
-export function ResultScreen({ result, profile, onRestart, isFromHistory = false, onHistoryRefresh, historySendUserId }: ResultScreenProps) {
+export function ResultScreen({ result, profile, onRestart, isFromHistory = false, onHistoryRefresh, historySendUserId, historyGptReport }: ResultScreenProps) {
   const [isSending, setIsSending] = useState(false);
   const [, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [gptReport, setGptReport] = useState<GPTReport | null>(null);
+  const [gptReport, setGptReport] = useState<GPTReport | null>(() => {
+    if (isFromHistory && historyGptReport) {
+      return historyGptReport;
+    }
+    return null;
+  });
   const [isLoadingReport, setIsLoadingReport] = useState(() => {
     if (isFromHistory) return false;
     const stored = sessionStorage.getItem('isLoadingReport');
@@ -181,10 +187,10 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   }, [userId, currentOrderId, pollingStartTime]);
 
   useEffect(() => {
-    if (isFromHistory && !isWaitingForNewReport) {
+    if (isFromHistory && !isWaitingForNewReport && !historyGptReport) {
       fetchPastReports();
     }
-  }, [isFromHistory, isWaitingForNewReport, fetchPastReports]);
+  }, [isFromHistory, isWaitingForNewReport, historyGptReport, fetchPastReports]);
 
   useEffect(() => {
     if (isLoadingReport && pollingStartTime && currentOrderId) {
@@ -357,7 +363,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         if (response.status === 200) {
           setSendStatus('success');
           console.log('✅ Makeへの送信成功 - データ処理中');
-          await saveDiagnosisHistory(profile, result, userId);
+          await saveDiagnosisHistory(profile, result, userId, orderId);
           alert('データを送信しました。レポート生成中です...');
           setShowOrderInput(false);
           setOrderNumber('');
@@ -367,7 +373,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         } else if (responseData.orderValid === true && responseData.success === true) {
           setSendStatus('success');
           console.log('Order validated successfully');
-          await saveDiagnosisHistory(profile, result, userId);
+          await saveDiagnosisHistory(profile, result, userId, orderId);
           alert('番号を確認できました　そのままお待ちください');
           setShowOrderInput(false);
           setOrderNumber('');
