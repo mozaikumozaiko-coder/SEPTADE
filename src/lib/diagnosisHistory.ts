@@ -71,16 +71,18 @@ export async function getDiagnosisHistory(
 
 export async function getUserDiagnosisHistory(
   limit: number = 3
-): Promise<Array<{ id: string; profile: Profile; result: DiagnosisResult; createdAt: string; sendUserId?: string; gptReport?: any; orderNumber?: string }>> {
+): Promise<Array<{ id: string; profile: Profile; result: DiagnosisResult; createdAt: string; sendUserId?: string; gptReport?: any; orderNumber?: string; updatedAt?: string }>> {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     return [];
   }
 
+  console.log('📊 Fetching user diagnosis history for user:', user.id);
+
   const { data, error } = await supabase
     .from('diagnosis_history')
-    .select('id, profile_data, result_data, created_at, send_user_id, gpt_report_data, order_number')
+    .select('id, profile_data, result_data, created_at, updated_at, send_user_id, gpt_report_data, order_number')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(limit);
@@ -90,11 +92,27 @@ export async function getUserDiagnosisHistory(
     return [];
   }
 
+  console.log(`✅ Found ${data?.length || 0} diagnosis history records`);
+  if (data && data.length > 0) {
+    const withReports = data.filter(item => item.gpt_report_data).length;
+    console.log(`📊 ${withReports} records have GPT reports`);
+    data.forEach((item, index) => {
+      console.log(`  Record ${index + 1}:`, {
+        id: item.id,
+        order_number: item.order_number,
+        hasGptReport: !!item.gpt_report_data,
+        created_at: item.created_at,
+        updated_at: item.updated_at,
+      });
+    });
+  }
+
   return (data || []).map(item => ({
     id: item.id,
     profile: item.profile_data as Profile,
     result: item.result_data as DiagnosisResult,
     createdAt: item.created_at,
+    updatedAt: item.updated_at || undefined,
     sendUserId: item.send_user_id || undefined,
     gptReport: item.gpt_report_data || undefined,
     orderNumber: item.order_number || undefined,

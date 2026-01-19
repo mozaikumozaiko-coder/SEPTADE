@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Clock, ChevronRight, ChevronDown, BookOpen } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Clock, ChevronRight, ChevronDown, BookOpen, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { getUserDiagnosisHistory } from '../lib/diagnosisHistory';
@@ -10,6 +10,7 @@ interface HistoryItem {
   profile: Profile;
   result: DiagnosisResult;
   createdAt: string;
+  updatedAt?: string;
   sendUserId?: string;
   gptReport?: any;
   orderNumber?: string;
@@ -26,16 +27,18 @@ export function DiagnosisHistoryList({ onSelectHistory, refreshTrigger }: Diagno
   const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  useEffect(() => {
-    loadHistory();
-  }, [refreshTrigger]);
-
-  const loadHistory = async () => {
+  const loadHistory = useCallback(async () => {
     setLoading(true);
+    console.log('🔄 Loading diagnosis history... (refreshTrigger:', refreshTrigger, ')');
     const data = await getUserDiagnosisHistory(10);
+    console.log('✅ Diagnosis history loaded:', data.length, 'items');
     setHistory(data);
     setLoading(false);
-  };
+  }, [refreshTrigger]);
+
+  useEffect(() => {
+    loadHistory();
+  }, [loadHistory]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -129,13 +132,32 @@ export function DiagnosisHistoryList({ onSelectHistory, refreshTrigger }: Diagno
                   <button
                     key={item.id}
                     onClick={() => onSelectHistory(item.profile, item.result, item.sendUserId, item.gptReport)}
-                    className="w-full p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] text-left"
+                    className="w-full p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] text-left relative"
                     style={{
-                      background: 'linear-gradient(135deg, rgba(107, 68, 35, 0.7), rgba(122, 29, 46, 0.6))',
-                      border: '2px solid rgba(166, 124, 82, 0.6)',
-                      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.4)',
+                      background: item.gptReport
+                        ? 'linear-gradient(135deg, rgba(107, 68, 35, 0.8), rgba(122, 29, 46, 0.7))'
+                        : 'linear-gradient(135deg, rgba(107, 68, 35, 0.7), rgba(122, 29, 46, 0.6))',
+                      border: item.gptReport
+                        ? '2px solid rgba(191, 167, 110, 0.8)'
+                        : '2px solid rgba(166, 124, 82, 0.6)',
+                      boxShadow: item.gptReport
+                        ? '0 4px 10px rgba(191, 167, 110, 0.4), 0 0 20px rgba(191, 167, 110, 0.2)'
+                        : '0 4px 10px rgba(0, 0, 0, 0.4)',
                     }}
                   >
+                    {item.gptReport && (
+                      <div
+                        className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded text-xs font-bold"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.9), rgba(166, 124, 82, 0.8))',
+                          color: 'var(--pale-gold)',
+                          boxShadow: '0 0 10px rgba(191, 167, 110, 0.6)',
+                        }}
+                      >
+                        <Sparkles size={12} />
+                        <span>完全版</span>
+                      </div>
+                    )}
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-2">
