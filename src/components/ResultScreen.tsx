@@ -324,6 +324,10 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     };
 
     try {
+      console.log('💾 先に診断履歴を保存します...');
+      await saveDiagnosisHistory(profile, result, userId, orderId);
+      console.log('✅ 診断履歴を保存しました');
+
       console.log('📤 Makeにデータを送信中...');
       console.log('送信先URL:', webhookUrl);
       console.log('送信データ:', JSON.stringify(dataToSend, null, 2));
@@ -363,7 +367,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         if (response.status === 200) {
           setSendStatus('success');
           console.log('✅ Makeへの送信成功 - データ処理中');
-          await saveDiagnosisHistory(profile, result, userId, orderId);
           alert('データを送信しました。レポート生成中です...');
           setShowOrderInput(false);
           setOrderNumber('');
@@ -373,7 +376,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         } else if (responseData.orderValid === true && responseData.success === true) {
           setSendStatus('success');
           console.log('Order validated successfully');
-          await saveDiagnosisHistory(profile, result, userId, orderId);
           alert('番号を確認できました　そのままお待ちください');
           setShowOrderInput(false);
           setOrderNumber('');
