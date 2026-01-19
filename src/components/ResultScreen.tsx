@@ -150,17 +150,26 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         console.log('✅ Report found!', data);
         console.log('📋 Report order_number:', data.order_number);
         console.log('📋 Expected order_number:', currentOrderId);
+        console.log('📋 Report created_at:', data.created_at);
+        console.log('📋 Report updated_at:', data.updated_at);
+        console.log('📋 Polling start time:', pollingStartTime);
 
         if (currentOrderId && data.order_number !== currentOrderId) {
           console.log('⚠️ Order number mismatch! Ignoring this report.');
           return null;
         }
 
-        if (pollingStartTime && data.created_at) {
-          const reportTime = new Date(data.created_at).getTime();
+        // Check updated_at instead of created_at because the report is updated after creation
+        if (pollingStartTime && data.updated_at) {
+          const reportTime = new Date(data.updated_at).getTime();
           const startTime = new Date(pollingStartTime).getTime();
+          console.log('📊 Comparing times:', {
+            reportTime: new Date(data.updated_at).toISOString(),
+            startTime: new Date(pollingStartTime).toISOString(),
+            reportIsNewer: reportTime >= startTime
+          });
           if (reportTime < startTime) {
-            console.log('⚠️ Report is older than polling start time! Ignoring.');
+            console.log('⚠️ Report was updated before polling started! Ignoring.');
             return null;
           }
         }
