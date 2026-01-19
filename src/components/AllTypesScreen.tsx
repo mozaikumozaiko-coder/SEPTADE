@@ -52,11 +52,21 @@ export function AllTypesScreen() {
           {allTypes.map((type) => (
             <div
               key={type.code}
-              className="p-6 rounded-lg"
+              className="p-6 rounded-lg cursor-pointer transition-all duration-500 hover:scale-105"
               style={{
-                background: 'rgba(0, 0, 0, 0.6)',
-                border: '2px solid rgba(191, 167, 110, 0.5)',
-                boxShadow: '0 0 30px rgba(191, 167, 110, 0.2)',
+                background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(23, 8, 35, 0.9) 50%, rgba(0, 0, 0, 0.8) 100%)',
+                border: '3px solid rgba(191, 167, 110, 0.7)',
+                boxShadow: '0 0 40px rgba(191, 167, 110, 0.3), inset 0 0 60px rgba(191, 167, 110, 0.1)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(191, 167, 110, 1)';
+                e.currentTarget.style.boxShadow = '0 0 60px rgba(191, 167, 110, 0.6), 0 0 100px rgba(191, 167, 110, 0.3), inset 0 0 80px rgba(191, 167, 110, 0.2)';
+                e.currentTarget.style.transform = 'scale(1.05) translateY(-5px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(191, 167, 110, 0.7)';
+                e.currentTarget.style.boxShadow = '0 0 40px rgba(191, 167, 110, 0.3), inset 0 0 60px rgba(191, 167, 110, 0.1)';
+                e.currentTarget.style.transform = 'scale(1) translateY(0)';
               }}
             >
               <div className="mb-4">
@@ -65,10 +75,10 @@ export function AllTypesScreen() {
                     <img
                       src={`/${type.code.toLowerCase()}.gif`}
                       alt={type.name}
-                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-lg object-cover"
+                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-lg object-cover transition-all duration-300 hover:scale-110"
                       style={{
-                        border: '2px solid rgba(191, 167, 110, 0.5)',
-                        boxShadow: '0 0 20px rgba(191, 167, 110, 0.3)',
+                        border: '3px solid rgba(191, 167, 110, 0.8)',
+                        boxShadow: '0 0 30px rgba(191, 167, 110, 0.5), 0 0 50px rgba(191, 167, 110, 0.2)',
                       }}
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
@@ -76,10 +86,16 @@ export function AllTypesScreen() {
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--pale-gold)' }}>
+                    <h2 className="text-2xl sm:text-3xl font-bold" style={{
+                      color: 'var(--pale-gold)',
+                      textShadow: '0 0 20px rgba(191, 167, 110, 0.8), 0 0 40px rgba(191, 167, 110, 0.4)'
+                    }}>
                       {type.code}
                     </h2>
-                    <span className="text-xl sm:text-2xl font-bold block" style={{ color: 'var(--pale-light)' }}>
+                    <span className="text-xl sm:text-2xl font-bold block" style={{
+                      color: 'var(--pale-light)',
+                      textShadow: '0 0 15px rgba(191, 167, 110, 0.5)'
+                    }}>
                       {type.name}
                     </span>
                   </div>
@@ -94,18 +110,23 @@ export function AllTypesScreen() {
 
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                  <h4 className="text-sm font-bold mb-2" style={{
+                    color: 'var(--pale-gold)',
+                    textShadow: '0 0 10px rgba(191, 167, 110, 0.6)'
+                  }}>
                     特徴
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {type.characteristics.map((char, idx) => (
                       <span
                         key={idx}
-                        className="px-3 py-1 text-xs sm:text-sm rounded-full"
+                        className="px-3 py-1 text-xs sm:text-sm rounded-full transition-all duration-300 hover:scale-110"
                         style={{
-                          background: 'rgba(191, 167, 110, 0.2)',
-                          border: '1px solid rgba(191, 167, 110, 0.5)',
+                          background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.3), rgba(166, 124, 82, 0.3))',
+                          border: '2px solid rgba(191, 167, 110, 0.7)',
                           color: 'var(--pale-gold)',
+                          boxShadow: '0 0 15px rgba(191, 167, 110, 0.3)',
+                          textShadow: '0 0 10px rgba(191, 167, 110, 0.5)',
                         }}
                       >
                         {char}
@@ -115,7 +136,10 @@ export function AllTypesScreen() {
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                  <h4 className="text-sm font-bold mb-2" style={{
+                    color: 'var(--pale-gold)',
+                    textShadow: '0 0 10px rgba(191, 167, 110, 0.6)'
+                  }}>
                     強み
                   </h4>
                   <ul className="space-y-1">
@@ -128,7 +152,10 @@ export function AllTypesScreen() {
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                  <h4 className="text-sm font-bold mb-2" style={{
+                    color: 'var(--pale-gold)',
+                    textShadow: '0 0 10px rgba(191, 167, 110, 0.6)'
+                  }}>
                     弱み
                   </h4>
                   <ul className="space-y-1">
@@ -141,7 +168,10 @@ export function AllTypesScreen() {
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                  <h4 className="text-sm font-bold mb-2" style={{
+                    color: 'var(--pale-gold)',
+                    textShadow: '0 0 10px rgba(191, 167, 110, 0.6)'
+                  }}>
                     アドバイス
                   </h4>
                   <p className="text-xs sm:text-sm leading-relaxed" style={{ color: 'var(--pale-light)' }}>
@@ -150,7 +180,10 @@ export function AllTypesScreen() {
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                  <h4 className="text-sm font-bold mb-2" style={{
+                    color: 'var(--pale-gold)',
+                    textShadow: '0 0 10px rgba(191, 167, 110, 0.6)'
+                  }}>
                     詳細な強み
                   </h4>
                   <ul className="space-y-1">
@@ -163,7 +196,10 @@ export function AllTypesScreen() {
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                  <h4 className="text-sm font-bold mb-2" style={{
+                    color: 'var(--pale-gold)',
+                    textShadow: '0 0 10px rgba(191, 167, 110, 0.6)'
+                  }}>
                     適職トップ10
                   </h4>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1">
@@ -176,7 +212,10 @@ export function AllTypesScreen() {
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-bold mb-2" style={{ color: 'var(--pale-gold)' }}>
+                  <h4 className="text-sm font-bold mb-2" style={{
+                    color: 'var(--pale-gold)',
+                    textShadow: '0 0 10px rgba(191, 167, 110, 0.6)'
+                  }}>
                     詳細な弱み
                   </h4>
                   <ul className="space-y-1">
@@ -195,7 +234,22 @@ export function AllTypesScreen() {
         <div className="mt-12 text-center">
           <button
             onClick={() => navigate('/tarot-cards')}
-            className="mystic-button inline-flex items-center justify-center gap-3 px-8 py-4 text-lg"
+            className="inline-flex items-center justify-center gap-3 px-8 py-4 text-lg rounded-lg font-bold transition-all duration-500 hover:scale-110"
+            style={{
+              background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.3), rgba(166, 124, 82, 0.3))',
+              border: '3px solid rgba(191, 167, 110, 0.8)',
+              color: 'var(--pale-gold)',
+              boxShadow: '0 0 40px rgba(191, 167, 110, 0.4), 0 0 60px rgba(191, 167, 110, 0.2)',
+              textShadow: '0 0 15px rgba(191, 167, 110, 0.8)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 0 60px rgba(191, 167, 110, 0.6), 0 0 100px rgba(191, 167, 110, 0.3)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(191, 167, 110, 0.5), rgba(166, 124, 82, 0.5))';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = '0 0 40px rgba(191, 167, 110, 0.4), 0 0 60px rgba(191, 167, 110, 0.2)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(191, 167, 110, 0.3), rgba(166, 124, 82, 0.3))';
+            }}
           >
             <BookOpen size={24} />
             <span>すべてのタロットを見る</span>
