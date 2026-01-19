@@ -49,6 +49,14 @@ Deno.serve(async (req: Request) => {
 
     console.log("Updating diagnosis history with GPT report:", { userId, orderId });
 
+    // First, let's check what records exist
+    const checkResult = await supabase
+      .from("diagnosis_history")
+      .select("id, order_number, send_user_id, created_at")
+      .eq("order_number", orderId);
+
+    console.log("Existing records with this order_number:", JSON.stringify(checkResult.data, null, 2));
+
     // Update the diagnosis_history record with the GPT report
     const result = await supabase
       .from("diagnosis_history")
