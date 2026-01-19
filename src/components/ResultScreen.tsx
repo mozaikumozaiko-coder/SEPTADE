@@ -155,22 +155,30 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         console.log('📋 Report updated_at:', data.updated_at);
         console.log('📋 Polling start time:', pollingStartTime);
 
+        // CRITICAL: Check order number first - if we're polling for a specific order, reject any mismatch
         if (currentOrderId && data.order_number !== currentOrderId) {
-          console.log('⚠️ Order number mismatch! Ignoring this report.');
+          console.log('⚠️ Order number mismatch! Expected:', currentOrderId, 'Got:', data.order_number);
+          console.log('⚠️ Ignoring this report - it belongs to a different order.');
           return null;
         }
 
-        // Check updated_at instead of created_at because the report is updated after creation
-        if (pollingStartTime && data.updated_at) {
+        // CRITICAL: If we're polling (have a start time), only accept reports updated AFTER polling started
+        if (pollingStartTime) {
+          if (!data.updated_at) {
+            console.log('⚠️ Report has no updated_at timestamp! Ignoring.');
+            return null;
+          }
           const reportTime = new Date(data.updated_at).getTime();
           const startTime = new Date(pollingStartTime).getTime();
           console.log('📊 Comparing times:', {
             reportTime: new Date(data.updated_at).toISOString(),
             startTime: new Date(pollingStartTime).toISOString(),
-            reportIsNewer: reportTime >= startTime
+            reportIsNewer: reportTime >= startTime,
+            difference: `${(reportTime - startTime) / 1000} seconds`
           });
           if (reportTime < startTime) {
-            console.log('⚠️ Report was updated before polling started! Ignoring.');
+            console.log('⚠️ Report was updated BEFORE polling started! This is old data.');
+            console.log('⚠️ Ignoring to prevent showing stale results.');
             return null;
           }
         }
@@ -272,11 +280,13 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       return;
     }
 
-    setIsSending(true);
-    setSendStatus('idle');
+    console.log('🧹 Clearing all previous report data before sending...');
     setPastReports([]);
     setGptReport(null);
     setSelectedReportIndex(0);
+
+    setIsSending(true);
+    setSendStatus('idle');
     setIsWaitingForNewReport(true);
     sessionStorage.setItem('isWaitingForNewReport', 'true');
 
@@ -429,6 +439,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       navigate('/login');
       return;
     }
+
+    console.log('🧹 Clearing all report data when opening order input...');
+    setPastReports([]);
+    setGptReport(null);
+    setSelectedReportIndex(0);
+
     setShowOrderInput(true);
     setOrderError('');
     setOrderNumber('');
@@ -439,12 +455,15 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       setOrderError('オーダー番号を入力してください');
       return;
     }
-    setOrderError('');
-    setCurrentOrderId(orderNumber);
-    sessionStorage.setItem('currentOrderId', orderNumber);
+
+    console.log('🧹 Clearing all report data before order submit...');
     setPastReports([]);
     setGptReport(null);
     setSelectedReportIndex(0);
+
+    setOrderError('');
+    setCurrentOrderId(orderNumber);
+    sessionStorage.setItem('currentOrderId', orderNumber);
     setIsLoadingReport(true);
     sessionStorage.setItem('isLoadingReport', 'true');
     setIsWaitingForNewReport(true);
@@ -459,11 +478,13 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     console.log('📋 Order ID:', currentOrderId);
     console.log('⏰ Start time:', startTime);
 
-    setIsLoadingReport(true);
-    sessionStorage.setItem('isLoadingReport', 'true');
+    console.log('🧹 Clearing all report data at polling start...');
     setPastReports([]);
     setGptReport(null);
     setSelectedReportIndex(0);
+
+    setIsLoadingReport(true);
+    sessionStorage.setItem('isLoadingReport', 'true');
     setPollingStartTime(startTime);
     sessionStorage.setItem('pollingStartTime', startTime);
 
