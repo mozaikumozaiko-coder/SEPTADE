@@ -112,6 +112,10 @@ function DiagnosisApp() {
     setCurrentScreen('result');
   };
 
+  const handleHistoryRefresh = () => {
+    setHistoryRefreshKey(prev => prev + 1);
+  };
+
   return (
     <AnimatePresence mode="wait">
       {currentScreen === 'profile' && (
@@ -146,7 +150,13 @@ function DiagnosisApp() {
           animate="animate"
           exit="exit"
         >
-          <ResultScreen result={result} profile={profile} onRestart={handleRestart} isFromHistory={isFromHistory} />
+          <ResultScreen
+            result={result}
+            profile={profile}
+            onRestart={handleRestart}
+            isFromHistory={isFromHistory}
+            onHistoryRefresh={handleHistoryRefresh}
+          />
         </motion.div>
       )}
 

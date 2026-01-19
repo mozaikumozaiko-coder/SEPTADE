@@ -15,9 +15,10 @@ interface ResultScreenProps {
   profile: Profile;
   onRestart: () => void;
   isFromHistory?: boolean;
+  onHistoryRefresh?: () => void;
 }
 
-export function ResultScreen({ result, profile, onRestart, isFromHistory = false }: ResultScreenProps) {
+export function ResultScreen({ result, profile, onRestart, isFromHistory = false, onHistoryRefresh }: ResultScreenProps) {
   const [isSending, setIsSending] = useState(false);
   const [, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [gptReport, setGptReport] = useState<GPTReport | null>(null);
@@ -146,7 +147,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
       return () => clearInterval(pollInterval);
     }
-  }, []);
+  }, [isLoadingReport, pollingStartTime, currentOrderId, fetchReportFromSupabase, gptReport]);
 
   const handleSendToMake = async (orderId: string) => {
     const webhookUrl = import.meta.env.VITE_MAKE_WEBHOOK_URL;
@@ -340,7 +341,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     handleSendToMake(orderNumber);
   };
 
-  const fetchReportFromSupabase = async () => {
+  const fetchReportFromSupabase = useCallback(async () => {
     try {
       console.log('📊 Fetching report from Edge Function for userId:', userId);
       console.log('📊 Order ID:', currentOrderId);
@@ -396,6 +397,10 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         sessionStorage.removeItem('isWaitingForNewReport');
         setIsWaitingForNewReport(false);
         fetchPastReports();
+        if (onHistoryRefresh) {
+          console.log('🔄 Triggering history refresh...');
+          onHistoryRefresh();
+        }
         return data.report_data;
       } else {
         console.log('⏳ No report found yet...');
@@ -406,7 +411,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       console.error('❌ Error fetching report:', error);
       return null;
     }
-  };
+  }, [userId, currentOrderId, pollingStartTime, fetchPastReports, onHistoryRefresh]);
 
   const startReportPolling = () => {
     const startTime = new Date().toISOString();
