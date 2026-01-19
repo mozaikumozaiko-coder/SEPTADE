@@ -48,6 +48,7 @@ function DiagnosisApp() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [result, setResult] = useState<DiagnosisResult | null>(null);
   const [isFromHistory, setIsFromHistory] = useState(false);
+  const [historySendUserId, setHistorySendUserId] = useState<string | undefined>(undefined);
   const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -100,15 +101,17 @@ function DiagnosisApp() {
     setProfile(null);
     setResult(null);
     setIsFromHistory(false);
+    setHistorySendUserId(undefined);
     setIsSaving(false);
     setHistoryRefreshKey(prev => prev + 1);
     setCurrentScreen('landing');
   };
 
-  const handleSelectHistory = (historyProfile: Profile, historyResult: DiagnosisResult) => {
+  const handleSelectHistory = (historyProfile: Profile, historyResult: DiagnosisResult, sendUserId?: string) => {
     setProfile(historyProfile);
     setResult(historyResult);
     setIsFromHistory(true);
+    setHistorySendUserId(sendUserId);
     setCurrentScreen('result');
   };
 
@@ -156,6 +159,7 @@ function DiagnosisApp() {
             onRestart={handleRestart}
             isFromHistory={isFromHistory}
             onHistoryRefresh={handleHistoryRefresh}
+            historySendUserId={historySendUserId}
           />
         </motion.div>
       )}

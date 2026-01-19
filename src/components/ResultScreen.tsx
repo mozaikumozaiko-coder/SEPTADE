@@ -9,6 +9,7 @@ import { selectTarotCard } from '../lib/tarotSelector';
 import { calculateFourPillars } from '../lib/fourPillars';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { saveDiagnosisHistory } from '../lib/diagnosisHistory';
 
 interface ResultScreenProps {
   result: DiagnosisResult;
@@ -16,9 +17,10 @@ interface ResultScreenProps {
   onRestart: () => void;
   isFromHistory?: boolean;
   onHistoryRefresh?: () => void;
+  historySendUserId?: string;
 }
 
-export function ResultScreen({ result, profile, onRestart, isFromHistory = false, onHistoryRefresh }: ResultScreenProps) {
+export function ResultScreen({ result, profile, onRestart, isFromHistory = false, onHistoryRefresh, historySendUserId }: ResultScreenProps) {
   const [isSending, setIsSending] = useState(false);
   const [, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [gptReport, setGptReport] = useState<GPTReport | null>(null);
@@ -89,7 +91,10 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const apiUrl = `${supabaseUrl}/functions/v1/get-report`;
 
-      const params = new URLSearchParams({ userId, all: 'true' });
+      const targetUserId = isFromHistory && historySendUserId ? historySendUserId : userId;
+      const params = new URLSearchParams({ userId: targetUserId, all: 'true' });
+
+      console.log('📊 Fetching past reports for userId:', targetUserId, 'isFromHistory:', isFromHistory);
 
       const response = await fetch(`${apiUrl}?${params}`);
       const result = await response.json();
@@ -101,11 +106,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
       if (result.data) {
         setPastReports(result.data.map((item: any) => item.report_data as GPTReport));
+        console.log('✅ Found', result.data.length, 'past reports');
       }
     } catch (error) {
       console.error('Error fetching past reports:', error);
     }
-  }, [userId]);
+  }, [userId, isFromHistory, historySendUserId]);
 
   const fetchReportFromSupabase = useCallback(async () => {
     try {
@@ -351,6 +357,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         if (response.status === 200) {
           setSendStatus('success');
           console.log('✅ Makeへの送信成功 - データ処理中');
+          await saveDiagnosisHistory(profile, result, userId);
           alert('データを送信しました。レポート生成中です...');
           setShowOrderInput(false);
           setOrderNumber('');
@@ -360,6 +367,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         } else if (responseData.orderValid === true && responseData.success === true) {
           setSendStatus('success');
           console.log('Order validated successfully');
+          await saveDiagnosisHistory(profile, result, userId);
           alert('番号を確認できました　そのままお待ちください');
           setShowOrderInput(false);
           setOrderNumber('');
