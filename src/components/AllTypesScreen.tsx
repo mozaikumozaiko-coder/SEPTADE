@@ -1,5 +1,5 @@
 import { typeDetails } from '../data/typeDetails';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export function AllTypesScreen() {
@@ -190,6 +190,16 @@ export function AllTypesScreen() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <button
+            onClick={() => navigate('/tarot-cards')}
+            className="mystic-button inline-flex items-center justify-center gap-3 px-8 py-4 text-lg"
+          >
+            <BookOpen size={24} />
+            <span>すべてのタロットを見る</span>
+          </button>
         </div>
       </div>
     </div>

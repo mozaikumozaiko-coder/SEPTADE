@@ -1,6 +1,6 @@
 import { Scores, TarotCard } from '../types';
 
-const MAJOR_ARCANA: TarotCard[] = [
+export const MAJOR_ARCANA: TarotCard[] = [
   {
     id: 0,
     name: "旅装の童",

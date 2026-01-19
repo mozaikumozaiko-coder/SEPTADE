@@ -12,6 +12,7 @@ import { QuestionScreen } from './components/QuestionScreen';
 import { ResultScreen } from './components/ResultScreen';
 import { DiagnosisHistoryList } from './components/DiagnosisHistoryList';
 import { AllTypesScreen } from './components/AllTypesScreen';
+import { AllTarotCardsScreen } from './components/AllTarotCardsScreen';
 import { Profile, Answer, DiagnosisResult } from './types';
 import { getDiagnosisResult } from './utils/diagnosis';
 import { saveDiagnosisHistory } from './lib/diagnosisHistory';
@@ -402,6 +403,7 @@ function App() {
           <Route path="/reset" element={<ResetPasswordScreen />} />
           <Route path="/app" element={<DiagnosisApp />} />
           <Route path="/all-types" element={<AllTypesScreen />} />
+          <Route path="/tarot-cards" element={<AllTarotCardsScreen />} />
           <Route path="/" element={<DiagnosisApp />} />
         </Routes>
       </AuthProvider>
