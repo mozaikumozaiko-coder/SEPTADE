@@ -280,7 +280,7 @@ function DiagnosisApp() {
               </div>
             </div>
 
-            <div className="text-center">
+            <div className="text-center space-y-4">
               <button
                 onClick={() => setCurrentScreen('profile')}
                 className="mystic-button text-sm sm:text-base md:text-lg px-6 sm:px-8 py-3 sm:py-4"
@@ -288,9 +288,50 @@ function DiagnosisApp() {
                 運命の扉を開く
               </button>
 
-              <p className="text-xs sm:text-sm mt-4 sm:mt-6 glow-text" style={{ color: 'var(--pale-light)', opacity: 0.85 }}>
+              <p className="text-xs sm:text-sm glow-text" style={{ color: 'var(--pale-light)', opacity: 0.85 }}>
                 ─ 所要刻：約十五分 ─
               </p>
+
+              {process.env.NODE_ENV === 'development' && (
+                <button
+                  onClick={() => {
+                    const testProfile: Profile = {
+                      name: 'テストユーザー',
+                      birthdate: '1990-01-01',
+                      gender: '男性',
+                      concern: 'テスト用の診断です'
+                    };
+                    const testResult: DiagnosisResult = {
+                      type: 'INFP',
+                      typeName: '夢見る詩人',
+                      description: 'テスト用の診断結果です。',
+                      strengths: ['創造性', '共感力', '柔軟性'],
+                      weaknesses: ['優柔不断', '現実逃避', '過度な理想主義'],
+                      characteristics: ['理想主義者', '創造的', '独創的'],
+                      scores: {
+                        E: -40,
+                        S: -30,
+                        T: -50,
+                        J: -60
+                      }
+                    };
+                    setProfile(testProfile);
+                    setResult(testResult);
+                    setIsFromHistory(false);
+                    setResultKey(prev => prev + 1);
+                    setCurrentScreen('result');
+                  }}
+                  className="text-xs px-4 py-2 rounded transition-all hover:scale-105"
+                  style={{
+                    background: 'rgba(107, 68, 35, 0.3)',
+                    border: '1px solid rgba(166, 124, 82, 0.4)',
+                    color: 'var(--pale-light)',
+                    opacity: 0.7
+                  }}
+                >
+                  [開発用] 結果画面テスト
+                </button>
+              )}
             </div>
 
             <div className="mt-8 sm:mt-12">

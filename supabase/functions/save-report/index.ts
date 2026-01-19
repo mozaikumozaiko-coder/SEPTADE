@@ -66,34 +66,33 @@ Deno.serve(async (req: Request) => {
 
     console.log("Updating diagnosis history with GPT report:", { userId, orderId: finalOrderId });
 
-    // First, find the most recent record with this order_number and send_user_id
-    // This prevents updating multiple records with the same order number
+    // Find ALL records with this order_number and send_user_id
+    // Update all of them to ensure all past diagnoses with the same order get the report
     const checkResult = await supabase
       .from("diagnosis_history")
       .select("id, order_number, send_user_id, created_at, updated_at")
       .eq("order_number", finalOrderId)
-      .eq("send_user_id", userId)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .eq("send_user_id", userId);
 
-    console.log("Existing record check:", JSON.stringify(checkResult.data, null, 2));
+    console.log("Existing records check:", JSON.stringify(checkResult.data, null, 2));
+    console.log("Number of records found:", checkResult.data?.length || 0);
 
     let result;
 
-    if (checkResult.data) {
-      // Record exists, update only this specific record by ID
-      console.log("Record exists, updating record ID:", checkResult.data.id);
+    if (checkResult.data && checkResult.data.length > 0) {
+      // Records exist, update ALL of them with the same order_number and send_user_id
+      console.log("Records exist, updating all records with order:", finalOrderId);
       result = await supabase
         .from("diagnosis_history")
         .update({
           gpt_report_data: reportData,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", checkResult.data.id)
+        .eq("order_number", finalOrderId)
+        .eq("send_user_id", userId)
         .select();
     } else {
-      // Record doesn't exist
+      // No records found
       console.warn("No existing diagnosis history found for order:", finalOrderId);
       return new Response(
         JSON.stringify({
