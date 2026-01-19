@@ -254,14 +254,8 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
           console.log('⏱️ Polling timeout reached (120 seconds)');
           clearInterval(pollInterval);
           if (!gptReport) {
-            console.log('❌ No report received within timeout period');
-            setIsLoadingReport(false);
-            sessionStorage.removeItem('isLoadingReport');
-            sessionStorage.removeItem('pollingStartTime');
-            sessionStorage.removeItem('currentOrderId');
-            sessionStorage.removeItem('isWaitingForNewReport');
-            setIsWaitingForNewReport(false);
-            alert('レポートの生成に時間がかかっています。しばらくしてからもう一度お試しください。');
+            console.log('⏰ Still waiting for report after 2 minutes...');
+            // Continue waiting without showing error message
           }
         }, remaining);
       } else {
@@ -530,14 +524,8 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       console.log('⏱️ Polling timeout reached (120 seconds)');
       clearInterval(pollInterval);
       if (!gptReport) {
-        console.log('❌ No report received within timeout period');
-        setIsLoadingReport(false);
-        sessionStorage.removeItem('isLoadingReport');
-        sessionStorage.removeItem('pollingStartTime');
-        sessionStorage.removeItem('currentOrderId');
-        sessionStorage.removeItem('isWaitingForNewReport');
-        setIsWaitingForNewReport(false);
-        alert('レポートの生成に時間がかかっています。しばらくしてからもう一度お試しください。');
+        console.log('⏰ Still waiting for report after 2 minutes...');
+        // Continue waiting without showing error message
       }
     }, 120000);
   };
