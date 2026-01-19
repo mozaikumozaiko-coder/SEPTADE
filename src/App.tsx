@@ -13,6 +13,7 @@ import { ResultScreen } from './components/ResultScreen';
 import { DiagnosisHistoryList } from './components/DiagnosisHistoryList';
 import { AllTypesScreen } from './components/AllTypesScreen';
 import { AllTarotCardsScreen } from './components/AllTarotCardsScreen';
+import { TestDiagnosisScreen } from './components/TestDiagnosisScreen';
 import { Profile, Answer, DiagnosisResult } from './types';
 import { getDiagnosisResult } from './utils/diagnosis';
 import { hasSupabaseConfig } from './lib/supabase';
@@ -431,6 +432,7 @@ function App() {
           <Route path="/app" element={<DiagnosisApp />} />
           <Route path="/all-types" element={<AllTypesScreen />} />
           <Route path="/tarot-cards" element={<AllTarotCardsScreen />} />
+          <Route path="/test" element={<TestDiagnosisScreen />} />
           <Route path="/" element={<DiagnosisApp />} />
         </Routes>
       </AuthProvider>

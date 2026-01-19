@@ -219,10 +219,10 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   }, [userId, currentOrderId, pollingStartTime]);
 
   useEffect(() => {
-    if (isFromHistory && !isWaitingForNewReport && !historyGptReport) {
+    if (isFromHistory && !isWaitingForNewReport) {
       fetchPastReports();
     }
-  }, [isFromHistory, isWaitingForNewReport, historyGptReport, fetchPastReports]);
+  }, [isFromHistory, isWaitingForNewReport, fetchPastReports]);
 
   useEffect(() => {
     if (isLoadingReport && pollingStartTime && currentOrderId) {
