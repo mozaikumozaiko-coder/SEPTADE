@@ -173,15 +173,26 @@ export function DiagnosisHistoryList({ onSelectHistory, refreshTrigger }: Diagno
       <div className="mt-4 text-center">
         <button
           onClick={() => navigate('/all-types')}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105"
+          className="inline-flex items-center gap-3 px-8 py-4 rounded-lg font-bold text-base sm:text-lg transition-all duration-500 hover:scale-110"
           style={{
-            background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.3), rgba(166, 124, 82, 0.2))',
-            border: '2px solid rgba(166, 124, 82, 0.6)',
+            background: 'linear-gradient(135deg, rgba(191, 167, 110, 0.4), rgba(166, 124, 82, 0.4))',
+            border: '3px solid rgba(191, 167, 110, 0.8)',
             color: 'var(--pale-gold)',
-            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.4)',
+            boxShadow: '0 0 40px rgba(191, 167, 110, 0.4), 0 0 60px rgba(191, 167, 110, 0.2)',
+            textShadow: '0 0 15px rgba(191, 167, 110, 0.8)',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = '0 0 60px rgba(191, 167, 110, 0.6), 0 0 100px rgba(191, 167, 110, 0.3)';
+            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(191, 167, 110, 0.6), rgba(166, 124, 82, 0.6))';
+            e.currentTarget.style.transform = 'scale(1.1) translateY(-2px)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = '0 0 40px rgba(191, 167, 110, 0.4), 0 0 60px rgba(191, 167, 110, 0.2)';
+            e.currentTarget.style.background = 'linear-gradient(135deg, rgba(191, 167, 110, 0.4), rgba(166, 124, 82, 0.4))';
+            e.currentTarget.style.transform = 'scale(1) translateY(0)';
           }}
         >
-          <BookOpen size={20} />
+          <BookOpen size={24} />
           <span>全17タイプ一覧</span>
         </button>
       </div>
