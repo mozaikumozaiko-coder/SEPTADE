@@ -294,6 +294,24 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
       if (data && data.report_data) {
         console.log('✅ Report found!', data);
+        console.log('📋 Report order_number:', data.order_number);
+        console.log('📋 Expected order_number:', currentOrderId);
+
+        if (currentOrderId && data.order_number !== currentOrderId) {
+          console.log('⚠️ Order number mismatch! Ignoring this report.');
+          return null;
+        }
+
+        if (pollingStartTime && data.created_at) {
+          const reportTime = new Date(data.created_at).getTime();
+          const startTime = new Date(pollingStartTime).getTime();
+          if (reportTime < startTime) {
+            console.log('⚠️ Report is older than polling start time! Ignoring.');
+            return null;
+          }
+        }
+
+        console.log('✅ Report validation passed!');
         setGptReport(data.report_data as GPTReport);
         setSelectedReportIndex(0);
         setIsLoadingReport(false);
@@ -314,6 +332,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     const startTime = new Date().toISOString();
     console.log('🔄 Starting report polling...');
     console.log('👤 User ID:', userId);
+    console.log('📋 Order ID:', currentOrderId);
     console.log('⏰ Start time:', startTime);
 
     setIsLoadingReport(true);
@@ -336,6 +355,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       if (!gptReport) {
         console.log('❌ No report received within timeout period');
         setIsLoadingReport(false);
+        alert('レポートの生成に時間がかかっています。しばらくしてからもう一度お試しください。');
       }
     }, 120000);
   };
