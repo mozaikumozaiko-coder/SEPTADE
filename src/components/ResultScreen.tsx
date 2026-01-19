@@ -38,7 +38,17 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [selectedReportIndex, setSelectedReportIndex] = useState(0);
   const [pollingStartTime, setPollingStartTime] = useState<string | null>(null);
   const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     if (user?.email && userId !== user.email) {
@@ -47,7 +57,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     }
   }, [user, userId]);
 
-  const allReports = gptReport ? [gptReport, ...pastReports] : (isLoadingReport ? [] : pastReports);
+  const allReports = gptReport ? [gptReport, ...pastReports] : [];
   const displayReport = allReports[selectedReportIndex] || null;
 
   const fetchPastReports = useCallback(async () => {
@@ -448,7 +458,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
             </h3>
 
             <div className="mb-8">
-              <RadarChart data={radarData} />
+              <RadarChart data={radarData} size={isMobile ? 250 : 300} />
             </div>
 
             <div className="space-y-6">
@@ -1122,7 +1132,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
         <div className="space-y-3 sm:space-y-4">
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-5">
-            {!gptReport && (
+            {!displayReport && (
               <button
                 onClick={handleUnlockResults}
                 className="mystic-button flex-1 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base px-6 py-3 sm:py-4"

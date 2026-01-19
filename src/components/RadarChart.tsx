@@ -9,7 +9,8 @@ interface RadarChartProps {
 }
 
 export function RadarChart({ data, size = 300 }: RadarChartProps) {
-  const padding = 80;
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  const padding = isMobile ? 60 : 80;
   const viewBoxSize = size + padding * 2;
   const center = viewBoxSize / 2;
   const maxRadius = size * 0.35;
@@ -29,7 +30,7 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
 
   const getLabelPoint = (index: number) => {
     const angle = startAngle + angleStep * index;
-    const radius = maxRadius + 50;
+    const radius = maxRadius + (isMobile ? 35 : 50);
     return {
       x: center + radius * Math.cos(angle),
       y: center + radius * Math.sin(angle)
@@ -119,13 +120,16 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
           textAnchor = 'end';
         }
 
+        const labelFontSize = isMobile ? "11" : "14";
+        const valueFontSize = isMobile ? "13" : "16";
+
         return (
           <g key={`label-${index}`}>
             <text
               x={labelPoint.x}
-              y={labelPoint.y - 10}
+              y={labelPoint.y - 8}
               textAnchor={textAnchor}
-              fontSize="14"
+              fontSize={labelFontSize}
               fontWeight="500"
               style={{ fill: 'var(--pale-light)' }}
             >
@@ -133,9 +137,9 @@ export function RadarChart({ data, size = 300 }: RadarChartProps) {
             </text>
             <text
               x={labelPoint.x}
-              y={labelPoint.y + 10}
+              y={labelPoint.y + 8}
               textAnchor={textAnchor}
-              fontSize="16"
+              fontSize={valueFontSize}
               fontWeight="700"
               style={{ fill: 'var(--pale-gold)' }}
             >
