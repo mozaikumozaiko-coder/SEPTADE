@@ -311,13 +311,6 @@ function DiagnosisApp() {
 
             <div className="mt-8 sm:mt-10 flex flex-wrap justify-center gap-4">
               <button
-                onClick={() => navigate('/all-types')}
-                className="mystic-button inline-flex items-center justify-center gap-3 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg"
-              >
-                <Users size={20} className="sm:w-6 sm:h-6" />
-                <span>全17タイプを見る</span>
-              </button>
-              <button
                 onClick={() => navigate('/tarot-cards')}
                 className="mystic-button inline-flex items-center justify-center gap-3 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg"
               >
