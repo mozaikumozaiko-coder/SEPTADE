@@ -402,7 +402,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
           setOrderNumber('');
           setOrderError('');
           setIsLoadingReport(true);
-          startReportPolling();
+          startReportPolling(orderId);
         } else if (responseData.orderValid === true && responseData.success === true) {
           setSendStatus('success');
           console.log('Order validated successfully');
@@ -411,7 +411,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
           setOrderNumber('');
           setOrderError('');
           setIsLoadingReport(true);
-          startReportPolling();
+          startReportPolling(orderId);
         } else {
           setSendStatus('error');
           setOrderError(responseData.message || 'オーダー番号が見つかりません');
@@ -467,15 +467,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     }
 
     console.log('🧹 Clearing all report data before order submit...');
+    console.log('📋 Submitting with order number:', orderNumber);
     setPastReports([]);
     setGptReport(null);
     setSelectedReportIndex(0);
 
     setOrderError('');
-    setCurrentOrderId(orderNumber);
-    sessionStorage.setItem('currentOrderId', orderNumber);
-    setIsLoadingReport(true);
-    sessionStorage.setItem('isLoadingReport', 'true');
     setIsWaitingForNewReport(true);
     sessionStorage.setItem('isWaitingForNewReport', 'true');
 
@@ -487,11 +484,13 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     handleSendToMake(orderNumber);
   };
 
-  const startReportPolling = () => {
+  const startReportPolling = (orderId?: string) => {
     const startTime = new Date().toISOString();
+    const orderIdToUse = orderId || currentOrderId;
+
     console.log('🔄 Starting report polling...');
     console.log('👤 User ID:', userId);
-    console.log('📋 Order ID:', currentOrderId);
+    console.log('📋 Order ID:', orderIdToUse);
     console.log('⏰ Start time:', startTime);
 
     console.log('🧹 Clearing all report data at polling start...');
@@ -503,6 +502,11 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     sessionStorage.setItem('isLoadingReport', 'true');
     setPollingStartTime(startTime);
     sessionStorage.setItem('pollingStartTime', startTime);
+
+    if (orderIdToUse) {
+      setCurrentOrderId(orderIdToUse);
+      sessionStorage.setItem('currentOrderId', orderIdToUse);
+    }
 
     const pollInterval = setInterval(async () => {
       const report = await fetchReportFromSupabase();
