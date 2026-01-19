@@ -107,6 +107,73 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     }
   }, [userId]);
 
+  const fetchReportFromSupabase = useCallback(async () => {
+    try {
+      console.log('📊 Fetching report from Edge Function for userId:', userId);
+      console.log('📊 Order ID:', currentOrderId);
+      console.log('📊 Polling start time:', pollingStartTime);
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const apiUrl = `${supabaseUrl}/functions/v1/get-report`;
+
+      const params = new URLSearchParams({ userId });
+      if (currentOrderId) {
+        params.append('orderId', currentOrderId);
+      }
+      if (pollingStartTime) {
+        params.append('pollingStartTime', pollingStartTime);
+      }
+
+      const response = await fetch(`${apiUrl}?${params}`);
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error('❌ Error fetching report:', result.error);
+        return null;
+      }
+
+      const data = result.data;
+
+      if (data && data.report_data) {
+        console.log('✅ Report found!', data);
+        console.log('📋 Report order_number:', data.order_number);
+        console.log('📋 Expected order_number:', currentOrderId);
+
+        if (currentOrderId && data.order_number !== currentOrderId) {
+          console.log('⚠️ Order number mismatch! Ignoring this report.');
+          return null;
+        }
+
+        if (pollingStartTime && data.created_at) {
+          const reportTime = new Date(data.created_at).getTime();
+          const startTime = new Date(pollingStartTime).getTime();
+          if (reportTime < startTime) {
+            console.log('⚠️ Report is older than polling start time! Ignoring.');
+            return null;
+          }
+        }
+
+        console.log('✅ Report validation passed!');
+        setGptReport(data.report_data as GPTReport);
+        setSelectedReportIndex(0);
+        setIsLoadingReport(false);
+        sessionStorage.removeItem('isLoadingReport');
+        sessionStorage.removeItem('pollingStartTime');
+        sessionStorage.removeItem('currentOrderId');
+        sessionStorage.removeItem('isWaitingForNewReport');
+        setIsWaitingForNewReport(false);
+        return data.report_data;
+      } else {
+        console.log('⏳ No report found yet...');
+      }
+
+      return null;
+    } catch (error) {
+      console.error('❌ Error fetching report:', error);
+      return null;
+    }
+  }, [userId, currentOrderId, pollingStartTime]);
+
   useEffect(() => {
     if (isFromHistory && !isWaitingForNewReport) {
       fetchPastReports();
@@ -358,73 +425,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     sessionStorage.setItem('isWaitingForNewReport', 'true');
     handleSendToMake(orderNumber);
   };
-
-  const fetchReportFromSupabase = useCallback(async () => {
-    try {
-      console.log('📊 Fetching report from Edge Function for userId:', userId);
-      console.log('📊 Order ID:', currentOrderId);
-      console.log('📊 Polling start time:', pollingStartTime);
-
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const apiUrl = `${supabaseUrl}/functions/v1/get-report`;
-
-      const params = new URLSearchParams({ userId });
-      if (currentOrderId) {
-        params.append('orderId', currentOrderId);
-      }
-      if (pollingStartTime) {
-        params.append('pollingStartTime', pollingStartTime);
-      }
-
-      const response = await fetch(`${apiUrl}?${params}`);
-      const result = await response.json();
-
-      if (!response.ok) {
-        console.error('❌ Error fetching report:', result.error);
-        return null;
-      }
-
-      const data = result.data;
-
-      if (data && data.report_data) {
-        console.log('✅ Report found!', data);
-        console.log('📋 Report order_number:', data.order_number);
-        console.log('📋 Expected order_number:', currentOrderId);
-
-        if (currentOrderId && data.order_number !== currentOrderId) {
-          console.log('⚠️ Order number mismatch! Ignoring this report.');
-          return null;
-        }
-
-        if (pollingStartTime && data.created_at) {
-          const reportTime = new Date(data.created_at).getTime();
-          const startTime = new Date(pollingStartTime).getTime();
-          if (reportTime < startTime) {
-            console.log('⚠️ Report is older than polling start time! Ignoring.');
-            return null;
-          }
-        }
-
-        console.log('✅ Report validation passed!');
-        setGptReport(data.report_data as GPTReport);
-        setSelectedReportIndex(0);
-        setIsLoadingReport(false);
-        sessionStorage.removeItem('isLoadingReport');
-        sessionStorage.removeItem('pollingStartTime');
-        sessionStorage.removeItem('currentOrderId');
-        sessionStorage.removeItem('isWaitingForNewReport');
-        setIsWaitingForNewReport(false);
-        return data.report_data;
-      } else {
-        console.log('⏳ No report found yet...');
-      }
-
-      return null;
-    } catch (error) {
-      console.error('❌ Error fetching report:', error);
-      return null;
-    }
-  }, [userId, currentOrderId, pollingStartTime]);
 
   const startReportPolling = () => {
     const startTime = new Date().toISOString();
