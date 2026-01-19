@@ -58,14 +58,6 @@ export function CompleteDiagnosisHistoryList({ onSelectHistory, refreshTrigger }
     }
   };
 
-  if (loading) {
-    return null;
-  }
-
-  if (history.length === 0) {
-    return null;
-  }
-
   return (
     <div className="w-full max-w-2xl mx-auto px-4 mt-6">
       <button
@@ -128,7 +120,23 @@ export function CompleteDiagnosisHistoryList({ onSelectHistory, refreshTrigger }
                 scrollbarWidth: 'thin',
                 scrollbarColor: 'rgba(191, 167, 110, 0.5) rgba(0, 0, 0, 0.2)',
               }}>
-                {history.map((item) => (
+                {loading ? (
+                  <div className="text-center py-8">
+                    <p className="text-sm opacity-70" style={{ color: 'var(--dim-light)' }}>
+                      読み込み中...
+                    </p>
+                  </div>
+                ) : history.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-sm opacity-70" style={{ color: 'var(--dim-light)' }}>
+                      まだ完全版の記録がありません
+                    </p>
+                    <p className="text-xs opacity-50 mt-2" style={{ color: 'var(--dim-light)' }}>
+                      購入した完全版の鑑定結果がここに表示されます
+                    </p>
+                  </div>
+                ) : (
+                  history.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => onSelectHistory(item.profile, item.result, item.sendUserId, item.gptReport)}
@@ -196,7 +204,8 @@ export function CompleteDiagnosisHistoryList({ onSelectHistory, refreshTrigger }
                       </div>
                     </div>
                   </button>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </motion.div>
