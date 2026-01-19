@@ -138,7 +138,7 @@ export function ProfileScreen({ onComplete }: ProfileScreenProps) {
           <div>
             <label className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 text-sm sm:text-base font-medium flex-wrap" style={{ color: 'var(--pale-light)' }}>
               <ScrollText size={18} className="sm:w-5 sm:h-5" style={{ color: 'var(--rust-red)' }} />
-              <span>抱える憂い</span>
+              <span>抱える憂い（２０００文字以下）</span>
               <span className="text-xs opacity-60 font-normal">─ 任意 ─</span>
             </label>
             <textarea
