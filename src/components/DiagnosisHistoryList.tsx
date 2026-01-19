@@ -70,14 +70,6 @@ export function DiagnosisHistoryList({ onSelectHistory, refreshTrigger }: Diagno
     }
   };
 
-  if (loading) {
-    return null;
-  }
-
-  if (history.length === 0) {
-    return null;
-  }
-
   return (
     <div className="w-full max-w-2xl mx-auto px-4">
       <button
@@ -140,7 +132,23 @@ export function DiagnosisHistoryList({ onSelectHistory, refreshTrigger }: Diagno
                 scrollbarWidth: 'thin',
                 scrollbarColor: 'rgba(166, 124, 82, 0.5) rgba(0, 0, 0, 0.2)',
               }}>
-                {history.map((item) => (
+                {loading ? (
+                  <div className="text-center py-8">
+                    <p className="text-sm opacity-70" style={{ color: 'var(--dim-light)' }}>
+                      読み込み中...
+                    </p>
+                  </div>
+                ) : history.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-sm opacity-70" style={{ color: 'var(--dim-light)' }}>
+                      まだ記録がありません
+                    </p>
+                    <p className="text-xs opacity-50 mt-2" style={{ color: 'var(--dim-light)' }}>
+                      診断を行うと、ここに履歴が表示されます
+                    </p>
+                  </div>
+                ) : (
+                  history.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => onSelectHistory(item.profile, item.result, item.sendUserId, item.gptReport)}
@@ -197,7 +205,8 @@ export function DiagnosisHistoryList({ onSelectHistory, refreshTrigger }: Diagno
                       <ChevronRight size={20} style={{ color: 'var(--ochre)' }} />
                     </div>
                   </button>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </motion.div>
