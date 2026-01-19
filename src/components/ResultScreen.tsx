@@ -90,7 +90,8 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     }
   }, [user, userId]);
 
-  const allReports = gptReport ? [gptReport, ...pastReports] : [];
+  // CRITICAL: Don't show old reports when waiting for a new report
+  const allReports = (isWaitingForNewReport || isLoadingReport) ? [] : (gptReport ? [gptReport, ...pastReports] : []);
   const displayReport = allReports[selectedReportIndex] || null;
 
   const fetchPastReports = useCallback(async () => {
