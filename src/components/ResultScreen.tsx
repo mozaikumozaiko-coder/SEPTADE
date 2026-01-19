@@ -95,6 +95,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const displayReport = allReports[selectedReportIndex] || null;
 
   const fetchPastReports = useCallback(async () => {
+    // Don't fetch old reports when waiting for a new report
+    if (isWaitingForNewReport || isLoadingReport) {
+      console.log('⏸️ Skipping past reports fetch - waiting for new report');
+      return;
+    }
+
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const apiUrl = `${supabaseUrl}/functions/v1/get-report`;
@@ -119,7 +125,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     } catch (error) {
       console.error('Error fetching past reports:', error);
     }
-  }, [userId, isFromHistory, historySendUserId]);
+  }, [userId, isFromHistory, historySendUserId, isWaitingForNewReport, isLoadingReport]);
 
   const fetchReportFromSupabase = useCallback(async () => {
     try {
@@ -352,10 +358,6 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     };
 
     try {
-      console.log('💾 先に診断履歴を保存します...');
-      await saveDiagnosisHistory(profile, result, userId, orderId);
-      console.log('✅ 診断履歴を保存しました');
-
       console.log('📤 Makeにデータを送信中...');
       console.log('送信先URL:', webhookUrl);
       console.log('送信データ:', JSON.stringify(dataToSend, null, 2));
@@ -458,7 +460,7 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     setOrderNumber('');
   };
 
-  const handleOrderSubmit = () => {
+  const handleOrderSubmit = async () => {
     if (!orderNumber.trim()) {
       setOrderError('オーダー番号を入力してください');
       return;
@@ -476,6 +478,12 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     sessionStorage.setItem('isLoadingReport', 'true');
     setIsWaitingForNewReport(true);
     sessionStorage.setItem('isWaitingForNewReport', 'true');
+
+    // Save diagnosis history BEFORE sending to Make
+    console.log('💾 Saving diagnosis history before sending to Make...');
+    await saveDiagnosisHistory(profile, result, userId, orderNumber);
+    console.log('✅ Diagnosis history saved');
+
     handleSendToMake(orderNumber);
   };
 

@@ -66,23 +66,47 @@ Deno.serve(async (req: Request) => {
 
     console.log("Updating diagnosis history with GPT report:", { userId, orderId: finalOrderId });
 
-    // First, let's check what records exist
+    // First, check if a record exists
     const checkResult = await supabase
       .from("diagnosis_history")
       .select("id, order_number, send_user_id, created_at")
-      .eq("order_number", finalOrderId);
-
-    console.log("Existing records with this order_number:", JSON.stringify(checkResult.data, null, 2));
-
-    // Update the diagnosis_history record with the GPT report
-    const result = await supabase
-      .from("diagnosis_history")
-      .update({
-        gpt_report_data: reportData,
-      })
       .eq("order_number", finalOrderId)
       .eq("send_user_id", userId)
-      .select();
+      .maybeSingle();
+
+    console.log("Existing record check:", JSON.stringify(checkResult.data, null, 2));
+
+    let result;
+
+    if (checkResult.data) {
+      // Record exists, update it
+      console.log("Record exists, updating...");
+      result = await supabase
+        .from("diagnosis_history")
+        .update({
+          gpt_report_data: reportData,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", checkResult.data.id)
+        .select();
+    } else {
+      // Record doesn't exist, this means Make created it but we don't have the initial data
+      // This shouldn't happen in normal flow, log a warning
+      console.warn("No existing diagnosis history found for order:", finalOrderId);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "No diagnosis history found. Please create a diagnosis first.",
+        }),
+        {
+          status: 404,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
 
     if (result.error) {
       console.error("Database operation error:", result.error);
@@ -90,14 +114,14 @@ Deno.serve(async (req: Request) => {
     }
 
     if (!result.data || result.data.length === 0) {
-      console.error("No matching diagnosis history found for order:", finalOrderId);
+      console.error("Failed to save report for order:", finalOrderId);
       return new Response(
         JSON.stringify({
           success: false,
-          error: "No matching diagnosis history found",
+          error: "Failed to save report",
         }),
         {
-          status: 404,
+          status: 500,
           headers: {
             ...corsHeaders,
             "Content-Type": "application/json",
