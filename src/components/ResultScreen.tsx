@@ -21,7 +21,10 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [isSending, setIsSending] = useState(false);
   const [, setSendStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [gptReport, setGptReport] = useState<GPTReport | null>(null);
-  const [isLoadingReport, setIsLoadingReport] = useState(false);
+  const [isLoadingReport, setIsLoadingReport] = useState(() => {
+    const stored = sessionStorage.getItem('isLoadingReport');
+    return stored === 'true';
+  });
   const { user, signOut } = useAuth();
   const [userId, setUserId] = useState(() => {
     if (user?.email) return user.email;
@@ -36,8 +39,15 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   const [orderError, setOrderError] = useState('');
   const [pastReports, setPastReports] = useState<GPTReport[]>([]);
   const [selectedReportIndex, setSelectedReportIndex] = useState(0);
-  const [pollingStartTime, setPollingStartTime] = useState<string | null>(null);
-  const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
+  const [pollingStartTime, setPollingStartTime] = useState<string | null>(() => {
+    return sessionStorage.getItem('pollingStartTime');
+  });
+  const [currentOrderId, setCurrentOrderId] = useState<string | null>(() => {
+    return sessionStorage.getItem('currentOrderId');
+  });
+  const [isWaitingForNewReport, setIsWaitingForNewReport] = useState(() => {
+    return sessionStorage.getItem('isWaitingForNewReport') === 'true';
+  });
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
 
@@ -84,10 +94,59 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
   }, [userId]);
 
   useEffect(() => {
-    if (isFromHistory) {
+    if (isFromHistory && !isWaitingForNewReport) {
       fetchPastReports();
     }
-  }, [isFromHistory, fetchPastReports]);
+  }, [isFromHistory, isWaitingForNewReport, fetchPastReports]);
+
+  useEffect(() => {
+    if (isLoadingReport && pollingStartTime && currentOrderId) {
+      console.log('🔄 Resuming polling after page refresh...');
+      const pollInterval = setInterval(async () => {
+        const report = await fetchReportFromSupabase();
+        if (report) {
+          console.log('✅ Report polling completed successfully');
+          clearInterval(pollInterval);
+          sessionStorage.removeItem('isLoadingReport');
+          sessionStorage.removeItem('pollingStartTime');
+          sessionStorage.removeItem('currentOrderId');
+          sessionStorage.removeItem('isWaitingForNewReport');
+          setIsWaitingForNewReport(false);
+        }
+      }, 3000);
+
+      const startTime = new Date(pollingStartTime).getTime();
+      const elapsed = Date.now() - startTime;
+      const remaining = 120000 - elapsed;
+
+      if (remaining > 0) {
+        setTimeout(() => {
+          console.log('⏱️ Polling timeout reached (120 seconds)');
+          clearInterval(pollInterval);
+          if (!gptReport) {
+            console.log('❌ No report received within timeout period');
+            setIsLoadingReport(false);
+            sessionStorage.removeItem('isLoadingReport');
+            sessionStorage.removeItem('pollingStartTime');
+            sessionStorage.removeItem('currentOrderId');
+            sessionStorage.removeItem('isWaitingForNewReport');
+            setIsWaitingForNewReport(false);
+            alert('レポートの生成に時間がかかっています。しばらくしてからもう一度お試しください。');
+          }
+        }, remaining);
+      } else {
+        clearInterval(pollInterval);
+        setIsLoadingReport(false);
+        sessionStorage.removeItem('isLoadingReport');
+        sessionStorage.removeItem('pollingStartTime');
+        sessionStorage.removeItem('currentOrderId');
+        sessionStorage.removeItem('isWaitingForNewReport');
+        setIsWaitingForNewReport(false);
+      }
+
+      return () => clearInterval(pollInterval);
+    }
+  }, []);
 
   const handleSendToMake = async (orderId: string) => {
     const webhookUrl = import.meta.env.VITE_MAKE_WEBHOOK_URL;
@@ -110,6 +169,8 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     setPastReports([]);
     setGptReport(null);
     setSelectedReportIndex(0);
+    setIsWaitingForNewReport(true);
+    sessionStorage.setItem('isWaitingForNewReport', 'true');
 
     const normalizeScoreForWebhook = (score: number): number => {
       return Math.round(Math.max(0, Math.min(100, ((score + 100) / 2))));
@@ -268,10 +329,14 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     }
     setOrderError('');
     setCurrentOrderId(orderNumber);
+    sessionStorage.setItem('currentOrderId', orderNumber);
     setPastReports([]);
     setGptReport(null);
     setSelectedReportIndex(0);
     setIsLoadingReport(true);
+    sessionStorage.setItem('isLoadingReport', 'true');
+    setIsWaitingForNewReport(true);
+    sessionStorage.setItem('isWaitingForNewReport', 'true');
     handleSendToMake(orderNumber);
   };
 
@@ -325,6 +390,11 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
         setGptReport(data.report_data as GPTReport);
         setSelectedReportIndex(0);
         setIsLoadingReport(false);
+        sessionStorage.removeItem('isLoadingReport');
+        sessionStorage.removeItem('pollingStartTime');
+        sessionStorage.removeItem('currentOrderId');
+        sessionStorage.removeItem('isWaitingForNewReport');
+        setIsWaitingForNewReport(false);
         fetchPastReports();
         return data.report_data;
       } else {
@@ -346,16 +416,23 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
     console.log('⏰ Start time:', startTime);
 
     setIsLoadingReport(true);
+    sessionStorage.setItem('isLoadingReport', 'true');
     setPastReports([]);
     setGptReport(null);
     setSelectedReportIndex(0);
     setPollingStartTime(startTime);
+    sessionStorage.setItem('pollingStartTime', startTime);
 
     const pollInterval = setInterval(async () => {
       const report = await fetchReportFromSupabase();
       if (report) {
         console.log('✅ Report polling completed successfully');
         clearInterval(pollInterval);
+        sessionStorage.removeItem('isLoadingReport');
+        sessionStorage.removeItem('pollingStartTime');
+        sessionStorage.removeItem('currentOrderId');
+        sessionStorage.removeItem('isWaitingForNewReport');
+        setIsWaitingForNewReport(false);
       }
     }, 3000);
 
@@ -365,6 +442,11 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       if (!gptReport) {
         console.log('❌ No report received within timeout period');
         setIsLoadingReport(false);
+        sessionStorage.removeItem('isLoadingReport');
+        sessionStorage.removeItem('pollingStartTime');
+        sessionStorage.removeItem('currentOrderId');
+        sessionStorage.removeItem('isWaitingForNewReport');
+        setIsWaitingForNewReport(false);
         alert('レポートの生成に時間がかかっています。しばらくしてからもう一度お試しください。');
       }
     }, 120000);
