@@ -132,9 +132,10 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
 
   const fetchReportFromSupabase = useCallback(async () => {
     try {
-      console.log('📊 Fetching report from Edge Function for userId:', userId);
-      console.log('📊 Order ID:', currentOrderId);
-      console.log('📊 Polling start time:', pollingStartTime);
+      console.log('📊 Fetching report from Edge Function...');
+      console.log('  userId:', userId);
+      console.log('  currentOrderId:', currentOrderId);
+      console.log('  pollingStartTime:', pollingStartTime);
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const apiUrl = `${supabaseUrl}/functions/v1/get-report`;
@@ -146,6 +147,8 @@ export function ResultScreen({ result, profile, onRestart, isFromHistory = false
       if (pollingStartTime) {
         params.append('pollingStartTime', pollingStartTime);
       }
+
+      console.log('  Full URL:', `${apiUrl}?${params.toString()}`);
 
       const response = await fetch(`${apiUrl}?${params}`);
       const result = await response.json();

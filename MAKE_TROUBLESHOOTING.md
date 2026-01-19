@@ -187,7 +187,67 @@ A: Edge Functionのログを確認してください：
 2. 「Edge Functions」→「save-report」→「Logs」を確認
 3. エラーメッセージがあれば、その内容を確認
 
-## 8. サポートが必要な場合
+### Q: オーダー番号を送信しても「完全版」にならない
+
+A: 以下の手順で診断してください：
+
+1. **ブラウザのコンソールを確認**
+   - 診断を実行してオーダー番号を入力した時点で、以下のログが表示されるか確認：
+   ```
+   💾 Saving diagnosis history with data: {...}
+   ✅ Diagnosis history saved successfully: {...}
+   ```
+   - 特に`send_user_id`と`order_number`が正しく表示されているか確認
+
+2. **Makeのシナリオログを確認**
+   - Makeのシナリオが正常に実行されているか確認
+   - HTTP POSTモジュール（Supabaseへの送信）が成功しているか確認
+   - Makeが送信しているデータに`userId`と`orderId`が含まれているか確認
+
+3. **Supabase Edge Functionのログを確認**
+   - `save-report`関数のログで以下を確認：
+   ```
+   Existing record check: {...}
+   Record exists, updating record ID: xxx
+   ```
+   - "No existing diagnosis history found" というエラーが出ていないか確認
+
+4. **Makeシナリオの設定を確認**
+   - MakeからSupabaseへの送信時に、以下の形式で送信されているか確認：
+   ```json
+   {
+     "userId": "{{webhook受信したuserId}}",
+     "orderId": "{{webhook受信したorderId}}",
+     "reportData": {{GPTのレスポンス}}
+   }
+   ```
+   - **重要**: `orderId`フィールドが必須です。このフィールドがないと保存されません。
+
+5. **データベースのRLSポリシーを確認**
+   - Service roleがdiagnosis_historyテーブルを更新できるポリシーが設定されているか確認
+   - 最新のマイグレーション（`add_service_role_update_policy`）が適用されているか確認
+
+## 8. 最近の修正内容（2026-01-19）
+
+以下の問題が修正されました：
+
+1. **Service RoleのUPDATEポリシーを追加**
+   - Makeからのレポート保存がRLSポリシーでブロックされていた問題を修正
+   - Service roleがdiagnosis_historyテーブルを更新できるようになりました
+
+2. **診断履歴の自動保存**
+   - ログイン済みユーザーが診断を完了すると自動的に履歴が保存されるようになりました
+   - ログイン後にも自動的に履歴が保存されるようになりました
+
+3. **視覚的なインジケーター追加**
+   - GPTレポートが含まれている履歴に「完全版」バッジが表示されるようになりました
+   - 履歴リストで完全版と基本版を区別しやすくなりました
+
+4. **詳細なデバッグログ追加**
+   - 診断履歴の保存時に詳細なログが表示されるようになりました
+   - レポート取得時のデバッグが容易になりました
+
+## 9. サポートが必要な場合
 
 上記の手順で解決しない場合は、以下の情報を提供してください：
 

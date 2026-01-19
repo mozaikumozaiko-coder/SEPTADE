@@ -22,23 +22,39 @@ export async function saveDiagnosisHistory(
 
   const { data: { user } } = await supabase.auth.getUser();
 
+  const recordToInsert = {
+    user_identifier: userIdentifier,
+    user_id: user?.id || null,
+    profile_data: profile,
+    result_data: result,
+    send_user_id: sendUserId || null,
+    order_number: orderNumber || null,
+  };
+
+  console.log('💾 Saving diagnosis history with data:', {
+    user_id: recordToInsert.user_id,
+    send_user_id: recordToInsert.send_user_id,
+    order_number: recordToInsert.order_number,
+    profile_name: profile.name,
+  });
+
   const { data, error } = await supabase
     .from('diagnosis_history')
-    .insert({
-      user_identifier: userIdentifier,
-      user_id: user?.id || null,
-      profile_data: profile,
-      result_data: result,
-      send_user_id: sendUserId || null,
-      order_number: orderNumber || null,
-    })
-    .select('id')
+    .insert(recordToInsert)
+    .select('id, send_user_id, order_number, created_at')
     .single();
 
   if (error) {
-    console.error('Error saving diagnosis history:', error);
+    console.error('❌ Error saving diagnosis history:', error);
     return null;
   }
+
+  console.log('✅ Diagnosis history saved successfully:', {
+    id: data?.id,
+    send_user_id: data?.send_user_id,
+    order_number: data?.order_number,
+    created_at: data?.created_at,
+  });
 
   return data?.id || null;
 }
